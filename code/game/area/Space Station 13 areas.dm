@@ -1257,8 +1257,8 @@ var/list/ghostteleportlocs = list()
 	name = "\improper Security Checkpoint"
 	icon_state = "checkpoint1"
 
-/area/security/hallway_post
-	name = "\improper Security Post"
+/area/security/checkpoint2
+	name = "\improper Security Checkpoint"
 	icon_state = "security"
 
 /area/security/checkpoint/supply
@@ -1337,10 +1337,6 @@ var/list/ghostteleportlocs = list()
 
 /area/toxins/hallway
 	name = "\improper Research Lab"
-	icon_state = "toxlab"
-
-/area/toxins/s_breakroom
-	name = "\improper Science Break Room"
 	icon_state = "toxlab"
 
 /area/toxins/rdoffice
