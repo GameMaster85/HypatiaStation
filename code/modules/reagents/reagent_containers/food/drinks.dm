@@ -27,6 +27,13 @@
 			return 0
 
 		if(M == user)
+
+			if(istype(M,/mob/living/carbon/human))
+				var/mob/living/carbon/human/H = M
+				if(H.species.flags & IS_SYNTHETIC)
+					H << "\red You have a monitor for a head, where do you think you're going to put that?"
+					return
+
 			M << "\blue You swallow a gulp of [src]."
 			if(reagents.total_volume)
 				reagents.trans_to_ingest(M, gulp_size)
@@ -34,6 +41,11 @@
 			playsound(M.loc,'sound/items/drink.ogg', rand(10,50), 1)
 			return 1
 		else if( istype(M, /mob/living/carbon/human) )
+
+			var/mob/living/carbon/human/H = M
+			if(H.species.flags & IS_SYNTHETIC)
+				H << "\red They have a monitor for a head, where do you think you're going to put that?"
+				return
 
 			for(var/mob/O in viewers(world.view, user))
 				O.show_message("\red [user] attempts to feed [M] [src].", 1)
@@ -207,7 +219,7 @@
 		..()
 		reagents.add_reagent("tea", 30)
 		src.pixel_x = rand(-10.0, 10)
-		src.pixel_y = rand(-10.0, 10)
+		src.pixel_y = rand(0, 20)       // the teacup is very low on the 32x32 grid so if it's -y then it clips into the tile below it.
 
 /obj/item/weapon/reagent_containers/food/drinks/ice
 	name = "Ice Cup"

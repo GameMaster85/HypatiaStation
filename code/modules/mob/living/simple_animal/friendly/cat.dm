@@ -21,6 +21,7 @@
 	min_oxy = 16 //Require atleast 16kPA oxygen
 	minbodytemp = 223		//Below -50 Degrees Celcius
 	maxbodytemp = 323	//Above 50 Degrees Celcius
+	holder_type = /obj/item/weapon/holder/cat
 
 /mob/living/simple_animal/cat/Life()
 	//MICE!
@@ -60,9 +61,21 @@
 				stop_automated_movement = 1
 				walk_to(src,movement_target,0,3)
 
+
+/mob/living/simple_animal/cat/MouseDrop(atom/over_object)
+
+	var/mob/living/carbon/H = over_object
+	if(!istype(H)) return ..()
+
+	if(H.a_intent == "help")
+		get_scooped(H)
+		return
+	else
+		return ..()
+
 //RUNTIME IS ALIVE! SQUEEEEEEEE~
 /mob/living/simple_animal/cat/HappyKitten
 	name = "Happy Kitten"
-	desc = "Its fur has the look and feel of velvet, and it's tail quivers occasionally."
+	desc = "Its fur has the look and feel of velvet, and its tail quivers occasionally."
 
 

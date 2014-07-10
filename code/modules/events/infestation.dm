@@ -83,6 +83,7 @@
 			vermstring = "lizards"
 		if(VERM_SPIDERS)
 			spawn_types = list(/obj/effect/spider/spiderling)
+			max_number = 3
 			vermstring = "spiders"
 
 	spawn(0)
@@ -92,7 +93,6 @@
 			turfs.Remove(T)
 			num--
 
-			
 			if(vermin == VERM_SPIDERS)
 				var/obj/effect/spider/spiderling/S = new(T)
 				S.amount_grown = -1

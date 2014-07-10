@@ -696,7 +696,7 @@ var/global/datum/tension/tension_master
 		var/list/mob/dead/observer/candidates = list()
 		var/mob/dead/observer/theghost = null
 		var/time_passed = world.time
-		var/list/namelist = list("Tyr","Fenrir","Lachesis","Clotho","Atropos","Nyx")
+		var/list/namelist = list("Tyr","Fenrir","Lachesis","Clotho","Atropos","Tau Ceti")
 
 	//Generates a list of commandos from active ghosts. Then the user picks which characters to respawn as the commandos.
 

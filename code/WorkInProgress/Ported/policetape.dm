@@ -4,7 +4,7 @@
 	icon = 'icons/policetape.dmi'
 	icon_state = "rollstart"
 	flags = FPRINT
-	w_class = 1.0
+	w_class = 2.0
 	var/turf/start
 	var/turf/end
 	var/tape_type = /obj/item/tape
@@ -136,7 +136,7 @@
 	breaktape(/obj/item/weapon/wirecutters,user)
 
 /obj/item/tape/proc/breaktape(obj/item/weapon/W as obj, mob/user as mob)
-	if(user.a_intent == "help" && ((!is_sharp(W) && src.allowed(user))))
+	if(user.a_intent == "help" && ((!can_puncture(W) && src.allowed(user))))
 		user << "You can't break the [src] with that!"
 		return
 	user.show_viewers("\blue [user] breaks the [src]!")

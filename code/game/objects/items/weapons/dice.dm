@@ -1,17 +1,18 @@
 /obj/item/weapon/dice
 	name = "d6"
-	desc = "A dice with six sides."
+	desc = "A die with six sides."
 	icon = 'icons/obj/dice.dmi'
 	icon_state = "d66"
 	w_class = 1
 	var/sides = 6
+	attack_verb = list("diced")
 
 /obj/item/weapon/dice/New()
 	icon_state = "[name][rand(sides)]"
 
 /obj/item/weapon/dice/d20
 	name = "d20"
-	desc = "A dice with twenty sides."
+	desc = "A die with twenty sides."
 	icon_state = "d2020"
 	sides = 20
 
