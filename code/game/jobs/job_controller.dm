@@ -354,7 +354,6 @@ var/global/datum/controller/occupations/job_master
 			H << "Your job is [rank] and the game just can't handle it! Please report this bug to an administrator."
 
 		H.job = rank
-
 		if(!joined_late)
 			var/obj/S = null
 			for(var/obj/effect/landmark/start/sloc in landmarks_list)
@@ -364,6 +363,13 @@ var/global/datum/controller/occupations/job_master
 				break
 			if(!S)
 				S = locate("start*[rank]") // use old stype
+			if(!S)		//fallback hack for spawning, when no spawnpoint for a specific job has been found, it will select one of the fallback spawn points on the arrivalshuttle.
+				for(var/obj/effect/landmark/start/sloc in landmarks_list)
+					if(sloc.name == "FallBack")
+						if(locate(/mob/living) in sloc.loc)
+							continue
+						S = sloc
+						break
 			if(istype(S, /obj/effect/landmark/start) && istype(S.loc, /turf))
 				H.loc = S.loc
 			// Moving wheelchair if they have one

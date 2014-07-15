@@ -292,6 +292,8 @@
 		job_master.EquipRank(character, rank, 1)					//equips the human
 		EquipCustomItems(character)
 
+		testing("ATTEMPTINGLATESPAWN")
+
 		//Find our spawning point.
 		var/join_message
 		var/datum/spawnpoint/S
