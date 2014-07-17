@@ -363,15 +363,10 @@ var/global/datum/controller/occupations/job_master
 				break
 			if(!S)
 				S = locate("start*[rank]") // use old stype
-			if(!S)		//fallback hack for spawning, when no spawnpoint for a specific job has been found, it will select one of the fallback spawn points on the arrivalshuttle.
-				for(var/obj/effect/landmark/start/sloc in landmarks_list)
-					if(sloc.name == "FallBack")
-						if(locate(/mob/living) in sloc.loc)
-							continue
-						S = sloc
-						break
 			if(istype(S, /obj/effect/landmark/start) && istype(S.loc, /turf))
 				H.loc = S.loc
+			else
+				H.loc = pick(latejoin) //ensure people spawn somewhere, instead of staying on the titlescreen position!
 			// Moving wheelchair if they have one
 			if(H.buckled && istype(H.buckled, /obj/structure/stool/bed/chair/wheelchair))
 				H.buckled.loc = H.loc
