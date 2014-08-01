@@ -438,9 +438,9 @@
 	for (var/ch_name in radio.channels)
 		dat+=radio.text_sec_channel(ch_name, radio.channels[ch_name])
 	dat+={"[radio.text_wires()]</TT></body></html>"}
-	
+
 	return dat
-	
+
 // Crew Manifest
 /mob/living/silicon/pai/proc/softwareManifest()
 	var/dat = ""
@@ -538,7 +538,7 @@
 					return dat
 		dat += {"<b>Bioscan Results for [M]</b>: <br>
 		Overall Status: [M.stat > 1 ? "dead" : "[M.health]% healthy"] <br><br>
-		
+
 		<b>Scan Breakdown</b>: <br>
 		Respiratory: [M.getOxyLoss() > 50 ? "<font color=#FF5555>" : "<font color=#55FF55>"][M.getOxyLoss()]</font><br>
 		Toxicology: [M.getToxLoss() > 50 ? "<font color=#FF5555>" : "<font color=#55FF55>"][M.getToxLoss()]</font><br>
@@ -676,7 +676,7 @@
 			dat += "</li>"
 	dat += "</ul>"
 	dat += "Messages: <hr>"
-	
+
 	dat += "<style>td.a { vertical-align:top; }</style>"
 	dat += "<table>"
 	for(var/index in pda.tnote)

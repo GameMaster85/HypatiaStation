@@ -1,9 +1,4 @@
 
-/mob/living/silicon/ai/proc/show_laws_verb()
-	set category = "AI Commands"
-	set name = "Show Laws"
-	src.show_laws()
-
 /mob/living/silicon/ai/show_laws(var/everyone = 0)
 	var/who
 
@@ -53,8 +48,6 @@
 
 
 
-
-
 /mob/living/silicon/ai/proc/statelaws() // -- TLE
 //	set category = "AI Commands"
 //	set name = "State Laws"
@@ -63,8 +56,6 @@
 	//src.laws.show_laws(world)
 	var/number = 1
 	sleep(10)
-
-
 
 	if (src.laws.zeroth)
 		if (src.lawcheck[1] == "Yes") //This line and the similar lines below make sure you don't state a law unless you want to. --NeoFite
@@ -100,14 +91,13 @@
 				number++
 
 
+//RECREATED IN THE INTERFACE, could be deleted
+/*
 /mob/living/silicon/ai/verb/checklaws() //Gives you a link-driven interface for deciding what laws the statelaws() proc will share with the crew. --NeoFite
 	set category = "AI Commands"
 	set name = "State Laws"
 
 	var/list = "<b>Which laws do you want to include when stating them for the crew?</b><br><br>"
-
-
-
 	if (src.laws.zeroth)
 		if (!src.lawcheck[1])
 			src.lawcheck[1] = "No" //Given Law 0's usual nature, it defaults to NOT getting reported. --NeoFite
@@ -147,3 +137,4 @@
 	list += {"<br><br><A href='byond://?src=\ref[src];laws=1'>State Laws</A>"}
 
 	usr << browse(list, "window=laws")
+	*/

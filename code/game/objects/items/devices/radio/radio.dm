@@ -775,7 +775,6 @@ var/GLOBAL_RADIO_TYPE = 1 // radio type to use
 			return
 
 		secure_radio_connections[ch_name] = radio_controller.add_object(src, radiochannels[ch_name],  RADIO_CHAT)
-
 	return
 
 /obj/item/device/radio/borg/Topic(href, href_list)

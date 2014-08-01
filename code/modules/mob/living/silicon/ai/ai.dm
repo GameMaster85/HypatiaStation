@@ -29,9 +29,14 @@ var/list/ai_list = list()
 	var/ioncheck[1]
 	var/icon/holo_icon//Default is assigned when AI is created.
 	var/obj/item/device/pda/ai/aiPDA = null
+	var/obj/item/device/radio/ai/radio = null
 	var/obj/item/device/multitool/aiMulti = null
 	var/custom_sprite = 0 //For our custom sprites
+	var/curmood = "Neutral"
 //Hud stuff
+
+	//interface stuff 	-henk
+	var/datum/aisoftware/detailwindow
 
 	//MALFUNCTION
 	var/datum/AI_Module/module_picker/malf_picker
@@ -79,20 +84,18 @@ var/list/ai_list = list()
 	else
 		laws = new base_law_type
 
-	verbs += /mob/living/silicon/ai/proc/show_laws_verb
-
 	aiPDA = new/obj/item/device/pda/ai(src)
 	aiPDA.owner = name
 	aiPDA.ownjob = "AI"
 	aiPDA.name = name + " (" + aiPDA.ownjob + ")"
 
+	radio = new/obj/item/device/radio/ai(src)
+
 	aiMulti = new(src)
 
 	if (istype(loc, /turf))
 		verbs.Add(/mob/living/silicon/ai/proc/ai_call_shuttle,/mob/living/silicon/ai/proc/ai_camera_track, \
-		/mob/living/silicon/ai/proc/ai_camera_list, /mob/living/silicon/ai/proc/ai_network_change, \
-		/mob/living/silicon/ai/proc/ai_statuschange, /mob/living/silicon/ai/proc/ai_hologram_change, \
-		/mob/living/silicon/ai/proc/toggle_camera_light)
+		/mob/living/silicon/ai/proc/ai_camera_list)
 
 	//Languages
 	add_language("Sol Common", 0)
@@ -178,55 +181,6 @@ var/list/ai_list = list()
 	if(powered_ai.anchored)
 		use_power = 2
 
-/mob/living/silicon/ai/verb/pick_icon()
-	set category = "AI Commands"
-	set name = "Set AI Core Display"
-	if(stat || aiRestorePowerRoutine)
-		return
-	if(!custom_sprite) //Check to see if custom sprite time, checking the appopriate file to change a var
-		var/file = file2text("config/custom_sprites.txt")
-		var/lines = text2list(file, "\n")
-
-		for(var/line in lines)
-		// split & clean up
-			var/list/Entry = text2list(line, ":")
-			for(var/i = 1 to Entry.len)
-				Entry[i] = trim(Entry[i])
-
-			if(Entry.len < 2)
-				continue;
-
-			if(Entry[1] == src.ckey && Entry[2] == src.real_name)
-				custom_sprite = 1 //They're in the list? Custom sprite time
-				icon = 'icons/mob/custom-synthetic.dmi'
-
-		//if(icon_state == initial(icon_state))
-	var/icontype = ""
-	if (custom_sprite == 1) icontype = ("Custom")//automagically selects custom sprite if one is available
-	else icontype = input("Select an icon!", "AI", null, null) in list("Monochrome", "Blue", "Inverted", "Text", "Smiley", "Angry", "Dorf", "Matrix", "Bliss", "Firewall", "Green", "Red", "Static", "Triumvirate", "Triumvirate Static")
-	switch(icontype)
-		if("Custom") icon_state = "[src.ckey]-ai"
-		if("Clown") icon_state = "ai-clown2"
-		if("Monochrome") icon_state = "ai-mono"
-		if("Inverted") icon_state = "ai-u"
-		if("Firewall") icon_state = "ai-magma"
-		if("Green") icon_state = "ai-wierd"
-		if("Red") icon_state = "ai-red"
-		if("Static") icon_state = "ai-static"
-		if("Text") icon_state = "ai-text"
-		if("Smiley") icon_state = "ai-smiley"
-		if("Matrix") icon_state = "ai-matrix"
-		if("Angry") icon_state = "ai-angryface"
-		if("Dorf") icon_state = "ai-dorf"
-		if("Bliss") icon_state = "ai-bliss"
-		if("Triumvirate") icon_state = "ai-triumvirate"
-		if("Triumvirate Static") icon_state = "ai-triumvirate-malf"
-		else icon_state = "ai"
-	//else
-			//usr <<"You can only change your display once!"
-			//return
-
-
 // displays the malf_ai information if the AI is the malf
 /mob/living/silicon/ai/show_malf_ai()
 	if(ticker.mode.name == "AI malfunction")
@@ -236,6 +190,8 @@ var/list/ai_list = list()
 				if (malf.apcs >= 3)
 					stat(null, "Time until station control secured: [max(malf.AI_win_timeleft/(malf.apcs/3), 0)] seconds")
 
+
+/* MIGHT NEED THIS FOR THE REFRESH SO LEAVE IT FOR NOW --henk
 
 /mob/living/silicon/ai/proc/ai_alerts()
 	set category = "AI Commands"
@@ -265,13 +221,9 @@ var/list/ai_list = list()
 		dat += "<BR>\n"
 
 	viewalerts = 1
-	src << browse(dat, "window=aialerts&can_close=0")
+	src << browse(dat, "window=aialerts&can_close=0") */
 
 // this verb lets the ai see the stations manifest
-/mob/living/silicon/ai/proc/ai_roster()
-	set category = "AI Commands"
-	set name = "Show Crew Manifest"
-	show_station_manifest()
 
 /mob/living/silicon/ai/proc/ai_call_shuttle()
 	set category = "AI Commands"
@@ -360,6 +312,19 @@ var/list/ai_list = list()
 	if(usr != src)
 		return
 	..()
+	if(href_list["soft"])
+		switch(href_list["soft"])
+			if("status")	detailwindow = new /datum/aisoftware/status()
+			if("camctrl")	detailwindow = new /datum/aisoftware/camcontrol()
+			if("airadio")	detailwindow = new /datum/aisoftware/radio()
+			if("laws" )	detailwindow = new /datum/aisoftware/laws()
+			if("iconchanger")	detailwindow = new /datum/aisoftware/iconchanger()
+			if("manifest")	detailwindow = new /datum/aisoftware/crewmanifest()
+			if("messenger") detailwindow = new /datum/aisoftware/messenger()
+			if("mood") detailwindow = new /datum/aisoftware/mood()
+			if("hologram") detailwindow = new /datum/aisoftware/hologram()
+		aiInterface()
+	//href of a window that doesnt have to be used anymore, can be removed
 	if (href_list["mach_close"])
 		if (href_list["mach_close"] == "aialerts")
 			viewalerts = 0
@@ -369,7 +334,8 @@ var/list/ai_list = list()
 	if (href_list["switchcamera"])
 		switchCamera(locate(href_list["switchcamera"])) in cameranet.cameras
 	if (href_list["showalerts"])
-		ai_alerts()
+		detailwindow = new /datum/aisoftware/status()
+		aiInterface()
 	//Carn: holopad requests
 	if (href_list["jumptoholopad"])
 		var/obj/machinery/hologram/holopad/H = locate(href_list["jumptoholopad"])
@@ -379,32 +345,15 @@ var/list/ai_list = list()
 			else
 				src << "<span class='notice'>Unable to locate the holopad.</span>"
 
-	if (href_list["lawc"]) // Toggling whether or not a law gets stated by the State Laws verb --NeoFite
-		var/L = text2num(href_list["lawc"])
-		switch(lawcheck[L+1])
-			if ("Yes") lawcheck[L+1] = "No"
-			if ("No") lawcheck[L+1] = "Yes"
-//		src << text ("Switching Law [L]'s report status to []", lawcheck[L+1])
-		checklaws()
+	if (href_list["laws"]) // With how my law selection code works, I changed statelaws from a verb to a proc, and call it through my law selection panel. --NeoFite
+		statelaws()
 
 	if(href_list["say_word"])
 		play_vox_word(href_list["say_word"], null, src)
 		return
 
-	if (href_list["lawi"]) // Toggling whether or not a law gets stated by the State Laws verb --NeoFite
-		var/L = text2num(href_list["lawi"])
-		switch(ioncheck[L])
-			if ("Yes") ioncheck[L] = "No"
-			if ("No") ioncheck[L] = "Yes"
-//		src << text ("Switching Law [L]'s report status to []", lawcheck[L+1])
-		checklaws()
-
-	if (href_list["laws"]) // With how my law selection code works, I changed statelaws from a verb to a proc, and call it through my law selection panel. --NeoFite
-		statelaws()
-
 	if (href_list["track"])
 		var/mob/target = locate(href_list["track"]) in mob_list
-
 		if(target && (!istype(target, /mob/living/carbon/human) || html_decode(href_list["trackname"]) == target:get_face_name()))
 			ai_actual_track(target)
 		else
@@ -521,6 +470,7 @@ var/list/ai_list = list()
 
 	return 1
 
+
 /mob/living/silicon/ai/triggerAlarm(var/class, area/A, list/cameralist, var/source)
 	if (stat == 2)
 		return 1
@@ -533,68 +483,20 @@ var/list/ai_list = list()
 
 	queueAlarm("--- [class] alarm detected in [A.name]! ([(cameratext)? cameratext : "No Camera"])", class)
 
-	if (viewalerts) ai_alerts()
+	if (viewalerts)
+		detailwindow = new /datum/aisoftware/status()
+		aiInterface()
 
 /mob/living/silicon/ai/cancelAlarm(var/class, area/A as area, var/source)
 	var/has_alarm = ..()
 
 	if (!has_alarm)
 		queueAlarm(text("--- [] alarm in [] has been cleared.", class, A.name), class, 0)
-		if (viewalerts) ai_alerts()
+		if (viewalerts)
+			detailwindow = new /datum/aisoftware/status()
+			aiInterface()
 
 	return has_alarm
-
-/mob/living/silicon/ai/cancel_camera()
-	set category = "AI Commands"
-	set name = "Cancel Camera View"
-
-	//src.cameraFollow = null
-	src.view_core()
-
-
-//Replaces /mob/living/silicon/ai/verb/change_network() in ai.dm & camera.dm
-//Adds in /mob/living/silicon/ai/proc/ai_network_change() instead
-//Addition by Mord_Sith to define AI's network change ability
-/mob/living/silicon/ai/proc/ai_network_change()
-	set category = "AI Commands"
-	set name = "Jump To Network"
-	unset_machine()
-	src.cameraFollow = null
-	var/cameralist[0]
-
-	if(usr.stat == 2)
-		usr << "You can't change your camera network because you are dead!"
-		return
-
-	var/mob/living/silicon/ai/U = usr
-
-	for (var/obj/machinery/camera/C in cameranet.cameras)
-		if(!C.can_use())
-			continue
-
-		var/list/tempnetwork = difflist(C.network,RESTRICTED_CAMERA_NETWORKS,1)
-		if(tempnetwork.len)
-			for(var/i in tempnetwork)
-				cameralist[i] = i
-	var/old_network = network
-	network = input(U, "Which network would you like to view?") as null|anything in cameralist
-
-	if(!U.eyeobj)
-		U.view_core()
-		return
-
-	if(isnull(network))
-		network = old_network // If nothing is selected
-	else
-		for(var/obj/machinery/camera/C in cameranet.cameras)
-			if(!C.can_use())
-				continue
-			if(network in C.network)
-				U.eyeobj.setLoc(get_turf(C))
-				break
-	src << "\blue Switched to [network] camera network."
-//End of code by Mord_Sith
-
 
 /mob/living/silicon/ai/proc/choose_modules()
 	set category = "Malfunction"
@@ -602,6 +504,7 @@ var/list/ai_list = list()
 
 	malf_picker.use(src)
 
+/*
 /mob/living/silicon/ai/proc/ai_statuschange()
 	set category = "AI Commands"
 	set name = "AI Status"
@@ -624,7 +527,9 @@ var/list/ai_list = list()
 			else
 				SD.friendc = 0
 	return
+*/
 
+/*
 //I am the icon meister. Bow fefore me.	//>fefore
 /mob/living/silicon/ai/proc/ai_hologram_change()
 	set name = "Change Hologram"
@@ -662,37 +567,10 @@ var/list/ai_list = list()
 				if("floating face")
 					holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo2"))
 	return
-
-/*/mob/living/silicon/ai/proc/corereturn()
-	set category = "Malfunction"
-	set name = "Return to Main Core"
-
-	var/obj/machinery/power/apc/apc = src.loc
-	if(!istype(apc))
-		src << "\blue You are already in your Main Core."
-		return
-	apc.malfvacate()*/
-
-//Toggles the luminosity and applies it by re-entereing the camera.
-/mob/living/silicon/ai/proc/toggle_camera_light()
-	set name = "Toggle Camera Light"
-	set desc = "Toggles the light on the camera the AI is looking through."
-	set category = "AI Commands"
-
-	camera_light_on = !camera_light_on
-	src << "Camera lights [camera_light_on ? "activated" : "deactivated"]."
-	if(!camera_light_on)
-		if(current)
-			current.SetLuminosity(0)
-			current = null
-	else
-		lightNearbyCamera()
-
-
+*/
 
 // Handled camera lighting, when toggled.
 // It will get the nearest camera from the eyeobj, lighting it.
-
 /mob/living/silicon/ai/proc/lightNearbyCamera()
 	if(camera_light_on && camera_light_on < world.timeofday)
 		if(src.current)

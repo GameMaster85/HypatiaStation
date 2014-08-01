@@ -60,7 +60,7 @@
 		return
 
 	var/verb = say_quote(message)
-	
+
 	//parse radio key and consume it
 	var/message_mode = parse_message_mode(message, "general")
 	if (message_mode)
@@ -68,19 +68,19 @@
 			message = trim(copytext(message,2))
 		else
 			message = trim(copytext(message,3))
-	
+
 	if(message_mode && bot_type == IS_ROBOT && message_mode != "binary" && !R.is_component_functioning("radio"))
 		src << "\red Your radio isn't functional at this time."
 		return
-	
-	
+
+
 	//parse language key and consume it
 	var/datum/language/speaking = parse_language(message)
 	if (speaking)
 		verb = speaking.speech_verb
 		message = copytext(message,3)
-	
-	
+
+
 	switch(message_mode)
 		if("department")
 			switch(bot_type)
@@ -109,7 +109,8 @@
 		if("general")
 			switch(bot_type)
 				if(IS_AI)
-					src << "Yeah, not yet, sorry"
+					log_say("[key_name(src)] : [message]")
+					AI.radio.talk_into(src,message,null,verb,speaking)
 				if(IS_ROBOT)
 					log_say("[key_name(src)] : [message]")
 					R.radio.talk_into(src,message,null,verb,speaking)
@@ -122,7 +123,8 @@
 			if(message_mode && message_mode in radiochannels)
 				switch(bot_type)
 					if(IS_AI)
-						src << "You don't have this function yet, I'm working on it"
+						log_say("[key_name(src)] : [message]")
+						R.radio.talk_into(src,message,message_mode,verb,speaking)
 						return
 					if(IS_ROBOT)
 						log_say("[key_name(src)] : [message]")
