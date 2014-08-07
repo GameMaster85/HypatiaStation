@@ -1042,6 +1042,7 @@
 #include "code\modules\mob\living\carbon\metroid\powers.dm"
 #include "code\modules\mob\living\carbon\metroid\subtypes.dm"
 #include "code\modules\mob\living\carbon\metroid\update_icons.dm"
+#include "code\modules\mob\living\carbon\monkey\aori.dm"
 #include "code\modules\mob\living\carbon\monkey\death.dm"
 #include "code\modules\mob\living\carbon\monkey\diona.dm"
 #include "code\modules\mob\living\carbon\monkey\emote.dm"

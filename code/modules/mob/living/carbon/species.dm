@@ -273,7 +273,7 @@
 
 	body_temperature = T0C + 15		//make the plant people have a bit lower body temperature, why not
 
-	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | IS_SLOW | NO_PAIN
+	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | NO_PAIN //| IS_SLOW
 
 	blood_color = "#004400"
 	flesh_color = "#907E4A"
@@ -285,8 +285,10 @@
 
 	return ..()
 
+
 /datum/species/diona/handle_death(var/mob/living/carbon/human/H)
 
+	return //this has been disabled because it caused a bug, if it should be enabled later or that normal death rules will apply for diona should be discussed
 	var/mob/living/carbon/monkey/diona/S = new(get_turf(H))
 
 	if(H.mind)

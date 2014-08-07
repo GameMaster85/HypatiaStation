@@ -51,7 +51,7 @@
 /mob/living/silicon/ai/proc/statelaws() // -- TLE
 //	set category = "AI Commands"
 //	set name = "State Laws"
-	src.say("Current Active Laws:")
+	src.say(";Current Active Laws:")
 	//src.laws_sanity_check()
 	//src.laws.show_laws(world)
 	var/number = 1
@@ -59,7 +59,7 @@
 
 	if (src.laws.zeroth)
 		if (src.lawcheck[1] == "Yes") //This line and the similar lines below make sure you don't state a law unless you want to. --NeoFite
-			src.say("0. [src.laws.zeroth]")
+			src.say(";0. [src.laws.zeroth]")
 			sleep(10)
 
 	for (var/index = 1, index <= src.laws.ion.len, index++)
@@ -67,7 +67,7 @@
 		var/num = ionnum()
 		if (length(law) > 0)
 			if (src.ioncheck[index] == "Yes")
-				src.say("[num]. [law]")
+				src.say(";[num]. [law]")
 				sleep(10)
 
 	for (var/index = 1, index <= src.laws.inherent.len, index++)
@@ -75,7 +75,7 @@
 
 		if (length(law) > 0)
 			if (src.lawcheck[index+1] == "Yes")
-				src.say("[number]. [law]")
+				src.say(";[number]. [law]")
 				sleep(10)
 			number++
 
@@ -86,7 +86,7 @@
 		if (length(law) > 0)
 			if(src.lawcheck.len >= number+1)
 				if (src.lawcheck[number+1] == "Yes")
-					src.say("[number]. [law]")
+					src.say(";[number]. [law]")
 					sleep(10)
 				number++
 
