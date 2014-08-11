@@ -21,4 +21,6 @@
 
 //this disables the reandom events
 /mob/living/carbon/monkey/aori/handle_random_events()
+	if(prob(1) && prob(2))
+		emote(pick("jiggle"))
 	return
