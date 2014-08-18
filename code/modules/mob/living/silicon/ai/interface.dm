@@ -2,15 +2,18 @@
 	set category = "IC"
 	set name = "AI Interface"
 	var/dat = ""
-	var/left_part = "<b>TEST TEST</b>"
 	var/right_part = GetScreen()
+	var/left_part = ""
 	if(detailwindow)
 		left_part = detailwindow.GetScreen()
+	else
+		detailwindow = new /datum/aisoftware/status()
+		left_part = detailwindow.GetScreen()
+
 	// not sure why set machine?
 	//src.set_machine(src)
 
-	//usr << browse_rsc('windowbak.png')		// This has been moved to the mob's Login() proc
-
+	//background image should be drawn by someone
 	//background-image:url(\"painew.png\");
 	// Declaring a doctype is necessary to enable BYOND's crappy browser's more advanced CSS functionality
 	dat = {"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">
@@ -22,7 +25,7 @@
 					#header { text-align:center; color:white; font-size: 30px; height: 37px; letter-spacing: 2px; z-index: 4; font-family:\"Courier New\"; font-weight:bold;
 						border-style: ridge;border-color:#CCCCCC;}
 					#content { color:#CCCCCC; height:auto; overflow:hidden; font-family: \"Verdana\"; font-size:13px; }
-					p { font-size:13px; margin-left: 5px; }
+					p { font-size:13px; margin-left: 5px; margin-right: 5px; }
 
 					#leftmenu {  float: none; width:auto; overflow: hidden; overflow-y:auto; min-height:600px;border-style: ridge;border-color:#CCCCCC;}
 					#leftmenu a:link { color: #CCCCCC; }
@@ -44,15 +47,13 @@
 					[name] OS
 				</div>
 				<div id=\"content\">
-					<div id=\"rightmenu\">[right_part]</div>
-					<div id=\"leftmenu\">[left_part]</div>
+					<div id=\"rightmenu\"><p>[right_part]</p></div>
+					<div id=\"leftmenu\"><p>[left_part]</p></div>
 				</div>
 			</body>
 			</html>"}
 	usr << browse(dat, "window=ai;size=685x449;border=0;can_close=1;can_resize=1;can_minimize=1;titlebar=1")
-	onclose(usr, "ai")
-	//not yet used!
-	//temp = null
+	onclose(usr, "ai") //onclose is not really used yet!
 	return
 
 

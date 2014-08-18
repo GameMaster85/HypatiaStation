@@ -120,9 +120,6 @@
 		O.show_laws()
 		O << "<b>These laws may be changed by other players, or by you being the traitor.</b>"
 
-	O.verbs += /mob/living/silicon/ai/proc/ai_camera_track
-	O.verbs += /mob/living/silicon/ai/proc/ai_camera_list
-
 	O.job = "AI"
 
 	O.rename_self("ai",1)

@@ -6,7 +6,7 @@
 
 /datum/aisoftware/radio/GetScreen()
 	var/dat =""
-	dat += "<br><h1>Radio</h1><br><br>"
+	dat += "<br><h1>Radio</h1><br>"
 	//might need to check for power!
 	dat += "Microphone: <A href='byond://?src=\ref[src];talk=1'>[softowner.radio.broadcasting ? "Engaged" : "Disengaged"]</A><BR>"
 
@@ -17,12 +17,12 @@
 				<A href='byond://?src=\ref[src];freq=-2'>-</A>
 				[format_frequency(softowner.radio.frequency)]
 				<A href='byond://?src=\ref[src];freq=2'>+</A>
-				<A href='byond://?src=\ref[src];freq=10'>+</A><BR>
+				<A href='byond://?src=\ref[src];freq=10'>+</A><BR><BR>
 				"}
 
 	for (var/chan_name in softowner.radio.channels)
 		var/list = !!(softowner.radio.channels[chan_name] & softowner.radio.FREQ_LISTENING) != 0
-		dat +="<B>[chan_name]</B><br>	Speaker: <A href='byond://?src=\ref[src];ch_name=[chan_name]'>[list ? "Engaged" : "Disengaged"]</A><BR>"
+		dat +="<B>[chan_name]</B><br>	Speaker: <A href='byond://?src=\ref[src];ch_name=[chan_name]'>[list ? "Engaged" : "Disengaged"]</A><BR><BR>"
 	return dat
 
 /datum/aisoftware/radio/Topic(href, href_list)

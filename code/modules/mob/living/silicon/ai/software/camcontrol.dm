@@ -11,18 +11,20 @@
 	if(softowner.current)	//tried solving this differently but caused bugs
 		dat += "<B>Current Camera: [softowner.current.name]</B><br>"
 	else
-		dat += {"<B>Current Camera: None</B><br>
-	<A href='byond://?src=\ref[src];gtcore=1'>Go To Core</A><br>
+		dat += "<B>Current Camera: None</B><br>"
+	dat += {"<A href='byond://?src=\ref[src];gtcore=1'>Go To Core</A><br>
 	<A href='byond://?src=\ref[src];jmptocam=1'>Show Camera List</A><br>
 	<A href='byond://?src=\ref[src];jmptonet=1'>Jump To Network</A><br><br>"}
 	if(softowner.cameraFollow)
 		dat += "<B>Currently Tracking: [softowner.cameraFollow]</B><br>"
 	else
 		dat += "<B>Currently Tracking: None</B><br>"
-	dat += {"<A href='byond://?src=\ref[src];tracking=1'>Track With Camera</A><br>
-	<B>Camera lights: [softowner.camera_light_on ? "Active" : "Offline"]</B><br>
-	<A href='byond://?src=\ref[src];togcamlt=1'>Toggle Camera Light</A><br>"}
+	dat += {"<A href='byond://?src=\ref[src];tracking=1'>Track With Camera</A><br><br>
+	Camera lights: <A href='byond://?src=\ref[src];togcamlt=1'>[softowner.camera_light_on ? "<font color='green'> \[On\]</font>" : "<font color='red'> \[Off\]</font>"]</a><br>
+	Camera Acceleration: <A href='byond://?src=\ref[src];toggacc=1'>[softowner.acceleration ? "<font color='green'> \[On\]</font>" : "<font color='red'> \[Off\]</font>"]</a>"}
 	return dat
+
+
 
 //TODO: SHOULD UPDATE CAMERA
 /datum/aisoftware/camcontrol/Topic(href, href_list)
@@ -68,9 +70,10 @@
 		usr << "\blue Switched to [softowner.network] camera network."
 	else if(href_list["togcamlt"])				//this could still be a proc in the AI, if needed
 		softowner.camera_light_on = !softowner.camera_light_on
-		usr << "Camera lights [softowner.camera_light_on ? "activated" : "deactivated"]."
 		if(softowner.camera_light_on)
 			softowner.lightNearbyCamera()
 		else if(softowner.current)
 			softowner.current.SetLuminosity(0)
+	else if(href_list["togacc"])
+		softowner.acceleration = !softowner.acceleration
 	softowner.aiInterface()

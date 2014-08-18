@@ -46,20 +46,3 @@
 		var/target = locate(href_list["target"])
 		softowner.aiPDA.create_message(usr, target)
 	softowner.aiInterface()
-
-
-/obj/item/device/pda/ai/verb/cmd_show_message_log()
-	set category = "AI IM"
-	set name = "Show Message Log"
-	set src in usr
-	if(usr.stat == 2)
-		usr << "You can't do that because you are dead!"
-		return
-	var/HTML = "<html><head><title>AI PDA Message Log</title></head><body>"
-	for(var/index in tnote)
-		if(index["sent"])
-			HTML += addtext("<i><b>&rarr; To <a href='byond://?src=\ref[src];choice=Message;target=",index["src"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
-		else
-			HTML += addtext("<i><b>&larr; From <a href='byond://?src=\ref[src];choice=Message;target=",index["target"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
-	HTML +="</body></html>"
-	usr << browse(HTML, "window=log;size=400x444;border=1;can_resize=1;can_close=1;can_minimize=0")

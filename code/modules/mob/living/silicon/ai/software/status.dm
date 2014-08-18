@@ -5,7 +5,7 @@
 
 /datum/aisoftware/status/GetScreen()
 	var/dat =""
-	dat += "<br><h1>Status</h1><br>"
+	dat += "<h1>Status</h1><br>"
 	dat += "<B>System integrity: [round((softowner.health/softowner.maxHealth)*100)]%</B><br><br>"
 	dat += "<A href='byond://?src=\ref[src];callshuttle=1'>Call the shuttle</A><br>"
 	dat += "<A href='byond://?src=\ref[src];recallshuttle=1'>Recall the shuttle</A><br><br>"
