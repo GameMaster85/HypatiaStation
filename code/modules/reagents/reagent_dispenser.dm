@@ -157,7 +157,7 @@
 	explode()
 
 /obj/structure/reagent_dispensers/fueltank/proc/explode()
-	if (reagents.total_volume > 500)
+	if (reagents.total_volume > 1000) //fueltanks shouldnt put holes in the station!
 		explosion(src.loc,1,2,4)
 	else if (reagents.total_volume > 100)
 		explosion(src.loc,0,1,3)
@@ -170,15 +170,15 @@
 	if(temperature > T0C+500)
 		explode()
 	return ..()
-	
+
 /obj/structure/reagent_dispensers/fueltank/Move()
 	if (..() && modded)
 		leak_fuel(amount_per_transfer_from_this/10.0)
-	
+
 /obj/structure/reagent_dispensers/fueltank/proc/leak_fuel(amount)
 	if (reagents.total_volume == 0)
 		return
-	
+
 	amount = min(amount, reagents.total_volume)
 	reagents.remove_reagent("fuel",amount)
 	new /obj/effect/decal/cleanable/liquid_fuel(src.loc, amount)

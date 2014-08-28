@@ -112,6 +112,8 @@ var/list/lawchanges = list(  ) //Stores who uploaded laws to which silicon-based
 var/list/reg_dna = list(  )
 //	list/traitobj = list(  )
 
+var/dirt_increase_change = 50 //chance that the amount of dirt increases when a mob moves to a block/turf.
+
 var/mouse_respawn_time = 5 //Amount of time that must pass between a player dying as a mouse and repawning as a mouse. In minutes.
 
 var/CELLRATE = 0.002	// multiplier for watts per tick <> cell storage (eg: 0.02 means if there is a load of 1000 watts, 20 units will be taken from a cell per second)
