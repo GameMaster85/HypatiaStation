@@ -19,36 +19,12 @@ var/const/VOX_CHANNEL = 200
 var/const/VOX_DELAY = 100 // 10 seconds
 var/const/VOX_PATH = "sound/vox/"
 
-/mob/living/silicon/ai/verb/announcement_help()
-
-	set name = "Announcement Help"
-	set desc = "Display a list of vocal words to announce to the crew."
-	set category = "AI Commands"
-
-
-	var/dat = "Here is a list of words you can type into the 'Announcement' button to create sentences to vocally announce to everyone on the same level at you.<BR> \
-	<UL><LI>You can also click on the word to preview it.</LI>\
-	<LI>You can only say 30 words for every announcement.</LI>\
-	<LI>Do not use punctuation as you would normally, if you want a pause you can use the full stop and comma characters by separating them with spaces, like so: 'Alpha . Test , Bravo'.</LI></UL>\
-	<font class='bad'>WARNING:</font><BR>Misuse of the announcement system will get you job banned.<HR>"
-
-	var/index = 0
-	var/list/vox_words = flist(VOX_PATH) // flist will return a list of strings with all the files in the path
-	for(var/word in vox_words)
-		index++
-		var/stripped_word = copytext(word, 1, length(word) - 3) // Remove the .wav
-		dat += "<A href='?src=\ref[src];say_word=[stripped_word]'>[capitalize(stripped_word)]</A>"
-		if(index != vox_words.len)
-			dat += " / "
-
-	src << browse(dat, "window=announce_help;size=500x400")
-
 
 /mob/living/silicon/ai/verb/announcement()
 
 	set name = "Announcement"
 	set desc = "Create a vocal announcement by typing in the available words to create a sentence."
-	set category = "AI Commands"
+	set category = "IC"
 
 	if(announcing_vox > world.time)
 		src << "<span class='notice'>Please wait [round((announcing_vox - world.time) / 10)] seconds.</span>"

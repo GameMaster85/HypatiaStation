@@ -1073,6 +1073,7 @@
 #include "code\modules\mob\living\silicon\ai\freelook\eye.dm"
 #include "code\modules\mob\living\silicon\ai\freelook\read_me.dm"
 #include "code\modules\mob\living\silicon\ai\freelook\update_triggers.dm"
+#include "code\modules\mob\living\silicon\ai\software\announcement.dm"
 #include "code\modules\mob\living\silicon\ai\software\camcontrol.dm"
 #include "code\modules\mob\living\silicon\ai\software\crewmanifest.dm"
 #include "code\modules\mob\living\silicon\ai\software\hologram.dm"

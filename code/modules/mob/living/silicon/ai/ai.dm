@@ -314,6 +314,7 @@ var/list/ai_list = list()
 			if("messenger") detailwindow = new /datum/aisoftware/messenger()
 			if("mood") detailwindow = new /datum/aisoftware/mood()
 			if("hologram") detailwindow = new /datum/aisoftware/hologram()
+			if("announce") detailwindow = new /datum/aisoftware/announcement()
 		aiInterface()
 	//href of a window that doesnt have to be used anymore, can be removed
 	if (href_list["mach_close"])
@@ -338,10 +339,6 @@ var/list/ai_list = list()
 
 	if (href_list["laws"]) // With how my law selection code works, I changed statelaws from a verb to a proc, and call it through my law selection panel. --NeoFite
 		statelaws()
-
-	if(href_list["say_word"])
-		play_vox_word(href_list["say_word"], null, src)
-		return
 
 	if (href_list["track"])
 		var/mob/target = locate(href_list["track"]) in mob_list

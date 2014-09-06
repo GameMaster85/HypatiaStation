@@ -64,6 +64,7 @@
 	<A href='byond://?src=\ref[src];soft=manifest'>Crew manifest</A><br>
 	<A href='byond://?src=\ref[src];soft=camctrl'>Camera Control</A><br><br>
 	<A href='byond://?src=\ref[src];soft=messenger'>PDA/messaging</A><br>
+	<A href='byond://?src=\ref[src];soft=announce'>Announcements</A><br>
 	<A href='byond://?src=\ref[src];soft=airadio'>Radio</A><br><br>
 	<A href='byond://?src=\ref[src];soft=hologram'>Change Hologram</A><br>
 	<A href='byond://?src=\ref[src];soft=iconchanger'>Change Icon</A><br>
