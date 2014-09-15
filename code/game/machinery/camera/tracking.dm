@@ -22,8 +22,6 @@
 
 
 /mob/living/silicon/ai/proc/ai_camera_list(var/camera in get_camera_list())
-	set category = "AI Commands"
-	set name = "Show Camera List"
 
 	if(src.stat == 2)
 		src << "You can't list the cameras because you are dead!"

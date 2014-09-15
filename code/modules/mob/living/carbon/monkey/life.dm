@@ -73,11 +73,10 @@
 	if(!client && stat == CONSCIOUS)
 
 		if(prob(33) && canmove && isturf(loc) && !pulledby) //won't move if being pulled
-
 			step(src, pick(cardinal))
 
-		if(prob(1))
-			emote(pick("scratch","jump","roll","tail"))
+		//use this so anything inherits from monkeys can disable emotes like scratch etc
+		handle_random_events()
 	updatehealth()
 
 
@@ -681,10 +680,8 @@
 		return 1
 
 	proc/handle_random_events()
-		if (prob(1) && prob(2))
-			spawn(0)
-				emote("scratch")
-				return
+		if(prob(1))
+			emote(pick("scratch","jump","roll","tail"))
 
 
 	proc/handle_changeling()

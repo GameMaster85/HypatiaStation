@@ -354,7 +354,6 @@ var/global/datum/controller/occupations/job_master
 			H << "Your job is [rank] and the game just can't handle it! Please report this bug to an administrator."
 
 		H.job = rank
-
 		if(!joined_late)
 			var/obj/S = null
 			for(var/obj/effect/landmark/start/sloc in landmarks_list)
@@ -366,6 +365,8 @@ var/global/datum/controller/occupations/job_master
 				S = locate("start*[rank]") // use old stype
 			if(istype(S, /obj/effect/landmark/start) && istype(S.loc, /turf))
 				H.loc = S.loc
+			else
+				H.loc = pick(latejoin) //ensure people spawn somewhere, instead of staying on the titlescreen position!
 			// Moving wheelchair if they have one
 			if(H.buckled && istype(H.buckled, /obj/structure/stool/bed/chair/wheelchair))
 				H.buckled.loc = H.loc

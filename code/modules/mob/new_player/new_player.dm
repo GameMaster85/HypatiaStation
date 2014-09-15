@@ -113,9 +113,9 @@
 
 				observer.started_as_observer = 1
 				close_spawn_windows()
-				var/obj/O = locate("landmark*Observer-Start")
+				//locate("landmark*Observer-Start") Why do observers need a landmark if they just spawn in the shuttle anyway?
 				src << "\blue Now teleporting."
-				observer.loc = O.loc
+				observer.loc = pick(latejoin)
 				observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
 
 				client.prefs.update_preview_icon()

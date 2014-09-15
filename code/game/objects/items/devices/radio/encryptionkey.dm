@@ -132,3 +132,8 @@
 	name = "NanoTrasen ERT Radio Encryption Key"
 	desc = "An encyption key for a radio headset.  Contains cypherkeys."
 	channels = list("Response Team" = 1, "Science" = 1, "Command" = 1, "Medical" = 1, "Engineering" = 1, "Security" = 1, "Supply" = 1)
+
+/obj/item/device/encryptionkey/ai
+	name =  "AI Radio Encryption Key"
+	desc = "An encryption key for the AI radio."
+	channels = list("Command" = 1, "Security" = 1, "Engineering" = 0, "Science" = 0, "Medical" = 0, "Supply" = 0)

@@ -110,16 +110,6 @@
 	//user.unset_machine() //Uncomment this if it causes problems.
 	//user.lightNearbyCamera()
 
-
-// Return to the Core.
-
-/mob/living/silicon/ai/verb/core()
-	set category = "AI Commands"
-	set name = "AI Core"
-
-	view_core()
-
-
 /mob/living/silicon/ai/proc/view_core()
 
 	current = null
@@ -138,10 +128,3 @@
 		client.eye = src
 	for(var/datum/camerachunk/c in eyeobj.visibleCameraChunks)
 		c.remove(eyeobj)
-
-/mob/living/silicon/ai/verb/toggle_acceleration()
-	set category = "AI Commands"
-	set name = "Toggle Camera Acceleration"
-
-	acceleration = !acceleration
-	usr << "Camera acceleration has been toggled [acceleration ? "on" : "off"]."

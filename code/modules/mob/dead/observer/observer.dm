@@ -304,15 +304,15 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	usr.loc = pick(L)
 
-/mob/dead/observer/verb/follow()
+/mob/dead/observer/verb/follow(var/mob/M in mob_list)
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
-	var/list/mobs = getmobs()
-	var/input = input("Please, select a mob!", "Haunt", null, null) as null|anything in mobs
-	var/mob/target = mobs[input]
-	ManualFollow(target)
+	//var/list/mobs = getmobs()
+	//var/input = input("Please, select a mob!", "Haunt", null, null) as null|anything in mobs
+	//var/mob/target = mobs[input]
+	ManualFollow(M)
 
 // This is the ghost's follow verb with an argument
 /mob/dead/observer/proc/ManualFollow(var/atom/movable/target)
@@ -387,9 +387,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/analyze_air()
 	set name = "Analyze Air"
 	set category = "Ghost"
-	
+
 	if(!istype(usr, /mob/dead/observer)) return
-	
+
 	// Shamelessly copied from the Gas Analyzers
 	if (!( istype(usr.loc, /turf) ))
 		return
@@ -428,9 +428,13 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 		if(phoron_concentration > 0.01)
 			src << "\red Phoron: [round(phoron_concentration*100)]% ([round(environment.phoron,0.01)] moles)"
+		else
+			src << "\blue Phoron: [round(phoron_concentration*100)]% ([round(environment.phoron,0.01)] moles)"
 
 		if(unknown_concentration > 0.01)
 			src << "\red Unknown: [round(unknown_concentration*100)]% ([round(unknown_concentration*total_moles,0.01)] moles)"
+		else
+			src << "\blue Unknown: [round(unknown_concentration*100)]% ([round(unknown_concentration*total_moles,0.01)] moles)"
 
 		src << "\blue Temperature: [round(environment.temperature-T0C,0.1)]&deg;C"
 		src << "\blue Heat Capacity: [round(environment.heat_capacity(),0.1)]"
