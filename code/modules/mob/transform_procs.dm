@@ -120,6 +120,7 @@
 		O.show_laws()
 		O << "<b>These laws may be changed by other players, or by you being the traitor.</b>"
 
+	O.add_ai_verbs()
 	O.job = "AI"
 
 	O.rename_self("ai",1)
@@ -237,11 +238,10 @@
 			babies += M
 		new_slime = pick(babies)
 	else
+		new_slime = new /mob/living/carbon/slime(loc)
 		if(adult)
-			new_slime = new /mob/living/carbon/slime/adult(loc)
+			new_slime.is_adult = 1
 		else
-			new_slime = new /mob/living/carbon/slime(loc)
-	new_slime.a_intent = "hurt"
 	new_slime.key = key
 
 	new_slime << "<B>You are now a slime. Skreee!</B>"

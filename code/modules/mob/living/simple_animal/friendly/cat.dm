@@ -73,8 +73,8 @@
 	else
 		return ..()
 
-//RUNTIME IS ALIVE! SQUEEEEEEEE~
-/mob/living/simple_animal/cat/HappyKitten
+//HAPPYKITTEN IS ALIVE! SQUEEEEEEEE~
+/mob/living/simple_animal/cat/happykitten
 	name = "Happy Kitten"
 	desc = "Its fur has the look and feel of velvet, and its tail quivers occasionally."
 

@@ -33,7 +33,9 @@ datum/controller/game_controller
 	var/mob/list/expensive_mobs = list()
 	var/rebuild_active_areas = 0
 
-	var/list/shuttle_list	//for debugging and VV
+	var/list/shuttle_list	                    // For debugging and VV
+	var/datum/ore_distribution/asteroid_ore_map // For debugging and VV.
+
 
 datum/controller/game_controller/New()
 	//There can be only one master_controller. Out with the old and in with the new.
@@ -79,13 +81,6 @@ datum/controller/game_controller/proc/setup()
 	for(var/i=0, i<max_secret_rooms, i++)
 		make_mining_asteroid_secret()
 
-	//Create the mining ore distribution map.
-	var/datum/ore_distribution/O = new()
-	O.populate_distribution_map()
-
-	//Set up spawn points.
-	populate_spawn_points()
-
 	spawn(0)
 		if(ticker)
 			ticker.pregame()
@@ -113,6 +108,24 @@ datum/controller/game_controller/proc/setup_objects()
 		else if(istype(U, /obj/machinery/atmospherics/unary/vent_scrubber))
 			var/obj/machinery/atmospherics/unary/vent_scrubber/T = U
 			T.broadcast_status()
+
+	//Create the mining ore distribution map.
+	asteroid_ore_map = new /datum/ore_distribution()
+	asteroid_ore_map.populate_distribution_map()
+
+	//Shitty hack to fix mining turf overlays, for some reason New() is not being called.
+	for(var/turf/simulated/floor/plating/airless/asteroid/T in world)
+		T.updateMineralOverlays()
+		T.name = "asteroid"
+
+	//Set up spawn points.
+	populate_spawn_points()
+
+	//Set up gear list.
+	populate_gear_list()
+
+	//Set up roundstart seed list.
+	populate_seed_list()
 
 	world << "\red \b Initializations complete."
 	sleep(-1)
@@ -286,10 +299,16 @@ datum/controller/game_controller/proc/process_machines_power()
 		var/area/A = active_areas[i]
 		if(A.powerupdate && A.master == A)
 			A.powerupdate -= 1
-			for(var/area/SubArea in A.related)
+			A.clear_usage()
+			for(var/j = 1; j <= A.related.len; j++)
+				var/area/SubArea = A.related[j]
 				for(var/obj/machinery/M in SubArea)
 					if(M)
-						if(M.use_power)
+						//check if the area has power for M's channel
+						//this will keep stat updated in case the machine is moved from one area to another.
+						M.power_change(A)	//we've already made sure A is a master area, above.
+
+						if(!(M.stat & NOPOWER) && M.use_power)
 							M.auto_use_power()
 
 		if(A.apc.len && A.master == A)
@@ -336,7 +355,7 @@ datum/controller/game_controller/proc/process_powernets()
 	while(i<=powernets.len)
 		var/datum/powernet/Powernet = powernets[i]
 		if(Powernet)
-			Powernet.reset()
+			Powernet.process()
 			i++
 			continue
 		powernets.Cut(i,i+1)

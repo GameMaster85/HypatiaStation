@@ -251,9 +251,9 @@
 		playsound(src.loc, 'sound/effects/refill.ogg', 50, 1, -6)
 		return
 	else if (istype(O, /obj/structure/reagent_dispensers/fueltank) && get_dist(src,O) <= 1 && src.welding)
-		message_admins("[key_name_admin(user)] triggered a fueltank explosion.")
-		log_game("[key_name(user)] triggered a fueltank explosion.")
-		user << "\red That was stupid of you."
+		message_admins("[key_name_admin(user)] triggered a fueltank explosion with a welding tool.")
+		log_game("[key_name(user)] triggered a fueltank explosion with a welding tool.")
+		user << "\red You begin welding on the fueltank and with a moment of lucidity you realize, this might not have been the smartest thing you've ever done."
 		var/obj/structure/reagent_dispensers/fueltank/tank = O
 		tank.explode()
 		return
@@ -356,7 +356,7 @@
 	var/safety = user:eyecheck()
 	if(istype(user, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = user
-		var/datum/organ/internal/eyes/E = H.internal_organs["eyes"]
+		var/datum/organ/internal/eyes/E = H.internal_organs_by_name["eyes"]
 		if(H.species.flags & IS_SYNTHETIC)
 			return
 		switch(safety)
@@ -410,7 +410,7 @@
 	max_fuel = 40
 	w_class = 3.0
 	matter = list("metal" = 70, "glass" = 120)
-	origin_tech = "engineering=4;phoron=3"
+	origin_tech = "engineering=4;phorontech=3"
 	var/last_gen = 0
 
 

@@ -1,6 +1,6 @@
 /obj/item/weapon/dice
 	name = "d6"
-	desc = "A die with six sides."
+	desc = "A dice with six sides."
 	icon = 'icons/obj/dice.dmi'
 	icon_state = "d66"
 	w_class = 1
@@ -12,7 +12,7 @@
 
 /obj/item/weapon/dice/d20
 	name = "d20"
-	desc = "A die with twenty sides."
+	desc = "A dice with twenty sides."
 	icon_state = "d2020"
 	sides = 20
 

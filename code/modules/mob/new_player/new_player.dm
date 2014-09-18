@@ -113,9 +113,9 @@
 
 				observer.started_as_observer = 1
 				close_spawn_windows()
-				//locate("landmark*Observer-Start") Why do observers need a landmark if they just spawn in the shuttle anyway?
+				var/obj/O = locate("landmark*Observer-Start")
 				src << "\blue Now teleporting."
-				observer.loc = pick(latejoin)
+				observer.loc = O.loc
 				observer.timeofdeath = world.time // Set the time of death so that the respawn timer works correctly.
 
 				client.prefs.update_preview_icon()
@@ -134,6 +134,7 @@
 				return 1
 
 		if(href_list["late_join"])
+
 			if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
 				usr << "\red The round is either not ready, or has already finished..."
 				return
@@ -141,6 +142,11 @@
 			if(client.prefs.species != "Human")
 				if(!is_alien_whitelisted(src, client.prefs.species) && config.usealienwhitelist)
 					src << alert("You are currently not whitelisted to play [client.prefs.species].")
+					return 0
+
+				var/datum/species/S = all_species[client.prefs.species]
+				if(!(S.flags & IS_WHITELISTED))
+					src << alert("Your current species,[client.prefs.species], is not available for play on the station.")
 					return 0
 
 			LateChoices()
@@ -157,6 +163,11 @@
 			if(client.prefs.species != "Human")
 				if(!is_alien_whitelisted(src, client.prefs.species) && config.usealienwhitelist)
 					src << alert("You are currently not whitelisted to play [client.prefs.species].")
+					return 0
+
+				var/datum/species/S = all_species[client.prefs.species]
+				if(!(S.flags & IS_WHITELISTED))
+					src << alert("Your current species,[client.prefs.species], is not available for play on the station.")
 					return 0
 
 			AttemptLateSpawn(href_list["SelectedJob"],client.prefs.spawnpoint)
@@ -290,6 +301,7 @@
 
 		var/mob/living/carbon/human/character = create_character()	//creates the human and transfers vars and mind
 		job_master.EquipRank(character, rank, 1)					//equips the human
+		UpdateFactionList(character)
 		EquipCustomItems(character)
 
 		//Find our spawning point.
@@ -319,6 +331,9 @@
 		if(character.mind.assigned_role != "Cyborg")
 			data_core.manifest_inject(character)
 			ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
+
+			//Grab some data from the character prefs for use in random news procs.
+
 			AnnounceArrival(character, rank, join_message)
 
 		else
@@ -419,13 +434,16 @@
 		// And uncomment this, too.
 		//new_character.dna.UpdateSE()
 
+		// Do the initial caching of the player's body icons.
+		new_character.regenerate_icons()
+
 		new_character.key = key		//Manually transfer the key to log them in
 
 		return new_character
 
 	proc/ViewManifest()
 		var/dat = "<html><body>"
-		dat += "<h4>Crew Manifest</h4>"
+		dat += "<h4>Show Crew Manifest</h4>"
 		dat += data_core.get_manifest(OOC = 1)
 
 		src << browse(dat, "window=manifest;size=370x420;can_close=1")

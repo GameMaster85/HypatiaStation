@@ -1,4 +1,3 @@
-#define SAY_MINIMUM_PRESSURE 10
 var/list/department_radio_keys = list(
 	  ":r" = "right ear",	"#r" = "right ear",		".r" = "right ear",
 	  ":l" = "left ear",	"#l" = "left ear",		".l" = "left ear",
@@ -15,6 +14,7 @@ var/list/department_radio_keys = list(
 	  ":t" = "Syndicate",	"#t" = "Syndicate",		".t" = "Syndicate",
 	  ":u" = "Supply",		"#u" = "Supply",		".u" = "Supply",
 	  ":g" = "changeling",	"#g" = "changeling",	".g" = "changeling",
+	  ":d" = "dronechat",	"#d" = "dronechat",		".d" = "dronechat",
 
 	  ":R" = "right ear",	"#R" = "right ear",		".R" = "right ear",
 	  ":L" = "left ear",	"#L" = "left ear",		".L" = "left ear",
@@ -31,6 +31,7 @@ var/list/department_radio_keys = list(
 	  ":T" = "Syndicate",	"#T" = "Syndicate",		".T" = "Syndicate",
 	  ":U" = "Supply",		"#U" = "Supply",		".U" = "Supply",
 	  ":G" = "changeling",	"#G" = "changeling",	".G" = "changeling",
+	  ":D" = "dronechat",	"#D" = "dronechat",		".D" = "dronechat",
 
 	  //kinda localization -- rastaf0
 	  //same keys as above, but on russian keyboard layout. This file uses cp1251 as encoding.
@@ -93,18 +94,19 @@ var/list/department_radio_keys = list(
 
 		if (speaking.flags & SIGNLANG)
 			say_signlang(message, pick(speaking.signlang_verb), speaking)
-			return
+			return 1
 
 	//speaking into radios
 	if(used_radios.len)
 		italics = 1
 		message_range = 1
 
-		for(var/mob/living/M in hearers(5, src))
-			if(M != src)
-				M.show_message("<span class='notice'>[src] talks into [used_radios.len ? used_radios[1] : "the radio."]</span>")
-			if (speech_sound)
-				src.playsound_local(get_turf(src), speech_sound, sound_vol * 0.5, 1)
+		if (!istype(src, /mob/living/silicon/ai)) // Atlantis: Prevents nearby people from hearing the AI when it talks using it's integrated radio.
+			for(var/mob/living/M in hearers(5, src))
+				if(M != src)
+					M.show_message("<span class='notice'>[src] talks into [used_radios.len ? used_radios[1] : "the radio."]</span>")
+				if (speech_sound)
+					src.playsound_local(get_turf(src), speech_sound, sound_vol * 0.5, 1)
 
 		speech_sound = null	//so we don't play it twice.
 
@@ -112,7 +114,7 @@ var/list/department_radio_keys = list(
 	var/datum/gas_mixture/environment = T.return_air()
 	if(environment)
 		var/pressure = environment.return_pressure()
-		if(pressure < SAY_MINIMUM_PRESSURE)
+		if(pressure < SOUND_MINIMUM_PRESSURE)
 			italics = 1
 			message_range = 1
 
@@ -133,10 +135,17 @@ var/list/department_radio_keys = list(
 				hearturfs += M.locs[1]
 				for(var/obj/O in M.contents)
 					listening_obj |= O
+				if (isslime(I))
+					var/mob/living/carbon/slime/S = I
+					if (src in S.Friends)
+						S.speech_buffer = list()
+						S.speech_buffer.Add(src)
+						S.speech_buffer.Add(lowertext(html_decode(message)))
 			else if(istype(I, /obj/))
 				var/obj/O = I
 				hearturfs += O.locs[1]
 				listening_obj |= O
+
 
 		for(var/mob/M in player_list)
 			if(M.stat == DEAD && M.client && (M.client.prefs.toggles & CHAT_GHOSTEARS))
@@ -159,6 +168,7 @@ var/list/department_radio_keys = list(
 				O.hear_talk(src, message, verb, speaking)
 
 	log_say("[name]/[key] : [message]")
+	return 1
 
 /mob/living/proc/say_signlang(var/message, var/verb="gestures", var/datum/language/language)
 	for (var/mob/O in viewers(src, null))

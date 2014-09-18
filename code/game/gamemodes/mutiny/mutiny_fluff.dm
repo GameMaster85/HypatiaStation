@@ -184,7 +184,7 @@ TM: No sir. Our analysts believe they are using a separate channel for their mos
 D: So what's the problem?<br>
 TM: The intelligence hasn't been doing us any good. Anything that appears actionable, I send it to the analysts and they make a plan. Thing is, NanoTrasen always sees us coming.<br>
 D: Tim...<br>
-TM: I think they discovered the hack, sir. Case in point, <b>Energine Consolidated Solutions</b>. That subsidiary of ours that was awarded a lease on NanoTrasen's mining platform in Tau Ceti? NanoTrasen acquired them a week before we made the announcement.<br>
+TM: I think they discovered the hack, sir. Case in point, <b>Energine Consolidated Solutions</b>. That subsidiary of ours that was awarded a lease on NanoTrasen's mining platform in Nyx? NanoTrasen acquired them a week before we made the announcement.<br>
 D: They know about they have a bug. <i>They left her on and fed her the information for us to hear</i>, those sneaks. How did they find it?<br>
 TM: Top secret communique came through. I'm not sure what happened. Either Mallory couldn't replicate the encryption scheme and garbled it going out or the transmission was already corrupted to begin with.<br>
 D: Either way the transmission caused NanoTrasen to look at the satellite. They found out about Mallory.<br>

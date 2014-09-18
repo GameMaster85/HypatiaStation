@@ -9,6 +9,7 @@
 	var/trash = null
 	var/slice_path
 	var/slices_num
+	center_of_mass = list("x"=15, "y"=15)
 
 	//Placeholder for effect that trigger on eating that aren't tied to reagents.
 /obj/item/weapon/reagent_containers/food/snacks/proc/On_Consume(var/mob/M)
@@ -107,7 +108,7 @@
 	return 0
 
 /obj/item/weapon/reagent_containers/food/snacks/afterattack(obj/target, mob/user, proximity)
-	return
+	return ..()
 
 /obj/item/weapon/reagent_containers/food/snacks/examine()
 	set src in view()
@@ -1620,10 +1621,10 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/stokcube
 	name = "stok cube"
-	monkey_type = /mob/living/carbon/monkey/soghun
+	monkey_type = /mob/living/carbon/monkey/Soghun
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/stokcube
 	name = "stok cube"
-	monkey_type =/mob/living/carbon/monkey/soghun
+	monkey_type =/mob/living/carbon/monkey/Soghun
 
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/neaeracube

@@ -31,6 +31,7 @@ proc/assign_sec_to_department(var/mob/living/carbon/human/H)
 				H.equip_to_slot_or_del(new /obj/item/clothing/under/rank/security(H), slot_w_uniform)
 				H.equip_to_slot_or_del(new /obj/item/device/radio/headset/headset_sec(H), slot_ears)
 
+
 		if(destination)
 			var/teleport = 0
 			if(!ticker || ticker.current_state <= GAME_STATE_SETTING_UP)
@@ -82,9 +83,9 @@ proc/assign_sec_to_department(var/mob/living/carbon/human/H)
 		else
 			H.equip_to_slot_or_del(new /obj/item/weapon/storage/box/survival(H.back), slot_in_backpack)
 			H.equip_to_slot_or_del(new /obj/item/weapon/handcuffs(H), slot_in_backpack)
-		var/obj/item/weapon/implant/loyalty/L = new/obj/item/weapon/implant/loyalty(H)
-		L.imp_in = H
-		L.implanted = 1
+
+		implant_loyalty(H)
+
 		return 1
 
 /obj/item/device/radio/headset/headset_sec/department/New()

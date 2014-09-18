@@ -46,14 +46,6 @@
 		else		adminhelp(msg)	//admin we are replying to left. adminhelp instead
 		return
 
-	/*if(C && C.last_pm_recieved + config.simultaneous_pm_warning_timeout > world.time && holder)
-		//send a warning to admins, but have a delay popup for mods
-		if(holder.rights & R_ADMIN)
-			src << "\red <b>Simultaneous PMs warning:</b> that player has been PM'd in the last [config.simultaneous_pm_warning_timeout / 10] seconds by: [C.ckey_last_pm]"
-		else
-			if(alert("That player has been PM'd in the last [config.simultaneous_pm_warning_timeout / 10] seconds by: [C.ckey_last_pm]","Simultaneous PMs warning","Continue","Cancel") == "Cancel")
-				return*/
-
 	//get message text, limit it's length.and clean/escape html
 	if(!msg)
 		msg = input(src,"Message:", "Private message to [key_name(C, 0, holder ? 1 : 0)]") as text|null
@@ -86,7 +78,7 @@
 			else
 				recieve_color = "maroon"
 			send_pm_type = holder.rank + " "
-			if(!C.holder && holder && holder.fakekey)
+			if(!C.holder && holder && holder.fakekey) 
 				recieve_pm_type = "Admin"
 			else
 				recieve_pm_type = holder.rank

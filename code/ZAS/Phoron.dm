@@ -111,14 +111,14 @@ obj/var/contaminated = 0
 	if(vsc.plc.GENETIC_CORRUPTION)
 		if(rand(1,10000) < vsc.plc.GENETIC_CORRUPTION)
 			randmutb(src)
-			src << "\red High levels of phoron cause you to spontaneously mutate."
+			src << "\red High levels of toxins cause you to spontaneously mutate."
 			domutcheck(src,null)
 
 
 /mob/living/carbon/human/proc/burn_eyes()
 	//The proc that handles eye burning.
 	if(prob(20)) src << "\red Your eyes burn!"
-	var/datum/organ/internal/eyes/E = internal_organs["eyes"]
+	var/datum/organ/internal/eyes/E = internal_organs_by_name["eyes"]
 	E.damage += 2.5
 	eye_blurry = min(eye_blurry+1.5,50)
 	if (prob(max(0,E.damage - 15) + 1) &&!eye_blind)
@@ -155,10 +155,11 @@ obj/var/contaminated = 0
 turf/Entered(obj/item/I)
 	. = ..()
 	//Items that are in phoron, but not on a mob, can still be contaminated.
-	if(istype(I) && vsc.plc.CLOTH_CONTAMINATION)
+	if(istype(I) && vsc.plc.CLOTH_CONTAMINATION && I.can_contaminate())
 		var/datum/gas_mixture/env = return_air(1)
 		if(!env)
 			return
-		if(env.phoron > MOLES_PHORON_VISIBLE + 1)
-			if(I.can_contaminate())
+		for(var/g in env.gas)
+			if(gas_data.flags[g] & XGM_GAS_CONTAMINANT && env.gas[g] > gas_data.overlay_limit[g] + 1)
 				I.contaminate()
+				break

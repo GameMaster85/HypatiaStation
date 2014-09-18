@@ -2,8 +2,6 @@
 //This file was auto-corrected by findeclaration.exe on 25.5.2012 20:42:31
 
 var/global/obj/effect/datacore/data_core = null
-var/global/obj/effect/overlay/plmaster = null
-var/global/obj/effect/overlay/slmaster = null
 
 
 var/global/list/active_areas = list()
@@ -111,8 +109,6 @@ var/list/lastsignalers = list(	)	//keeps last 100 signals here in format: "[src]
 var/list/lawchanges = list(  ) //Stores who uploaded laws to which silicon-based lifeform, and what the law was
 var/list/reg_dna = list(  )
 //	list/traitobj = list(  )
-
-var/dirt_increase_change = 50 //chance that the amount of dirt increases when a mob moves to a block/turf.
 
 var/mouse_respawn_time = 5 //Amount of time that must pass between a player dying as a mouse and repawning as a mouse. In minutes.
 

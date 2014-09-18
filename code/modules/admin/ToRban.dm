@@ -20,21 +20,23 @@
 			ToRban_update()
 	return
 
+
 /proc/ToRban_update()
 	spawn(0)
 		log_misc("Downloading updated ToR data...")
-		var/http[] = world.Export("http://exitlist.torproject.org/exit-addresses")
+		var/http[] = world.Export("https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=74.91.120.106&port=")
 
 		var/list/rawlist = file2list(http["CONTENT"])
 		if(rawlist.len)
 			fdel(TORFILE)
 			var/savefile/F = new(TORFILE)
+			var/linecount = 0
 			for( var/line in rawlist )
+				linecount++
 				if(!line)	continue
-				if( copytext(line,1,12) == "ExitAddress" )
-					var/cleaned = copytext(line,13,length(line)-19)
-					if(!cleaned)	continue
-					F[cleaned] << 1
+				var/cleaned = copytext(line,0,length(line))
+				if(!cleaned)	continue
+				F[cleaned] << 1
 			F["last_update"] << world.realtime
 			log_misc("ToR data updated!")
 			if(usr)	usr << "ToRban updated."

@@ -30,7 +30,7 @@
 	icon_state = "skrellkey1"
 	uni_append = list(0x01C,0xC92) // 01CC92
 
-/mob/living/carbon/monkey/soghun
+/mob/living/carbon/monkey/Soghun
 	name = "stok"
 	voice_name = "stok"
 	speak_emote = list("hisses")
@@ -77,12 +77,12 @@
 	update_icons()
 	return
 
-/mob/living/carbon/monkey/soghun/New()
+/mob/living/carbon/monkey/Soghun/New()
 
 	..()
 	dna.mutantrace = "lizard"
 	greaterform = "Soghun"
-	add_language("Sinta'unathi")
+	add_language("Sinta'Soghun")
 
 /mob/living/carbon/monkey/skrell/New()
 
@@ -115,8 +115,7 @@
 		if(reagents.has_reagent("nuka_cola")) return -1
 
 	var/health_deficiency = (100 - health)
-	if(health_deficiency >= 45)
-		tally += (health_deficiency / 25)
+	if(health_deficiency >= 45) tally += (health_deficiency / 25)
 
 	if (bodytemperature < 283.222)
 		tally += (283.222 - bodytemperature) / 10 * 1.75
@@ -247,10 +246,9 @@
 		help_shake_act(M)
 	else
 		if (M.a_intent == "hurt")
+			var/datum/unarmed_attack/attack = M.species.unarmed
 			if ((prob(75) && health > 0))
-				for(var/mob/O in viewers(src, null))
-					if ((O.client && !( O.blinded )))
-						O.show_message(text("\red <B>[] has punched [name]!</B>", M), 1)
+				visible_message("\red <B>[M] [pick(attack.attack_verb)]ed [src]!</B>")
 
 				playsound(loc, "punch", 25, 1, -1)
 				var/damage = rand(5, 10)
@@ -258,18 +256,18 @@
 					damage = rand(10, 15)
 					if (paralysis < 5)
 						Paralyse(rand(10, 15))
-						spawn( 0 )
-							for(var/mob/O in viewers(src, null))
-								if ((O.client && !( O.blinded )))
-									O.show_message(text("\red <B>[] has knocked out [name]!</B>", M), 1)
-							return
+						visible_message("\red <B>[M] has knocked out [src]!</B>")
+
 				adjustBruteLoss(damage)
+
+				M.attack_log += text("\[[time_stamp()]\] <font color='red'>[pick(attack.attack_verb)]ed [src.name] ([src.ckey])</font>")
+				src.attack_log += text("\[[time_stamp()]\] <font color='orange'>Has been [pick(attack.attack_verb)]ed by [M.name] ([M.ckey])</font>")
+				msg_admin_attack("[key_name(M)] [pick(attack.attack_verb)]ed [key_name(src)]")
+
 				updatehealth()
 			else
 				playsound(loc, 'sound/weapons/punchmiss.ogg', 25, 1, -1)
-				for(var/mob/O in viewers(src, null))
-					if ((O.client && !( O.blinded )))
-						O.show_message(text("\red <B>[] has attempted to punch [name]!</B>", M), 1)
+				visible_message("\red <B>[M] tried to [pick(attack.attack_verb)] [src]!</B>")
 		else
 			if (M.a_intent == "grab")
 				if (M == src || anchored)
@@ -404,7 +402,7 @@
 
 		var/damage = rand(1, 3)
 
-		if(istype(src, /mob/living/carbon/slime/adult))
+		if(M.is_adult)
 			damage = rand(20, 40)
 		else
 			damage = rand(5, 35)

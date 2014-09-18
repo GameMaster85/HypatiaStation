@@ -76,7 +76,6 @@ var/list/event_last_fired = list()
 		possibleEvents[/datum/event/radiation_storm] = active_with_role["Medical"] * 10
 		possibleEvents[/datum/event/spontaneous_appendicitis] = active_with_role["Medical"] * 10
 		possibleEvents[/datum/event/viral_infection] = active_with_role["Medical"] * 10
-		possibleEvents[/datum/event/organ_failure] = active_with_role["Medical"] * 50
 
 	possibleEvents[/datum/event/prison_break] = active_with_role["Security"] * 50
 	if(active_with_role["Security"] > 0)
@@ -189,7 +188,7 @@ var/list/event_last_fired = list()
 	active_with_role["AI"] = 0
 	active_with_role["Cyborg"] = 0
 	active_with_role["Janitor"] = 0
-	active_with_role["Botanist"] = 0
+	active_with_role["Gardener"] = 0
 
 	for(var/mob/M in player_list)
 		if(!M.mind || !M.client || M.client.inactivity > 10 * 10 * 60) // longer than 10 minutes AFK counts them as inactive
@@ -222,7 +221,7 @@ var/list/event_last_fired = list()
 		if(M.mind.assigned_role == "Janitor")
 			active_with_role["Janitor"]++
 
-		if(M.mind.assigned_role == "Botanist")
-			active_with_role["Botanist"]++
+		if(M.mind.assigned_role == "Gardener")
+			active_with_role["Gardener"]++
 
 	return active_with_role

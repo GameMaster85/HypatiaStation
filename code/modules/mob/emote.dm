@@ -39,6 +39,7 @@
 		// Type 1 (Visual) emotes are sent to anyone in view of the item
 		if (m_type & 1)
 			for (var/mob/O in viewers(src, null))
+
 				if(O.status_flags & PASSEMOTES)
 
 					for(var/obj/item/weapon/holder/H in O.contents)
@@ -53,9 +54,9 @@
 		// of the *LOCATION* -- this is important for pAIs to be heard
 		else if (m_type & 2)
 			for (var/mob/O in hearers(get_turf(src), null))
-				testing("HEARERS [O.name] had [O.contents.len]")
+
 				if(O.status_flags & PASSEMOTES)
-					//not sure why this is not just var/obj/ like the say proc
+
 					for(var/obj/item/weapon/holder/H in O.contents)
 						H.show_message(message, m_type)
 

@@ -12,11 +12,11 @@
 	var/flags = 0                    // Various language flags.
 	var/native                       // If set, non-native speakers will have trouble speaking.
 
-/datum/language/soghun
-	name = "Sinta'unathi"
+/datum/language/Soghun
+	name = "Sinta'Soghun"
 	desc = "The common language of Moghes, composed of sibilant hisses and rattles. Spoken natively by Soghun."
 	speech_verb = "hisses"
-	colour = "soghun"
+	colour = "Soghun"
 	key = "o"
 	flags = WHITELISTED
 
@@ -68,7 +68,7 @@
 	name = "Rootspeak"
 	desc = "A creaking, subvocal language spoken instinctively by the Dionaea. Due to the unique makeup of the average Diona, a phrase of Rootspeak can be a combination of anywhere from one to twelve individual voices and notes."
 	speech_verb = "creaks and rustles"
-	colour = "soghun"
+	colour = "Soghun"
 	key = "q"
 	flags = RESTRICTED
 

@@ -18,12 +18,17 @@
 		buckled_mob.dir = dir
 
 /obj/structure/stool/bed/chair/wheelchair/relaymove(mob/user, direction)
+	// Redundant check?
 	if(user.stat || user.stunned || user.weakened || user.paralysis || user.lying || user.restrained())
 		if(user==pulling)
 			pulling = null
 			user.pulledby = null
 			user << "\red You lost your grip!"
 		return
+	if(buckled_mob && pulling && user == buckled_mob)
+		if(pulling.stat || pulling.stunned || pulling.weakened || pulling.paralysis || pulling.lying || pulling.restrained())
+			pulling.pulledby = null
+			pulling = null
 	if(user.pulling && (user == pulling))
 		pulling = null
 		user.pulledby = null
@@ -136,17 +141,28 @@
 	if(propelled || (pulling && (pulling.a_intent == "hurt")))
 		var/mob/living/occupant = buckled_mob
 		unbuckle()
-		occupant.throw_at(A, 3, 2)
-		occupant.apply_effect(6, STUN, 0)
-		occupant.apply_effect(6, WEAKEN, 0)
-		occupant.apply_effect(6, STUTTER, 0)
+
+		if (pulling && (pulling.a_intent == "hurt"))
+			occupant.throw_at(A, 3, 3, pulling)
+		else if (propelled)
+			occupant.throw_at(A, 3, propelled)
+
+		var/def_zone = ran_zone()
+		var/blocked = occupant.run_armor_check(def_zone, "melee")
+		occupant.throw_at(A, 3, propelled)
+		occupant.apply_effect(6, STUN, blocked)
+		occupant.apply_effect(6, WEAKEN, blocked)
+		occupant.apply_effect(6, STUTTER, blocked)
+		occupant.apply_damage(10, BRUTE, def_zone)
 		playsound(src.loc, 'sound/weapons/punch1.ogg', 50, 1, -1)
 		if(istype(A, /mob/living))
 			var/mob/living/victim = A
-			victim.apply_effect(6, STUN, 0)
-			victim.apply_effect(6, WEAKEN, 0)
-			victim.apply_effect(6, STUTTER, 0)
-			victim.take_organ_damage(10)
+			def_zone = ran_zone()
+			blocked = victim.run_armor_check(def_zone, "melee")
+			victim.apply_effect(6, STUN, blocked)
+			victim.apply_effect(6, WEAKEN, blocked)
+			victim.apply_effect(6, STUTTER, blocked)
+			victim.apply_damage(10, BRUTE, def_zone)
 		if(pulling)
 			occupant.visible_message("<span class='danger'>[pulling] has thrusted \the [name] into \the [A], throwing \the [occupant] out of it!</span>")
 

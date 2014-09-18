@@ -331,3 +331,4 @@
 	desc = "A wall with sandstone plating."
 	icon_state = ""
 	mineral = "sandstone"
+//------------wtf?------------end

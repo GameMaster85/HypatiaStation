@@ -346,14 +346,50 @@ var/global/datum/controller/occupations/job_master
 
 
 	proc/EquipRank(var/mob/living/carbon/human/H, var/rank, var/joined_late = 0)
+
 		if(!H)	return 0
+
 		var/datum/job/job = GetJob(rank)
+		var/list/spawn_in_storage = list()
+
 		if(job)
+
+			//Equip custom gear loadout.
+			if(H.client.prefs.gear && H.client.prefs.gear.len && job.title != "Cyborg" && job.title != "AI")
+
+				for(var/thing in H.client.prefs.gear)
+					var/datum/gear/G = gear_datums[thing]
+					if(G)
+						var/permitted
+						if(G.allowed_roles)
+							for(var/job_name in G.allowed_roles)
+								if(job.title == job_name)
+									permitted = 1
+						else
+							permitted = 1
+
+						if(G.whitelisted && !is_alien_whitelisted(H, G.whitelisted))
+							permitted = 0
+
+						if(!permitted)
+							H << "\red Your current job or whitelist status does not permit you to spawn with [thing]!"
+							continue
+
+						if(G.slot)
+							H.equip_to_slot_or_del(new G.path(H), G.slot)
+							H << "\blue Equipping you with [thing]!"
+
+						else
+							spawn_in_storage += thing
+
+
+			//Equip job items.
 			job.equip(H)
 		else
 			H << "Your job is [rank] and the game just can't handle it! Please report this bug to an administrator."
 
 		H.job = rank
+
 		if(!joined_late)
 			var/obj/S = null
 			for(var/obj/effect/landmark/start/sloc in landmarks_list)
@@ -365,8 +401,6 @@ var/global/datum/controller/occupations/job_master
 				S = locate("start*[rank]") // use old stype
 			if(istype(S, /obj/effect/landmark/start) && istype(S.loc, /turf))
 				H.loc = S.loc
-			else
-				H.loc = pick(latejoin) //ensure people spawn somewhere, instead of staying on the titlescreen position!
 			// Moving wheelchair if they have one
 			if(H.buckled && istype(H.buckled, /obj/structure/stool/bed/chair/wheelchair))
 				H.buckled.loc = H.loc
@@ -429,17 +463,32 @@ var/global/datum/controller/occupations/job_master
 							new /obj/item/weapon/storage/box/survival(BPK)
 							H.equip_to_slot_or_del(BPK, slot_back,1)
 
+					//Deferred item spawning.
+					if(spawn_in_storage && spawn_in_storage.len)
+						var/obj/item/weapon/storage/B
+						for(var/obj/item/weapon/storage/S in H.contents)
+							B = S
+							break
+
+						if(!isnull(B))
+							for(var/thing in spawn_in_storage)
+								H << "\blue Placing [thing] in your [B]!"
+								var/datum/gear/G = gear_datums[thing]
+								new G.path(B)
+						else
+							H << "\red Failed to locate a storage object on your mob, either you spawned with no arms and no backpack or this is a bug."
+
 		//TODO: Generalize this by-species
 		if(H.species)
 			if(H.species.name == "Tajaran" || H.species.name == "Soghun")
 				H.equip_to_slot_or_del(new /obj/item/clothing/shoes/sandal(H),slot_shoes,1)
 			else if(H.species.name == "Vox")
-				H.equip_to_slot_or_del(new /obj/item/clothing/mask/breath(src), slot_wear_mask)
+				H.equip_to_slot_or_del(new /obj/item/clothing/mask/breath(H), slot_wear_mask)
 				if(!H.r_hand)
-					H.equip_to_slot_or_del(new /obj/item/weapon/tank/nitrogen(src), slot_r_hand)
+					H.equip_to_slot_or_del(new /obj/item/weapon/tank/nitrogen(H), slot_r_hand)
 					H.internal = H.r_hand
 				else if (!H.l_hand)
-					H.equip_to_slot_or_del(new /obj/item/weapon/tank/nitrogen(src), slot_l_hand)
+					H.equip_to_slot_or_del(new /obj/item/weapon/tank/nitrogen(H), slot_l_hand)
 					H.internal = H.l_hand
 				H.internals.icon_state = "internal1"
 

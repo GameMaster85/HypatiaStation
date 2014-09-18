@@ -18,6 +18,7 @@
 	desc = "It's a special helmet issued to the Warden of a securiy force. Protects the head from impacts."
 	icon_state = "policehelm"
 	flags_inv = 0
+	body_parts_covered = 0
 
 /obj/item/clothing/head/helmet/riot
 	name = "riot helmet"
@@ -31,7 +32,7 @@
 
 /obj/item/clothing/head/helmet/swat
 	name = "\improper SWAT helmet"
-	desc = "They're often used by highly trained SWAT Members."
+	desc = "They're often used by highly trained Swat Members."
 	icon_state = "swat"
 	flags = FPRINT | TABLEPASS | HEADCOVERSEYES
 	item_state = "swat"
@@ -67,6 +68,7 @@
 	icon_state = "swathelm"
 	item_state = "helmet"
 	flags = FPRINT|TABLEPASS|HEADCOVERSEYES
+
 	armor = list(melee = 62, bullet = 50, laser = 50,energy = 35, bomb = 10, bio = 2, rad = 0)
 	flags_inv = HIDEEARS
 	siemens_coefficient = 0.7

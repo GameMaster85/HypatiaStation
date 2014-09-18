@@ -30,10 +30,7 @@
 
 		if ("custom")
 			return custom_emote(m_type, message)
-		if("jiggle")
-			if(!src.restrained())
-				message = "<B>The [src.name]</B> jiggles."
-				m_type = 1
+
 		if ("chirp")
 			if(istype(src,/mob/living/carbon/monkey/diona))
 				message = "<B>The [src.name]</B> chirps!"

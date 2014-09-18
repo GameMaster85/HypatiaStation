@@ -258,10 +258,11 @@
 
 		if("show" in href_list)
 			var/obj/machinery/camera/C = locate(href_list["show"])
-			current = C
-			usr.reset_view(C)
-			interact()
-			return
+			if(istype(C) && C.status)
+				current = C
+				usr.reset_view(C)
+				interact()
+				return
 
 		if("keyselect" in href_list)
 			current = null
@@ -275,3 +276,7 @@
 			else
 				usr << "The screen turns to static."
 			return
+
+			// Atlantis: Required for camnetkeys to work.
+/datum/file/program/security/hidden
+	hidden_file = 1

@@ -616,7 +616,7 @@ var/global/datum/tension/tension_master
 		var/time_passed = world.time
 		var/input = "Purify the station."
 		if(prob(10))
-			input = "Save Runtime and any other cute things on the station."
+			input = "Save Happy Kitten and any other cute things on the station."
 	/*
 		if (emergency_shuttle.direction == 1 && emergency_shuttle.online == 1)
 			emergency_shuttle.recall()
@@ -696,7 +696,7 @@ var/global/datum/tension/tension_master
 		var/list/mob/dead/observer/candidates = list()
 		var/mob/dead/observer/theghost = null
 		var/time_passed = world.time
-		var/list/namelist = list("Tyr","Fenrir","Lachesis","Clotho","Atropos","Tau Ceti")
+		var/list/namelist = list("Tyr","Fenrir","Lachesis","Clotho","Atropos","Nyx")
 
 	//Generates a list of commandos from active ghosts. Then the user picks which characters to respawn as the commandos.
 

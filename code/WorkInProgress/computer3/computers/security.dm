@@ -19,6 +19,7 @@
 	req_one_access = list(access_security, access_forensics_lockers)
 
 	var/obj/item/weapon/card/id/scan = null
+	var/obj/item/weapon/card/id/scan2 = null
 	var/authenticated = null
 	var/rank = null
 	var/screen = null
@@ -49,9 +50,13 @@
 			return
 		usr.set_machine(src)
 		scan = computer.cardslot.reader
+
+		if (computer.cardslot.dualslot)
+			scan2 = computer.cardslot.writer
+
 		if(!interactable())
 			return
-			return
+
 		if (computer.z > 6)
 			usr << "\red <b>Unable to establish a connection</b>: \black You're too far away from the station!"
 			return
@@ -60,7 +65,11 @@
 		if (temp)
 			dat = text("<TT>[]</TT><BR><BR><A href='?src=\ref[];choice=Clear Screen'>Clear Screen</A>", temp, src)
 		else
-			dat = text("Confirm Identity: <A href='?src=\ref[];choice=Confirm Identity'>[]</A><HR>", src, (scan ? text("[]", scan.name) : "----------"))
+			dat = text("Confirm Identity (R): <A href='?src=\ref[];choice=Confirm Identity R'>[]</A><HR>", src, (scan ? text("[]", scan.name) : "----------"))
+			if (computer.cardslot.dualslot)
+				dat += text("Check Identity (W): <A href='?src=\ref[];choice=Confirm Identity W'>[]</A><BR>", src, (scan2 ? text("[]", scan2.name) : "----------"))
+				if(scan2 && !scan)
+					dat += text("<div class='notice'>Insert card into reader slot to log in.</div><br>")
 			if (authenticated)
 				switch(screen)
 					if(1.0)
@@ -100,9 +109,9 @@
 									if("Released")
 										background = "'background-color:#3BB9FF;'"
 									if("None")
-										background = "'background-color:#00FF7F;'"
-									if("")
 										background = "'background-color:#00FF00;'"
+									if("")
+										background = "'background-color:#00FF7F;'"
 										crimstat = "No Record."
 								dat += text("<tr style=[]><td><A href='?src=\ref[];choice=Browse Record;d_rec=\ref[]'>[]</a></td>", background, src, R, R.fields["name"])
 								dat += text("<td>[]</td>", R.fields["id"])
@@ -236,18 +245,31 @@ What a mess.*/
 				active1 = null
 				active2 = null
 
-			if("Confirm Identity")
+			if("Confirm Identity R")
 				if (scan)
 					if(istype(usr,/mob/living/carbon/human) && !usr.get_active_hand())
-						computer.cardslot.remove(scan)
+						computer.cardslot.remove(1)
 					else
 						scan.loc = get_turf(src)
 					scan = null
 				else
 					var/obj/item/I = usr.get_active_hand()
 					if (istype(I, /obj/item/weapon/card/id))
-						computer.cardslot.insert(I)
+						computer.cardslot.insert(I, 1)
 						scan = I
+
+			if("Confirm Identity W")
+				if (scan2)
+					if(istype(usr,/mob/living/carbon/human) && !usr.get_active_hand())
+						computer.cardslot.remove(2)
+					else
+						scan2.loc = get_turf(src)
+					scan2 = null
+				else
+					var/obj/item/I = usr.get_active_hand()
+					if (istype(I, /obj/item/weapon/card/id))
+						computer.cardslot.insert(I, 2)
+						scan2 = I
 
 			if("Log Out")
 				authenticated = null
@@ -445,19 +467,19 @@ What a mess.*/
 				switch(href_list["field"])
 					if("name")
 						if (istype(active1, /datum/data/record))
-							var/t1 = input("Please input name:", "Secure. records", active1.fields["name"], null)  as text
+							var/t1 = reject_bad_name(input("Please input name:", "Secure. records", active1.fields["name"], null)  as text)
 							if ((!( t1 ) || !length(trim(t1)) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon)))) || active1 != a1)
 								return
 							active1.fields["name"] = t1
 					if("id")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please input id:", "Secure. records", active1.fields["id"], null)  as text),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please input id:", "Secure. records", active1.fields["id"], null)  as text)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active1 != a1))
 								return
 							active1.fields["id"] = t1
 					if("fingerprint")
 						if (istype(active1, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please input fingerprint hash:", "Secure. records", active1.fields["fingerprint"], null)  as text),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please input fingerprint hash:", "Secure. records", active1.fields["fingerprint"], null)  as text)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active1 != a1))
 								return
 							active1.fields["fingerprint"] = t1
@@ -475,31 +497,31 @@ What a mess.*/
 							active1.fields["age"] = t1
 					if("mi_crim")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please input minor disabilities list:", "Secure. records", active2.fields["mi_crim"], null)  as text),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please input minor disabilities list:", "Secure. records", active2.fields["mi_crim"], null)  as text)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active2 != a2))
 								return
 							active2.fields["mi_crim"] = t1
 					if("mi_crim_d")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please summarize minor dis.:", "Secure. records", active2.fields["mi_crim_d"], null)  as message),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please summarize minor dis.:", "Secure. records", active2.fields["mi_crim_d"], null)  as message)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active2 != a2))
 								return
 							active2.fields["mi_crim_d"] = t1
 					if("ma_crim")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please input major diabilities list:", "Secure. records", active2.fields["ma_crim"], null)  as text),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please input major diabilities list:", "Secure. records", active2.fields["ma_crim"], null)  as text)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active2 != a2))
 								return
 							active2.fields["ma_crim"] = t1
 					if("ma_crim_d")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(sanitize(input("Please summarize major dis.:", "Secure. records", active2.fields["ma_crim_d"], null)  as message),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(trim(sanitize(input("Please summarize major dis.:", "Secure. records", active2.fields["ma_crim_d"], null)  as message)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active2 != a2))
 								return
 							active2.fields["ma_crim_d"] = t1
 					if("notes")
 						if (istype(active2, /datum/data/record))
-							var/t1 = copytext(html_encode(input("Please summarize notes:", "Secure. records", html_decode(active2.fields["notes"]), null)  as message),1,MAX_MESSAGE_LEN)
+							var/t1 = copytext(html_encode(trim(input("Please summarize notes:", "Secure. records", html_decode(active2.fields["notes"]), null)  as message)),1,MAX_MESSAGE_LEN)
 							if ((!( t1 ) || !( authenticated ) || usr.stat || usr.restrained() || (!interactable() && (!istype(usr, /mob/living/silicon))) || active2 != a2))
 								return
 							active2.fields["notes"] = t1

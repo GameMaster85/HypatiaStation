@@ -5,7 +5,6 @@
 	max_co2 = 0
 	minbodytemp = 0
 	maxbodytemp = 500
-	pass_flags = 1 // Pass through tables!
 
 	var/obj/item/device/radio/borg/radio = null
 	var/mob/living/silicon/ai/connected_ai = null
@@ -319,7 +318,7 @@
 
 	var/list/items = list()
 	for(var/obj/item/I in view(1,src))
-		if(I.loc != src && I.w_class <= 2)
+		if(I.loc != src && I.w_class <= 2 && I.Adjacent(src) )
 			items.Add(I)
 
 	var/obj/selection = input("Select an item.", "Pickup") in items

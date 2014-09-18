@@ -225,14 +225,6 @@ proc/cmd_admin_mute(mob/M as mob, mute_type, automute = 0)
 	IonStorm(0)
 	feedback_add_details("admin_verb","ION") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
 
-/client/proc/cmd_banhammer()
-	set category = "Fun"
-	set name = "Banhammer!"
-	set desc = "Play the banhammer sound.  Banhammmerrr...."
-	if(!holder)
-		src << "Excuse me, I don't see your banhammer license..."
-		return
-	world << sound("sound/voice/banhammer.ogg")
 
 //I use this proc for respawn character too. /N
 /proc/create_xeno(ckey)
@@ -1011,3 +1003,12 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		usr << "Random events disabled"
 		message_admins("Admin [key_name_admin(usr)] has disabled random events.", 1)
 	feedback_add_details("admin_verb","TRE") //If you are copy-pasting this, ensure the 2nd parameter is unique to the new proc!
+
+/client/proc/cmd_banhammer()
+	set category = "Fun"
+	set name = "Banhammer!"
+	set desc = "Play the banhammer sound.  Banhammmerrr...."
+	if(!holder)
+		src << "Excuse me, I don't see your banhammer license..."
+		return
+	world << sound("sound/voice/banhammer.ogg")

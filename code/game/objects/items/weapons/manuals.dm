@@ -19,7 +19,7 @@
 		</head>
 
 		<body>
-		<iframe width='100%' height='97%' src="http://wiki.nanotrasen.com/index.php?title=Guide_to_construction&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>
+		<iframe width='100%' height='97%' src="http://baystation12.net/wiki/index.php?title=Guide_to_construction&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>
 		</body>
 
 		</html>
@@ -737,11 +737,11 @@
 
 
 /obj/item/weapon/book/manual/security_space_law
-	name = "Space Law"
+	name = "Corporate Regulations"
 	desc = "A set of NanoTrasen guidelines for keeping law and order on their space stations."
 	icon_state = "bookSpaceLaw"
 	author = "NanoTrasen"
-	title = "Space Law"
+	title = "Corporate Regulations"
 
 	dat = {"
 
@@ -749,7 +749,8 @@
 		</head>
 
 		<body>
-		<iframe width='100%' height='100%' src="http://hypatiastation.net/old/index.php?title=Space_law&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>		</body>
+		<iframe width='100%' height='97%' src="http://baystation12.net/wiki/index.php?title=Corporate_Regulations&printable=yes&remove_links=1" frameborder="0" id="main_frame"></iframe>
+		</body>
 
 		</html>
 

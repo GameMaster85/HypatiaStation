@@ -11,7 +11,7 @@ datum/directive/terminations/alien_fraud
 datum/directive/terminations/alien_fraud/get_crew_to_terminate()
 	var/list/aliens[0]
 	for(var/mob/M in player_list)
-		if (M.is_ready() && is_alien(M))
+		if (M.is_ready() && is_alien(M) && M != mode.head_loyalist.current)
 			aliens.Add(M)
 	return aliens
 
@@ -27,15 +27,15 @@ datum/directive/terminations/alien_fraud/meets_prerequisites()
 	// There must be at least one Tajaran and at least one Soghun, but the total
 	// of the Tajarans and Soghun combined can't be more than 1/3rd of the crew.
 	var/tajarans = 0
-	var/soghun = 0
+	var/Soghun = 0
 	for(var/mob/M in player_list)
 		var/species = M.get_species()
 		if(species == "Tajaran")
 			tajarans++
 		if(species == "Soghun")
-			soghun++
+			Soghun++
 
-	if (!tajarans || !soghun)
+	if (!tajarans || !Soghun)
 		return 0
 
-	return (tajarans + soghun) <= (player_list.len / 3)
+	return (tajarans + Soghun) <= (player_list.len / 3)

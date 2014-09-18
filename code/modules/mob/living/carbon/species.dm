@@ -117,14 +117,14 @@
 	//If you wanted to add a species-level ability:
 	/*abilities = list(/client/proc/test_ability)*/
 
-/datum/species/soghun
+/datum/species/Soghun
 	name = "Soghun"
 	icobase = 'icons/mob/human_races/r_lizard.dmi'
 	deform = 'icons/mob/human_races/r_def_lizard.dmi'
-	language = "Sinta'unathi"
+	language = "Sinta'Soghun"
 	tail = "sogtail"
 	unarmed_type = /datum/unarmed_attack/claws
-	primitive = /mob/living/carbon/monkey/soghun
+	primitive = /mob/living/carbon/monkey/Soghun
 	darksight = 3
 
 	cold_level_1 = 280 //Default 260 - Lower is better
@@ -146,8 +146,7 @@
 	name = "Tajaran"
 	icobase = 'icons/mob/human_races/r_tajaran.dmi'
 	deform = 'icons/mob/human_races/r_def_tajaran.dmi'
-	language = "Siik'maas"
-	secondary_langs = list("Siik'tajr")
+	language = "Siik'tajr"
 	tail = "tajtail"
 	unarmed_type = /datum/unarmed_attack/claws
 	darksight = 8
@@ -200,7 +199,7 @@
 	breath_type = "nitrogen"
 	poison_type = "oxygen"
 
-	flags = NO_SCAN | IS_WHITELISTED
+	flags = NO_SCAN
 
 	blood_color = "#2299FC"
 	flesh_color = "#808D11"
@@ -215,6 +214,7 @@
 /datum/species/vox/armalis/handle_post_spawn(var/mob/living/carbon/human/H)
 
 	H.verbs += /mob/living/carbon/human/proc/gut
+	H.verbs += /mob/living/carbon/human/proc/commune
 	..()
 
 /datum/species/vox/armalis
@@ -242,7 +242,7 @@
 	breath_type = "nitrogen"
 	poison_type = "oxygen"
 
-	flags = IS_WHITELISTED | NO_SCAN | NO_BLOOD | HAS_TAIL | NO_PAIN
+	flags = NO_SCAN | NO_BLOOD | HAS_TAIL | NO_PAIN
 
 	blood_color = "#2299FC"
 	flesh_color = "#808D11"
@@ -273,7 +273,7 @@
 
 	body_temperature = T0C + 15		//make the plant people have a bit lower body temperature, why not
 
-	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | NO_PAIN //| IS_SLOW
+	flags = IS_WHITELISTED | NO_BREATHE | REQUIRE_LIGHT | NO_SCAN | IS_PLANT | RAD_ABSORB | NO_BLOOD | IS_SLOW | NO_PAIN
 
 	blood_color = "#004400"
 	flesh_color = "#907E4A"
@@ -285,15 +285,12 @@
 
 	return ..()
 
-
 /datum/species/diona/handle_death(var/mob/living/carbon/human/H)
 
-	return //this has been disabled because it caused a bug, if it should be enabled later or that normal death rules will apply for diona should be discussed
 	var/mob/living/carbon/monkey/diona/S = new(get_turf(H))
 
 	if(H.mind)
 		H.mind.transfer_to(S)
-		S.key = H
 
 	for(var/mob/living/carbon/monkey/diona/D in H.contents)
 		if(D.client)
@@ -331,32 +328,6 @@
 
 	blood_color = "#1F181F"
 	flesh_color = "#575757"
-
-/datum/species/obsedai
-	name = "Obsedai"
-	icobase = 'icons/mob/human_races/r_obsedai.dmi'
-	deform = 'icons/mob/human_races/r_obsedai.dmi'
-	language = "Tummese"
-	darksight = 5
-
-	eyes = "blank_eyes"
-	brute_mod = 0.1
-	burn_mod = 0.1
-	warning_low_pressure = 10
-	hazard_low_pressure = -1
-
-	cold_level_1 = 200 //Default 260
-	cold_level_2 = 120 //Default 200
-	cold_level_3 = 40 //Default 120
-
-	heat_level_1 = 500 //Default 360
-	heat_level_2 = 2000 //Default 400
-	heat_level_3 = 4000 //Default 1000
-
-	flags = IS_WHITELISTED | NO_BREATHE | NO_SCAN | NO_BLOOD | NO_PAIN | IS_SYNTHETIC | IS_SLOW
-
-	blood_color = "#BD3AC2"
-	flesh_color = "#4A4845"
 
 //Species unarmed attacks
 

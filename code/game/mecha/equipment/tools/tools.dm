@@ -464,7 +464,7 @@
 					return
 				else if(target!=locked)
 					if(locked in view(chassis))
-						locked.throw_at(target, 14, 1.5)
+						locked.throw_at(target, 14, 1.5, chassis)
 						locked = null
 						send_byjax(chassis.occupant,"exosuit.browser","\ref[src]",src.get_equip_info())
 						set_ready_state(0)
@@ -924,13 +924,11 @@
 			return
 		var/datum/gas_mixture/GM = new
 		if(prob(10))
-			GM.phoron += 100
-			GM.temperature = 1500+T0C //should be enough to start a fire
+			T.assume_gas("phoron", 100, 1500+T0C)
 			T.visible_message("The [src] suddenly disgorges a cloud of heated phoron.")
 			destroy()
 		else
-			GM.phoron += 5
-			GM.temperature = istype(T) ? T.air.temperature : T20C
+			T.assume_gas("phoron", 5, istype(T) ? T.air.temperature : T20C)
 			T.visible_message("The [src] suddenly disgorges a cloud of phoron.")
 		T.assume_air(GM)
 		return

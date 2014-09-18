@@ -2,11 +2,11 @@
 	var/ending = copytext(text, length(text))
 
 	if (ending == "?")
-		return "queries"
+		return speak_query
 	else if (ending == "!")
-		return "declares"
+		return speak_exclamation
 
-	return "states"
+	return speak_statement
 
 #define IS_AI 1
 #define IS_ROBOT 2
@@ -15,7 +15,7 @@
 /mob/living/silicon/say_understands(var/other,var/datum/language/speaking = null)
 	//These only pertain to common. Languages are handled by mob/say_understands()
 	if (!speaking)
-		if (istype(other, /mob/living/carbon/human))
+		if (istype(other, /mob/living/carbon))
 			return 1
 		if (istype(other, /mob/living/silicon))
 			return 1
@@ -85,14 +85,14 @@
 		if("department")
 			switch(bot_type)
 				if(IS_AI)
-					AI.holopad_talk(message)
+					return AI.holopad_talk(message)
 				if(IS_ROBOT)
 					log_say("[key_name(src)] : [message]")
 					R.radio.talk_into(src,message,message_mode,verb,speaking)
 				if(IS_PAI)
 					log_say("[key_name(src)] : [message]")
 					P.radio.talk_into(src,message,message_mode,verb,speaking)
-			return
+			return 1
 
 		if("binary")
 			switch(bot_type)
@@ -105,34 +105,41 @@
 					return
 
 			robot_talk(message)
-			return
+			return 1
 		if("general")
 			switch(bot_type)
 				if(IS_AI)
-					log_say("[key_name(src)] : [message]")
-					AI.radio.talk_into(src,message,null,verb,speaking)
+					if (AI.aiRadio.disabledAi)
+						src << "\red System Error - Transceiver Disabled"
+						return
+					else
+						log_say("[key_name(src)] : [message]")
+						AI.aiRadio.talk_into(src,message,null,verb,speaking)
 				if(IS_ROBOT)
 					log_say("[key_name(src)] : [message]")
 					R.radio.talk_into(src,message,null,verb,speaking)
 				if(IS_PAI)
 					log_say("[key_name(src)] : [message]")
 					P.radio.talk_into(src,message,null,verb,speaking)
-			return
+			return 1
 
 		else
 			if(message_mode && message_mode in radiochannels)
 				switch(bot_type)
 					if(IS_AI)
-						log_say("[key_name(src)] : [message]")
-						R.radio.talk_into(src,message,message_mode,verb,speaking)
-						return
+						if (AI.aiRadio.disabledAi)
+							src << "\red System Error - Transceiver Disabled"
+							return
+						else
+							log_say("[key_name(src)] : [message]")
+							AI.aiRadio.talk_into(src,message,message_mode,verb,speaking)
 					if(IS_ROBOT)
 						log_say("[key_name(src)] : [message]")
 						R.radio.talk_into(src,message,message_mode,verb,speaking)
 					if(IS_PAI)
 						log_say("[key_name(src)] : [message]")
 						P.radio.talk_into(src,message,message_mode,verb,speaking)
-				return
+				return 1
 
 	return ..(message,speaking,verb)
 
@@ -146,8 +153,8 @@
 	if (!message)
 		return
 
-	var/obj/machinery/hologram/holopad/T = src.current
-	if(istype(T) && T.hologram && T.master == src)//If there is a hologram and its master is the user.
+	var/obj/machinery/hologram/holopad/T = src.holo
+	if(T && T.hologram && T.master == src)//If there is a hologram and its master is the user.
 		var/verb = say_quote(message)
 
 		//Human-like, sorta, heard by those who understand humans.
@@ -167,7 +174,8 @@
 		This is another way of saying that we won't bother dealing with them.*/
 	else
 		src << "No holopad connected."
-	return
+		return
+	return 1
 
 /mob/living/proc/robot_talk(var/message)
 

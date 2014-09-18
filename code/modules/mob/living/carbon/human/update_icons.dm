@@ -145,7 +145,7 @@ Please contact me on #coderbus IRC. ~Carn x
 	update_hud()		//TODO: remove the need for this
 	overlays.Cut()
 
-	
+	var/stealth = 0
 	//cloaking devices. //TODO: get rid of this :<
 	for(var/obj/item/weapon/cloaking_device/S in list(l_hand,r_hand,belt,l_store,r_store))
 		if(S.active)
@@ -251,7 +251,7 @@ proc/get_damage_icon_part(damage_state, body_part)
 			icon_key = "[icon_key]0"
 		else if(part.status & ORGAN_ROBOT)
 			icon_key = "[icon_key]2"
-		else if(part.status & ORGAN_DEAD) //Do we even have necrosis in our current code? ~Z
+		else if(part.status & ORGAN_DEAD)
 			icon_key = "[icon_key]3"
 		else
 			icon_key = "[icon_key]1"
@@ -274,6 +274,10 @@ proc/get_damage_icon_part(damage_state, body_part)
 		//No icon stored, so we need to start with a basic one.
 		var/datum/organ/external/chest = get_organ("chest")
 		base_icon = chest.get_icon(g)
+		
+		if(chest.status & ORGAN_DEAD)
+			base_icon.ColorTone(necrosis_color_mod)
+			base_icon.SetIntensity(0.7)
 
 		for(var/datum/organ/external/part in organs)
 
