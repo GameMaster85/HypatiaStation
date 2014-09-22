@@ -932,7 +932,7 @@
 
 /obj/item/clothing/under/fluff/milo_hachert //Field Dress Uniform - Milo Hachert - Commissar_Drew
 	name = "field dress uniform"
-	desc = "A uniform jacket, its buttons polished to a shine, coupled with a dark pair of trousers. 'Hachert' is embroidered upon the jacket�s shoulder bar."
+	desc = "A uniform jacket, its buttons polished to a shine, coupled with a dark pair of trousers. 'Hachert' is embroidered upon the jacket's shoulder bar."
 	icon = 'icons/obj/custom_items.dmi'
 	icon_state = "milohachert"
 	item_state = "milohachert"
@@ -1353,7 +1353,6 @@
 	item_state = "foldcane"
 	icon_state = "foldcane"
 
-
 //////////////////////////// Footman - Farwa  Plush Doll //////////////////////////////////
 
 /obj/item/weapon/fluff/farwadoll
@@ -1375,3 +1374,46 @@
 	 desc = "This cane seems to have 'Ryals' engraved on its handle."
 	 icon_state = "cane"
 	 item_state = "stick"
+
+// Chi codes some items. :3
+
+///////////////////////////// IceCreamAndHoney ////////////////////////////////
+
+/obj/item/clothing/head/hairflower/fluff/icecreamandhoney
+	name = "silken flower pin"
+	desc = "A rose flower hair pin. The petals seem to be made of silk."
+
+//////////////////////////// TheBujinkan ///////////////////////////////////////////
+
+/obj/item/weapon/coin/silver/fluff/thebujinkan
+	name = "Pound Coin"
+	desc = "An extremely old item of currency from Terra. The two sides of the coin are very tarnished with age. However, you can just about make out a face upon one of them..."
+
+/////////////////////////// ChiGarnett /////////////////////////////////////////////
+
+/obj/item/weapon/storage/belt/utility/fluff/chigarnett
+	name = "black leather belt"
+	desc = "A utility belt made from black leather. It looks as though it was meant to hold tools."
+	icon_state = "securitybelt"
+
+////////////////////////// Sandcom ///////////////////////////////////////////////////
+
+/obj/item/clothing/suit/storage/labcoat/fluff/aeneas_rinil/sandcom
+	name = "black hooded trenchcoat"
+	desc = "A black, hooded trenchcoat with red stitching down the back. The very look of it seems oddly tailored but fairly practical. Anyone who wears this clearly had it made with not being seen in mind."
+
+/obj/item/clothing/tie/fluff/nasir_khayyam_1/sandcom
+	name = "O'Brian family crest"
+	desc = "An obsidian medallion with silver edging, strung on a silver necklace. In the center is a coat of arms, on which a skull is in the top left corner, a pen in the top right, a cross over a shield on the bottom left, and an energy gun crossed over what appears to be an energy sword in the bottom right."
+
+///////////////////////// Bewawolf19 //////////////////////////////////////////////////
+
+/obj/item/clothing/suit/storage/lawyer/bluejacket/fluff/bewawolf19
+	name = "pristine blue suit jacket"
+	desc = "A fine-looking suit jacket that has \"Property of Vasiliv Tarkov\" scrawled on the back tag."
+
+//////////////////////////// Grolarg ///////////////////////////////////////////////////
+
+/obj/item/clothing/head/collectable/HoS/fluff/grolarg
+	name = "Hala\'s black Cap"
+	desc = "A fancy-looking black hat. The initials \'H.A.\' are printed on the inside."
