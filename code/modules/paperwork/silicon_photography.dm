@@ -23,6 +23,9 @@
 	photos_taken++
 	P.fields["name"] = "Image [photos_taken][sufix]"
 	aipictures += P
+	if(istype(usr, /mob/living/silicon/ai))
+		var/mob/living/silicon/ai/curai = usr
+		curai.aiInterface()
 
 /obj/item/device/camera/siliconcam/proc/injectmasteralbum(var/datum/picture/P) //stores image information to a list similar to that of the datacore
 	var/mob/living/silicon/robot/C = src.loc
@@ -67,6 +70,8 @@
 	del(P) //so 10 thousand pictures items are not left in memory should an AI take them and then view them all.
 
 /obj/item/device/camera/siliconcam/proc/deletepicture(obj/item/device/camera/siliconcam/cam)
+	if(!cam)
+		cam = getsource()
 	var/datum/picture/selection = selectpicture(cam)
 
 	if(!selection)
@@ -99,14 +104,6 @@
 
 /obj/item/device/camera/siliconcam/robot_camera/printpicture(mob/user, datum/picture/P)
 	injectmasteralbum(P)
-
-/obj/item/device/camera/siliconcam/ai_camera/verb/take_image()
-	set category = "AI Commands"
-	set name = "Take Image"
-	set desc = "Takes an image"
-	set src in usr
-
-	toggle_camera_mode()
 
 /obj/item/device/camera/siliconcam/ai_camera/verb/view_images()
 	set category = "AI Commands"

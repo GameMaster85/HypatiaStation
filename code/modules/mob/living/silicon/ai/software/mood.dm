@@ -15,8 +15,7 @@
 	return dat
 
 /datum/aisoftware/mood/Topic(href, href_list)
-	if(usr.stat == 2)
-		usr <<"You cannot change your emotional status because you are dead!"
+	if(softowner.check_unable(1)) //AI_CHECK_WIRELESS
 		return
 	if(href_list["newmood"])
 		softowner.curmood = href_list["newmood"]

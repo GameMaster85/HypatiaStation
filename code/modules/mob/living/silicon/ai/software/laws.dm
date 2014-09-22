@@ -47,11 +47,15 @@
 				softowner.lawcheck[number+1] = "Yes"
 			dat += {"<A href='byond://?src=\ref[src];lawc=[number]'>[softowner.lawcheck[number+1]] [number]:</A> [law]<BR>"}
 			number++
-	dat += {"<br><br><A href='byond://?src=\ref[src];laws=1'>State Laws</A>"}
+
+	dat += {"<br>Channel: <A href='byond://?src=\ref[src];lawr=1'>[softowner.lawchannel]</A><br>"}
+	dat += {"<A href='byond://?src=\ref[src];laws=1'>State Laws</A>"}
 	return dat
 
 /datum/aisoftware/laws/Topic(href, href_list)
 	if(href_list["laws"])
+		if(softowner.check_unable())
+			return
 		softowner.statelaws()
 	else if (href_list["lawi"]) // Toggling whether or not a law gets stated by the State Laws verb --NeoFite
 		var/L = text2num(href_list["lawi"])
@@ -63,5 +67,10 @@
 		switch(softowner.lawcheck[L+1])
 			if ("Yes") softowner.lawcheck[L+1] = "No"
 			if ("No") softowner.lawcheck[L+1] = "Yes"
+	else if (href_list["lawr"]) // Selects on which channel to state laws
+		var/setchannel = input(usr, "Specify channel.", "Channel selection") in list("State","Common","Science","Command","Medical","Engineering","Security","Supply","Binary","Holopad", "Cancel")
+		if(setchannel == "Cancel")
+			return
+		softowner.lawchannel = setchannel
 	softowner.aiInterface()
 	return

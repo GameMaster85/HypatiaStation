@@ -76,10 +76,7 @@
 	stored_locations[loc] = L
 	src << "Location '[loc]' stored"
 
-/mob/living/silicon/ai/proc/sorted_stored_locations()
-	return sortList(stored_locations)
-
-/mob/living/silicon/ai/proc/ai_goto_location(loc in sorted_stored_locations())
+/mob/living/silicon/ai/proc/ai_goto_location(loc in stored_locations)
 	set category = "AI Commands"
 	set name = "Goto Camera Location"
 	set desc = "Returns to the selected camera location"
@@ -91,7 +88,7 @@
 	var/L = stored_locations[loc]
 	src.eyeobj.setLoc(L)
 
-/mob/living/silicon/ai/proc/ai_remove_location(loc in sorted_stored_locations())
+/mob/living/silicon/ai/proc/ai_remove_location(loc in stored_locations)
 	set category = "AI Commands"
 	set name = "Delete Camera Location"
 	set desc = "Deletes the selected camera location"

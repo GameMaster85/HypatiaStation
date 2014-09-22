@@ -1,1 +1,9 @@
-ckey: name: /path/to/obj
+icecreamandhoney: Adrianna Wolfe: /obj/item/head/hairflower/fluff/icecreamandhoney
+
+thebujinkan: Al-Karim Hussein: /obj/item/weapon/coin/silver/fluff/thebujinkan
+chigarnett: Haley Gygax: /obj/item/clothing/suit/storage/labcoat/fluff/aeneas_rinil
+chigarnett: Haley Gygax: /obj/item/weapon/storage/belt/utility/fluff/chigarnett
+sandcom: Lucus Grosvenor: /obj/item/clothing/suit/storage/labcoat/fluff/aeneas_rinil/sandcom
+sandcom: Duncan O'Brian III: /obj/item/clothing/tie/fluff/nasir_khayyam_1/sandcom
+bewawolf19: Vasiliv Tarkov: /obj/item/clothing/suit/storage/lawyer/bluejacket/fluff/bewawolf19
+grolarg: Hala Al-Amani: /obj/item/clothing/head/collectable/HoS/fluff/grolarg

@@ -3,6 +3,8 @@
 /datum/aisoftware/hologram/New()
 	..()
 
+
+//TODOO, make bold what hologram is currently used.
 /datum/aisoftware/hologram/GetScreen()
 	var/dat =""
 	dat += "<br><h1>Change Hologram</h1><br><br>"
@@ -16,18 +18,21 @@
 	return dat
 
 /datum/aisoftware/hologram/Topic(href, href_list)
+	if(softowner.check_unable())
+		return
 	if(href_list["uholo"])
+		del(softowner.holo_icon)
 		switch(href_list["uholo"])
 			if("default")
-				del(softowner.holo_icon)
 				softowner.holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo1"))
 			if("floating face")
-				del(softowner.holo_icon)
 				softowner.holo_icon = getHologramIcon(icon('icons/mob/AI.dmi',"holo2"))
 	else if(href_list["crew"])
 		for(var/datum/data/record/t in data_core.locked)
 			if(t.fields["id"] == href_list["crew"])
-				del(softowner.holo_icon)
-				softowner.holo_icon = getHologramIcon(icon(t.fields["image"]))
+				var/icon/character_icon = t.fields["image"]
+				if(character_icon)
+					del(softowner.holo_icon)
+					softowner.holo_icon = character_icon
 				break
 	softowner.aiInterface()
