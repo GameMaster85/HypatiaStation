@@ -26,8 +26,9 @@
 						border-style: ridge;border-color:#CCCCCC;}
 					#content { color:#CCCCCC; height:auto; overflow:hidden; font-family: \"Verdana\"; font-size:13px; }
 					p { font-size:13px; margin-left: 5px; margin-right: 5px; }
+					h1 { margin-left: 5px; }
 
-					#leftmenu {  float: none; width:auto; overflow: hidden; overflow-y:auto; min-height:600px;border-style: ridge;border-color:#CCCCCC;}
+					#leftmenu { float: none; width:auto; overflow: hidden; overflow-y:auto; min-height:600px;border-style: ridge;border-color:#CCCCCC;}
 					#leftmenu a:link { color: #CCCCCC; }
 					#leftmenu a:hover { color: #CC3333; }
 					#leftmenu a:visited { color: #CCCCCC; }
@@ -48,7 +49,7 @@
 				</div>
 				<div id=\"content\">
 					<div id=\"rightmenu\"><p>[right_part]</p></div>
-					<div id=\"leftmenu\"><p>[left_part]</p></div>
+					<div id=\"leftmenu\">[left_part]</div>
 				</div>
 			</body>
 			</html>"}
@@ -64,7 +65,6 @@
 	<A href='byond://?src=\ref[src];soft=manifest'>Crew manifest</A><br>
 	<A href='byond://?src=\ref[src];soft=camctrl'>Camera Control</A><br><br>
 	<A href='byond://?src=\ref[src];soft=messenger'>PDA/messaging</A><br>
-	<A href='byond://?src=\ref[src];soft=announce'>Announcements</A><br>
 	<A href='byond://?src=\ref[src];soft=airadio'>Radio</A><br><br>
 	<A href='byond://?src=\ref[src];soft=hologram'>Change Hologram</A><br>
 	<A href='byond://?src=\ref[src];soft=iconchanger'>Change Icon</A><br>

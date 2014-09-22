@@ -130,50 +130,59 @@
 					H.lip_style = null
 					H.update_body()
 
-/obj/item/weapon/paper/proc/addtofield(var/id, var/text, var/links = 0)
+//adds text to the paper, in the form of thext or a sign
+/obj/item/weapon/paper/proc/addtofield(var/id, var/text,var/fieldtype)
 	var/locid = 0
 	var/laststart = 1
 	var/textindex = 1
-	while(1) // I know this can cause infinite loops and fuck up the whole server, but the if(istart==0) should be safe as fuck
-		var/istart = 0
-		if(links)
-			istart = findtext(info_links, "<span class=\"paper_field\">", laststart)
-		else
-			istart = findtext(info, "<span class=\"paper_field\">", laststart)
-
+	while(1) //no this does not break the server, this is not an infinite loop
+		var/istart = findtext(info, "<span class=\"", laststart)
 		if(istart==0)
 			return // No field found with matching id
-
-		laststart = istart+1
+		laststart = istart + lentext("<span class=\"")
 		locid++
 		if(locid == id)
-			var/iend = 1
-			if(links)
-				iend = findtext(info_links, "</span>", istart)
-			else
-				iend = findtext(info, "</span>", istart)
-
-			//textindex = istart+26
-			textindex = iend
+			textindex = findtext(info, "</span>", laststart)
+			var/fieldtext = copytext(info,laststart, findtext(info,"\"",laststart))
+			if(fieldtype != fieldtext)
+				testing("FOUND Field: "+fieldtext + " should be: " + fieldtype)
+				return //now this, this is a problem! (you are inserting something in the wrong field, which means I fucked up my code)
 			break
 
-	if(links)
-		var/before = copytext(info_links, 1, textindex)
-		var/after = copytext(info_links, textindex)
-		info_links = before + text + after
-	else
-		var/before = copytext(info, 1, textindex)
-		var/after = copytext(info, textindex)
-		info = before + text + after
-		updateinfolinks()
+	var/before = copytext(info, 1, ( fieldtype == "paper_field" ? textindex : laststart - lentext("<span class=\"")))
+	var/after = copytext(info, (fieldtype == "paper_field" ? textindex : textindex + lentext("</span>")))
+	info = before + text + after
+	updateinfolinks()
 
+//updates all the links in the texts and recounts the number of fields
 /obj/item/weapon/paper/proc/updateinfolinks()
 	info_links = info
-	var/i = 0
-	for(i=1,i<=fields,i++)
-		addtofield(i, "<font face=\"[deffont]\"><A href='?src=\ref[src];write=[i]'>write</A></font>", 1)
-	info_links = info_links + "<font face=\"[deffont]\"><A href='?src=\ref[src];write=end'>write</A></font>"
+	fields = 0
+	var/laststart = 1
+	var/textindex = 1
+	while(1) //no this does not break the server
+		var/istart = 0
+		istart = findtext(info_links, "<span class=\"", laststart)
+		if(istart == 0)
+			break // No field found with matching id
 
+		laststart = istart + lentext("<span class=\"")
+		fields++
+
+		textindex = findtext(info_links, "</span>", istart)
+		var/before = copytext(info_links, 1, textindex)
+		var/after = copytext(info_links, textindex)
+		//check which field we found and add the appriopriate text!
+		var/fieldtext = copytext(info_links,laststart,findtext(info_links,"\"",laststart))
+		var/temptext = ""
+		if(fieldtext == "paper_field")
+			temptext = "<font face=\"[deffont]\"><A href='?src=\ref[src];write=[fields]'>write</A></font>"
+		else if(fieldtext == "fill_field")
+			temptext = "<font face=\"[deffont]\"><A href='?src=\ref[src];fill=[fields]'>fill</A></font>"
+		else if(fieldtext == "sign_field")
+			temptext = "<font face=\"[deffont]\"><A href='?src=\ref[src];sign=[fields]'>sign</A></font>"
+		info_links = before + temptext + after
+	info_links = info_links + "<font face=\"[deffont]\"><A href='?src=\ref[src];write=end'>write</A></font>"
 
 /obj/item/weapon/paper/proc/clearpaper()
 	info = null
@@ -231,17 +240,7 @@
 		t = replacetext(t, "\[logo\]", "")
 
 		t = "<font face=\"[crayonfont]\" color=[P.colour]><b>[t]</b></font>"
-
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
-
-//Count the fields
-	var/laststart = 1
-	while(1)
-		var/i = findtext(t, "<span class=\"paper_field\">", laststart)
-		if(i==0)
-			break
-		laststart = i+1
-		fields++
 
 	return t
 
@@ -258,7 +257,9 @@
 		\[u\] - \[/u\] : Makes the text <u>underlined</u>.<br>
 		\[large\] - \[/large\] : Increases the <font size = \"4\">size</font> of the text.<br>
 		\[sign\] : Inserts a signature of your name in a foolproof way.<br>
+		\[signfield\] : Inserts a field for someone to sign as if the person inserted \[sign\].<br>
 		\[field\] : Inserts an invisible field which lets you start type from there. Useful for forms.<br>
+		\[fillfield\] : Inserts a field that can be filled with one line of text, only once. <br>
 		<br>
 		<b><center>Pen exclusive commands</center></b><br>
 		\[small\] - \[/small\] : Decreases the <font size = \"1\">size</font> of the text.<br>
@@ -297,21 +298,45 @@
 	if(!usr || (usr.stat || usr.restrained()))
 		return
 
-	if(href_list["write"])
+	var/writecolour
+	var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
+	var/iscrayon = 0
+	if(istype(i, /obj/item/weapon/pen))
+		var/obj/item/weapon/pen/p = i
+		writecolour = p.colour
+	else if(istype(i, /obj/item/toy/crayon))
+		var/obj/item/toy/crayon/cr = i
+		writecolour = cr.colour
+		iscrayon = 1
+	else
+		usr << "You have no pen to write on the paper!"
+		return
+	if(src.loc != usr && !src.Adjacent(usr) && !((istype(src.loc, /obj/item/weapon/clipboard) || istype(src.loc, /obj/item/weapon/folder)) && (src.loc.loc == usr || src.loc.Adjacent(usr)) ) )
+		return
+	if(href_list["sign"])
+		var/id = href_list["sign"]
+		var/response = alert("Are you sure you want to sign?","Sign paper","Sign","Cancel")
+		if(response == "Sign")
+			addtofield(text2num(id),"<font face=\"[signfont]\"><i>[usr.real_name]</i></font>","sign_field")
+			usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+
+	else if(href_list["fill"])
+		var/id = href_list["fill"]
+		var/t = input("Enter your line here:", "Fill", null, null) as text
+		if(lentext(t) == 0)
+			return
+		t = html_encode(t)
+		t = replacetext(t, "\n", "<BR>")
+		t = parsepencode(t, writecolour, usr, iscrayon)
+		addtofield(text2num(id), t,"fill_field")
+
+	else if(href_list["write"])
 		var/id = href_list["write"]
 		//var/t = strip_html_simple(input(usr, "What text do you wish to add to " + (id=="end" ? "the end of the paper" : "field "+id) + "?", "[name]", null),8192) as message
 		//var/t =  strip_html_simple(input("Enter what you want to write:", "Write", null, null)  as message, MAX_MESSAGE_LEN)
+
 		var/t =  input("Enter what you want to write:", "Write", null, null)  as message
-		var/obj/item/i = usr.get_active_hand() // Check to see if he still got that darn pen, also check if he's using a crayon or pen.
-		var/iscrayon = 0
-		if(!istype(i, /obj/item/weapon/pen))
-			if(!istype(i, /obj/item/toy/crayon))
-				return
-			iscrayon = 1
-
-
-		// if paper is not in usr, then it must be near them, or in a clipboard or folder, which must be in or near usr
-		if(src.loc != usr && !src.Adjacent(usr) && !((istype(src.loc, /obj/item/weapon/clipboard) || istype(src.loc, /obj/item/weapon/folder)) && (src.loc.loc == usr || src.loc.Adjacent(usr)) ) )
+		if(lentext(t) == 0) //if someone wrote nothing, then dont do all the unnecessary stuff
 			return
 /*
 		t = checkhtml(t)
@@ -326,17 +351,16 @@
 */
 		t = html_encode(t)
 		t = replacetext(t, "\n", "<BR>")
-		t = parsepencode(t, i, usr, iscrayon) // Encode everything from pencode to html
+		t = parsepencode(t, writecolour, usr, iscrayon) // Encode everything from pencode to html
 
 		if(id!="end")
-			addtofield(text2num(id), t) // He wants to edit a field, let him.
+			addtofield(text2num(id), t,"paper_field") // He wants to edit a field, let him.
 		else
 			info += t // Oh, he wants to edit to the end of the file, let him.
-			updateinfolinks()
 
-		usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
-
-		update_icon()
+	updateinfolinks()
+	usr << browse("<HTML><HEAD><TITLE>[name]</TITLE></HEAD><BODY>[info_links][stamps]</BODY></HTML>", "window=[name]") // Update the window
+	update_icon()
 
 
 /obj/item/weapon/paper/attackby(obj/item/weapon/P as obj, mob/user as mob)
