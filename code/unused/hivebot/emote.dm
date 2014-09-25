@@ -45,15 +45,6 @@
 			if (!src.restrained())
 				message = "<B>[src]</B> claps."
 				m_type = 2
-		if ("flap")
-			if (!src.restrained())
-				message = "<B>[src]</B> flaps his wings."
-				m_type = 2
-
-		if ("aflap")
-			if (!src.restrained())
-				message = "<B>[src]</B> flaps his wings ANGRILY!"
-				m_type = 2
 
 		if ("custom")
 			var/input = input("Choose an emote to display.") as text|null
