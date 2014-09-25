@@ -100,7 +100,7 @@
 					host.adjustBrainLoss(rand(1,2))
 
 				if(prob(host.brainloss/20))
-					host.say("*[pick(list("blink","blink_r","choke","aflap","drool","twitch","twitch_s","gasp"))]")
+					host.say("*[pick(list("blink","blink_r","choke","drool","twitch","twitch_s","gasp"))]")
 
 /mob/living/simple_animal/borer/New()
 	..()
