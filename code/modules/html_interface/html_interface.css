@@ -1,0 +1,7 @@
+body
+{
+	font-family: Arial;
+	overflow-y: scroll;
+	overflow-x: auto;
+	padding-right: 16px;
+}
