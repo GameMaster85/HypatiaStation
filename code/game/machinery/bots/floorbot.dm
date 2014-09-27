@@ -270,7 +270,7 @@
 			if(prob(90))
 				F.break_tile_to_plating()
 			else
-				F.ReplaceWithLattice()
+				F.reduceToLattice()
 			visible_message("\red [src] makes an excited booping sound.")
 			spawn(50)
 				src.amount ++

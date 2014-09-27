@@ -3,6 +3,7 @@
 /area/mine
 	icon_state = "mining"
 	music = 'sound/ambience/song_game.ogg'
+	var/list/exposed_turfs // list of turfs exposed to space
 
 /area/mine/explored
 	name = "Mine"

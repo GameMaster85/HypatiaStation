@@ -203,8 +203,8 @@
 					T.ChangeTurf(/turf/simulated/floor)
 					return
 				else if(istype(object,/turf/simulated/floor))
-					var/turf/T = object
-					T.ChangeTurf(/turf/space)
+					var/turf/simulated/floor/T = object
+					T.destroyTile(TRUE)
 					return
 				else if(istype(object,/turf/simulated/wall/r_wall))
 					var/turf/T = object

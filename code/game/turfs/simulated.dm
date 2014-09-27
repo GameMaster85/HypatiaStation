@@ -200,3 +200,22 @@
 
 	else if( istype(M, /mob/living/silicon/robot ))
 		new /obj/effect/decal/cleanable/blood/oil(src)
+
+/turf/simulated/proc/isOnAsteroid()
+/*
+	var/area/mine/area = get_area(src)
+
+	return (istype(area) && (!area.exposed_turfs || !(src in area.exposed_turfs)))
+*/
+
+	return FALSE // See https://github.com/HypatiaStation/HypatiaStation/issues/143
+
+/turf/simulated/proc/destroyTile(deconstruct = FALSE) // if deconstruct=TRUE then we want to gradually deconstruct this tile (i.e., build mode)
+	var/const/asteroid_type = /turf/simulated/floor/plating/airless/asteroid
+
+	if (src.isOnAsteroid() && (!deconstruct || !istype(src, asteroid_type))) src.ChangeTurf(asteroid_type)
+	else                                                                     src.ChangeTurf(/turf/space)
+
+/turf/simulated/proc/reduceToLattice()
+	if (src.isOnAsteroid()) src.destroyTile()
+	else                    src.ReplaceWithLattice()
