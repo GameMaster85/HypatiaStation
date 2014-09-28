@@ -117,19 +117,6 @@
 				m_type = 2
 				if(miming)
 					m_type = 1
-		if ("flap")
-			if (!src.restrained())
-				message = "<B>[src]</B> flaps his wings."
-				m_type = 2
-				if(miming)
-					m_type = 1
-
-		if ("aflap")
-			if (!src.restrained())
-				message = "<B>[src]</B> flaps his wings ANGRILY!"
-				m_type = 2
-				if(miming)
-					m_type = 1
 
 		if ("drool")
 			message = "<B>[src]</B> drools."
