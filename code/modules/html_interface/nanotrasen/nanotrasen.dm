@@ -18,7 +18,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 	. = ..()
 
 	// Add appropriate CSS and set the default layout.
-	src.head = "<link rel=\"stylesheet\" type=\"text/css\" href=\"nanotrasen.css\" />"
+	src.head = src.head + "<link rel=\"stylesheet\" type=\"text/css\" href=\"nanotrasen.css\" />"
 	src.updateLayout("")
 
 /datum/html_interface/updateLayout(layout)
@@ -29,12 +29,12 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 	// Update the title in our custom header (in addition to default functionality)
 	winset(hclient.client, "browser_\ref[src].uiTitle", list2params(list("text" = "[src.title]")))
 
-/datum/html_interface/nanotrasen/sendResources(datum/html_interface_client/hclient)
+/datum/html_interface/nanotrasen/sendResources(client/client)
 	. = ..() // we need the default resources
 
-	hclient.client << browse_rsc('uiBg.png')
-	hclient.client << browse_rsc('uiBgcenter.png')
-	hclient.client << browse_rsc('nanotrasen.css')
+	client << browse_rsc('uiBg.png')
+	client << browse_rsc('uiBgcenter.png')
+	client << browse_rsc('nanotrasen.css')
 
 /datum/html_interface/nanotrasen/createWindow(datum/html_interface_client/hclient)
 	. = ..() // we want the default window
@@ -47,7 +47,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 	// Reposition the browser
 	winset(hclient.client, "browser_\ref[src].browser", list2params(list(
 													"pos"         = "0,35",
-													"size"        = "700x[480 - 35]"
+													"size"        = "[width]x[height - 35]"
 												)))
 
 	// Add top background image
@@ -55,7 +55,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 													"parent"      = "browser_\ref[src]",
 													"type"        = "label",
 													"pos"         = "0,0",
-													"size"        = "700x35",
+													"size"        = "[width]x35",
 													"anchor1"     = "0,0",
 													"anchor2"     = "100,0",
 													"image"       = "['uiBgtop.png']",
@@ -67,7 +67,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 	winset(hclient.client, "browser_\ref[src].uiTitleFluff", list2params(list(
 													"parent"      = "browser_\ref[src]",
 													"type"        = "label",
-													"pos"         = "[700 - 42 - 4 - 24 - 4 - 24 - 4],5",
+													"pos"         = "[width - 42 - 4 - 24 - 4 - 24 - 4],5",
 													"size"        = "42x24",
 													"anchor1"     = "100,0",
 													"anchor2"     = "100,0",
@@ -115,7 +115,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 													"background-color"="#383838", // should be unnecessary if image is used
 													"text-color"     = "#FFFFFF", // should be unnecessary if image is used
 													"is-transparent" = "true",
-													"pos"            = "[700 - 24 - 4 - 24 - 4],5",
+													"pos"            = "[width - 24 - 4 - 24 - 4],5",
 													"size"           = "24x24",
 													"anchor1"        = "100,0",
 													"anchor2"        = "100,0",
@@ -137,7 +137,7 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 													"text-color"     = "#FFFFFF", // should be unnecessary if image is used
 													"command"        = "byond://?src=\ref[src];html_interface_action=onclose",
 													"is-transparent" = "true",
-													"pos"            = "[700 - 24 - 4],5",
+													"pos"            = "[width - 24 - 4],5",
 													"size"           = "24x24",
 													"anchor1"        = "100,0",
 													"anchor2"        = "100,0",
@@ -145,6 +145,16 @@ The client is optional and may be a /mob, /client or /html_interface_client obje
 													"font-family"    = "verdana,Geneva,sans-serif", // should be unnecessary if image is used
 													"font-size"      = "12" // ~ 16px - should be unnecessary if image is used
 												)))
+
+/datum/html_interface/nanotrasen/enableFor(datum/html_interface_client/hclient)
+	. = ..()
+
+	src.setEyeColor("green", hclient)
+
+/datum/html_interface/nanotrasen/disableFor(datum/html_interface_client/hclient)
+	hclient.active = FALSE
+
+	src.setEyeColor("red", hclient)
 
 /datum/html_interface/nanotrasen/proc/setEyeColor(color, datum/html_interface_client/hclient)
 	hclient = getClient(hclient)

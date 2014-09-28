@@ -14,6 +14,10 @@
 	// TRUE if the browser control has loaded and will accept input, FALSE if not.
 	var/is_loaded = FALSE
 
+	// TRUE if this client should receive updates, FALSE if not.
+	var/active = TRUE
+
+	// A list of extra variables, for use by extensions.
 	var/list/extra_vars
 
 /datum/html_interface_client/New(client/client)

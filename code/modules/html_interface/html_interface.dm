@@ -10,9 +10,10 @@ Add a getter/setter instead, even if it does nothing but return or set the varia
 
 	** Public API **
 
-	var/datum/html_interface/hi = new/datum/html_interface(ref, title)
+	var/datum/html_interface/hi = new/datum/html_interface(ref, title, width = 700, height = 480, head = "")
 
-Creates a new HTML interface object with [ref] as the object and [title] as the initial title of the page.
+Creates a new HTML interface object with [ref] as the object and [title] as the initial title of the page. [width] and [height] is the initial width and height
+of the window. The text in [head] is added just before the end </head> tag.
 
 	hi.setTitle(title)
 
@@ -95,34 +96,39 @@ mob/verb/test()
 	// The initial height of the browser control, used when the window is first shown to a client.
 	var/height
 
-/datum/html_interface/New(atom/ref, title, width = 700, height = 480)
+/datum/html_interface/New(atom/ref, title, width = 700, height = 480, head = "")
 	. = ..()
 
 	src.ref            = ref
 	src.title          = title
 	src.width          = width
 	src.height         = height
+	src.head           = head
 
 /*                 * Hooks */
 /datum/html_interface/proc/specificRenderTitle(datum/html_interface_client/hclient, ignore_cache = FALSE)
 
-/datum/html_interface/proc/sendResources(datum/html_interface_client/hclient)
-	hclient.client << browse_rsc('jquery.min.js')
-	hclient.client << browse_rsc('bootstrap.min.js')
-	hclient.client << browse_rsc('bootstrap.min.css')
-	hclient.client << browse_rsc('html_interface.css')
-	hclient.client << browse_rsc('html_interface.js')
+/datum/html_interface/proc/sendResources(client/client)
+	client << browse_rsc('jquery.min.js')
+	client << browse_rsc('bootstrap.min.js')
+	client << browse_rsc('bootstrap.min.css')
+	client << browse_rsc('html_interface.css')
+	client << browse_rsc('html_interface.js')
 
 /datum/html_interface/proc/createWindow(datum/html_interface_client/hclient)
 	winclone(hclient.client, "window", "browser_\ref[src]")
 
-	winset(hclient.client, "browser_\ref[src]", list2params(list(
-											"size"      = "[width]x[height]",
-											"statusbar" = "false",
-											"on-close"  = "byond://?src=\ref[src]&html_interface_action=onclose"
-										)))
+	var/list/params = list(
+		"size"                                    = "[width]x[height]",
+		"statusbar"                               = "false",
+		"on-close"                                = "byond://?src=\ref[src]&html_interface_action=onclose"
+	)
 
-	winset(hclient.client, "browser_\ref[src].browser", list2params(list("parent" = "browser_\ref[src]", "type" = "browser", "pos" = "0,0", "size" = "700x480", "anchor1" = "0,0", "anchor2" = "100,100", "use-title" = "true", "auto-format" = "false")))
+	if (hclient.client.hi_last_pos) params["pos"] = "[hclient.client.hi_last_pos]"
+
+	winset(hclient.client, "browser_\ref[src]", list2params(params))
+
+	winset(hclient.client, "browser_\ref[src].browser", list2params(list("parent" = "browser_\ref[src]", "type" = "browser", "pos" = "0,0", "size" = "[width]x[height]", "anchor1" = "0,0", "anchor2" = "100,100", "use-title" = "true", "auto-format" = "false")))
 
 /*                 * Public API */
 /datum/html_interface/proc/getTitle() return src.title
@@ -130,7 +136,12 @@ mob/verb/test()
 /datum/html_interface/proc/setTitle(title, ignore_cache = FALSE)
 	src.title = title
 
-	for (var/client in src.clients) src._renderTitle(src.clients[client], ignore_cache)
+	var/datum/html_interface_client/hclient
+
+	for (var/client in src.clients)
+		hclient = src._getClient(src.clients[client])
+
+		if (hclient && hclient.active) src._renderTitle(src.clients[client], ignore_cache)
 
 /datum/html_interface/proc/executeJavaScript(jscript, datum/html_interface_client/hclient = null)
 	if (hclient)
@@ -138,34 +149,48 @@ mob/verb/test()
 
 		if (istype(hclient))
 			if (hclient.is_loaded) hclient.client << output(list2params(list(jscript)), "browser_\ref[src].browser:eval")
-		else
-			WARNING("Invalid client passed to /datum/html_interface/proc/executeJavascript")
 	else
 		for (var/client in src.clients) src.executeJavaScript(jscript, src.clients[client])
 
 /datum/html_interface/proc/updateLayout(layout)
 	src.layout = layout
 
-	for (var/client in src.clients) src._renderLayout(src.clients[client])
+	var/datum/html_interface_client/hclient
+
+	for (var/client in src.clients)
+		hclient = src._getClient(src.clients[client])
+
+		if (hclient && hclient.active) src._renderLayout(hclient)
 
 /datum/html_interface/proc/updateContent(id, content, ignore_cache = FALSE)
 	src.content_elements[id] = content
 
-	for (var/client in src.clients) src._renderContent(id, src.clients[client], ignore_cache)
+	var/datum/html_interface_client/hclient
+
+	for (var/client in src.clients)
+		hclient = src._getClient(src.clients[client])
+
+		if (hclient && hclient.active) src._renderContent(id, hclient, ignore_cache)
 
 /datum/html_interface/proc/show(datum/html_interface_client/hclient)
 	hclient = getClient(hclient, TRUE)
 
 	if (istype(hclient))
-		src.sendResources(hclient)
+		if (!hclient.active) src.enableFor(hclient)
 
-		src.createWindow(hclient)
+		// This needs to be commented out due to BYOND bug http://www.byond.com/forum/?post=1487244
+		// /client/proc/send_resources() executes this per client to avoid the bug, but by using it here files may be deleted just as the HTML is loaded,
+		// causing file not found errors.
+//		src.sendResources(hclient.client)
 
-		hclient.client << output(replacetextEx(replacetextEx(file2text('html_interface.html'), "\[hsrc\]", "\ref[src]"), "</head>", "[head]</head>"), "browser_\ref[src].browser")
-
-		winshow(hclient.client, "browser_\ref[src]", TRUE)
-	else
-		WARNING("Invalid object passed to /datum/html_interface/proc/show")
+		if (winexists(hclient.client, "browser_\ref[src]"))
+			src._renderTitle(hclient, TRUE)
+			src._renderLayout(hclient)
+		else
+			src.createWindow(hclient)
+			hclient.is_loaded = FALSE
+			hclient.client << output(replacetextEx(replacetextEx(file2text('html_interface.html'), "\[hsrc\]", "\ref[src]"), "</head>", "[head]</head>"), "browser_\ref[src].browser")
+			winshow(hclient.client, "browser_\ref[src]", TRUE)
 
 /datum/html_interface/proc/hide(datum/html_interface_client/hclient)
 	hclient = getClient(hclient)
@@ -176,14 +201,16 @@ mob/verb/test()
 
 			if (!src.clients.len) src.clients = null
 
+		hclient.client.hi_last_pos = winget(hclient.client, "browser_\ref[src]" ,"pos")
+
 		winshow(hclient.client, "browser_\ref[src]", FALSE)
 		winset(hclient.client, "browser_\ref[src]", "parent=none")
-	else
-		WARNING("Invalid object passed to /datum/html_interface/proc/hide")
+
+		if (hascall(src.ref, "hiOnHide")) call(src.ref, "hiOnHide")(hclient)
 
 // Convert a /mob to /client, and /client to /datum/html_interface_client
 /datum/html_interface/proc/getClient(client, create_if_not_exist = FALSE)
-	if (istype(client, /datum/html_interface_client)) return client
+	if (istype(client, /datum/html_interface_client)) return src._getClient(client)
 	else if (ismob(client))
 		var/mob/mob = client
 		client      = mob.client
@@ -193,14 +220,40 @@ mob/verb/test()
 			if (!src.clients)             src.clients = new/list()
 			if (!(client in src.clients)) src.clients[client] = new/datum/html_interface_client(client)
 
-		return src.clients ? src.clients[client] : null
-	else
-		return null
+		if (src.clients && (client in src.clients)) return src._getClient(src.clients[client])
+		else                                        return null
+	else                                            return null
+
+/datum/html_interface/proc/enableFor(datum/html_interface_client/hclient)
+	hclient.active = TRUE
+
+	src.show(hclient)
+
+/datum/html_interface/proc/disableFor(datum/html_interface_client/hclient)
+	hclient.active = FALSE
+	src.hide(hclient)
 
 /*                 * Danger Zone */
 
-/datum/html_interface/proc/_renderTitle(datum/html_interface_client/hclient, ignore_cache = FALSE)
+/datum/html_interface/proc/_getClient(datum/html_interface_client/hclient)
 	if (hclient)
+		if (hclient.client)
+			if (hascall(src.ref, "hiIsValidClient"))
+				var/res = call(src.ref, "hiIsValidClient")(hclient)
+
+				if (res)
+					if (!hclient.active) src.enableFor(hclient)
+				else
+					if (hclient.active)  src.disableFor(hclient)
+
+			return hclient
+		else
+			return null
+	else
+		return null
+
+/datum/html_interface/proc/_renderTitle(datum/html_interface_client/hclient, ignore_cache = FALSE)
+	if (hclient && hclient.is_loaded)
 		// Only render if we have new content.
 
 		if (ignore_cache || src.title != hclient.title)
@@ -209,11 +262,9 @@ mob/verb/test()
 			src.specificRenderTitle(hclient)
 
 			hclient.client << output(list2params(list(title)), "browser_\ref[src].browser:setTitle")
-	else
-		WARNING("Invalid client passed to /datum/html_interface/proc/_renderTitle")
 
 /datum/html_interface/proc/_renderLayout(datum/html_interface_client/hclient)
-	if (hclient)
+	if (hclient && hclient.is_loaded)
 		var/html   = src.layout
 
 		// Only render if we have new content.
@@ -223,11 +274,9 @@ mob/verb/test()
 			hclient.client << output(list2params(list(html)), "browser_\ref[src].browser:updateLayout")
 
 			for (var/id in src.content_elements) src._renderContent(id, hclient)
-	else
-		WARNING("Invalid client passed to /datum/html_interface/proc/_renderLayout")
 
 /datum/html_interface/proc/_renderContent(id, datum/html_interface_client/hclient, ignore_cache = FALSE)
-	if (hclient)
+	if (hclient && hclient.is_loaded)
 		var/html   = src.content_elements[id]
 
 		// Only render if we have new content.
@@ -235,8 +284,6 @@ mob/verb/test()
 			hclient.content_elements[id] = html
 
 			hclient.client << output(list2params(list(id, html)), "browser_\ref[src].browser:updateContent")
-	else
-		WARNING("Invalid client passed to /datum/html_interface/proc/_renderContent")
 
 /datum/html_interface/Topic(href, href_list[])
 	var/datum/html_interface_client/hclient = getClient(usr.client)
@@ -255,6 +302,4 @@ mob/verb/test()
 
 				if ("onclose")
 					src.hide(hclient)
-		else if (src.ref) src.ref.Topic(href, href_list)
-	else
-		WARNING("Invalid object passed to /datum/html_interface/proc/Topic")
+		else if (src.ref && hclient.active) src.ref.Topic(href, href_list)
