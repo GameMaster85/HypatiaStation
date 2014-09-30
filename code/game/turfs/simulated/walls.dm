@@ -158,7 +158,7 @@
 /turf/simulated/wall/ex_act(severity)
 	switch(severity)
 		if(1.0)
-			src.ChangeTurf(/turf/space)
+			src.destroyTile()
 			return
 		if(2.0)
 			if(prob(75))
@@ -222,7 +222,7 @@
 	else if(prob(70) && !rotting)
 		ChangeTurf(/turf/simulated/floor/plating)
 	else
-		ReplaceWithLattice()
+		src.reduceToLattice()
 	return 0
 
 //Interactions

@@ -143,7 +143,10 @@ RCD
 						if(do_after(user, 50))
 							if(!useResource(5, user)) return 0
 							activate()
-							A:ChangeTurf(/turf/space)
+
+							var/turf/simulated/floor/F = A
+							F.destroyTile()
+
 							return 1
 					return 0
 
