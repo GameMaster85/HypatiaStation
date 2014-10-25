@@ -79,3 +79,20 @@
 	desc = "Its fur has the look and feel of velvet, and its tail quivers occasionally."
 
 
+//PHEAR THE GHOSTKITTEH
+/mob/living/simple_animal/cat/ghost
+	name = "Ghostly cat"
+	desc = "Fear the ghost kitty."
+	icon_state = "ghostcat"
+	icon_living = "ghostcat"
+	response_help  = "tries to pet the"
+	response_disarm = "tries to push aside the"
+	response_harm   = "tries to kick the"
+
+//OMG ITS A KITTEN!
+/mob/living/simple_animal/cat/kitten
+	name = "Kitten"
+	desc = "It's sooo tiny and cute!"
+	icon_state = "kitty"
+	icon_living = "kitty"
+	icon_dead = "kitty_dead"
