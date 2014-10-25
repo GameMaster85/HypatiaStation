@@ -95,7 +95,10 @@
 			return 1
 
 		if(href_list["ready"])
-			ready = !ready
+			if(!ticker || ticker.current_state <= GAME_STATE_PREGAME) // Check that the round hasn't started.
+				ready = !ready
+			else // Being ready after round start breaks things.
+				ready = 0
 
 		if(href_list["refresh"])
 			src << browse(null, "window=playersetup") //closes the player setup window
