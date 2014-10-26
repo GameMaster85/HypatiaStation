@@ -136,7 +136,7 @@ var/list/event_last_fired = list()
 
 	/*switch(picked_event)
 		if("Meteor")
-			command_alert("Meteors have been detected on collision course with the station.", "Meteor Alert")
+			command_announcement.Announce("Meteors have been detected on collision course with the station.", "Meteor Alert")
 			for(var/mob/M in player_list)
 				if(!istype(M,/mob/new_player))
 					M << sound('sound/AI/meteors.ogg')

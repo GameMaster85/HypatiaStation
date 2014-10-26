@@ -52,7 +52,8 @@
 
 		var/id = add_zero(num2hex(rand(1, 1.6777215E7)), 6)	//this was the best they could come up with? A large random number? *sigh*
 
-
+		var/icon/front = new(get_id_photo(H), dir = SOUTH)
+		var/icon/side = new(get_id_photo(H), dir = WEST)
 		//General Record
 		var/datum/data/record/G = new()
 		G.fields["id"]			= id
@@ -65,7 +66,12 @@
 		G.fields["m_stat"]		= "Stable"
 		G.fields["sex"]			= H.gender
 		G.fields["species"]		= H.get_species()
-		G.fields["photo"]		= get_id_photo(H)
+		G.fields["home_system"]	= H.home_system
+		G.fields["citizenship"]	= H.citizenship
+		G.fields["faction"]		= H.personal_faction
+		G.fields["religion"]	= H.religion
+		G.fields["photo_front"]	= front
+		G.fields["photo_side"]	= side
 		if(H.gen_record && !jobban_isbanned(H, "Records"))
 			G.fields["notes"] = H.gen_record
 		else
@@ -114,12 +120,22 @@
 		L.fields["name"]		= H.real_name
 		L.fields["rank"] 		= H.mind.assigned_role
 		L.fields["age"]			= H.age
+		L.fields["fingerprint"]	= md5(H.dna.uni_identity)
 		L.fields["sex"]			= H.gender
 		L.fields["b_type"]		= H.b_type
 		L.fields["b_dna"]		= H.dna.unique_enzymes
 		L.fields["enzymes"]		= H.dna.SE // Used in respawning
 		L.fields["identity"]	= H.dna.UI // "
+		L.fields["species"]		= H.get_species()
+		L.fields["home_system"]	= H.home_system
+		L.fields["citizenship"]	= H.citizenship
+		L.fields["faction"]		= H.personal_faction
+		L.fields["religion"]	= H.religion
 		L.fields["image"]		= getFlatIcon(H)	//This is god-awful
+		if(H.exploit_record && !jobban_isbanned(H, "Records"))
+			L.fields["exploit_record"] = H.exploit_record
+		else
+			L.fields["exploit_record"] = "No additional information acquired."
 		locked += L
 	return
 
@@ -148,7 +164,7 @@ proc/get_id_photo(var/mob/living/carbon/human/H)
 		preview_icon.Blend(temp, ICON_OVERLAY)
 
 	//Tail
-	if(H.species.tail && H.species.flags & HAS_TAIL)
+	if(H.species.tail)
 		temp = new/icon("icon" = 'icons/effects/species.dmi', "icon_state" = "[H.species.tail]_s")
 		preview_icon.Blend(temp, ICON_OVERLAY)
 
@@ -188,7 +204,7 @@ proc/get_id_photo(var/mob/living/carbon/human/H)
 		if("Bartender")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "ba_suit_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
-		if("Botanist")
+		if("Gardener")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "hydroponics_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
 		if("Chef")
@@ -205,9 +221,6 @@ proc/get_id_photo(var/mob/living/carbon/human/H)
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "brown"), ICON_UNDERLAY)
 		if("Cargo Technician")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "cargotech_s")
-			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
-		if("Mining Foreman")
-			clothes_s = new /icon('icons/mob/uniform.dmi', "overalls_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "black"), ICON_UNDERLAY)
 		if("Shaft Miner")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "miner_s")
@@ -262,10 +275,6 @@ proc/get_id_photo(var/mob/living/carbon/human/H)
 		if("Security Officer")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "secred_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "jackboots"), ICON_UNDERLAY)
-		if("Security Paramedic")
-			clothes_s = new /icon('icons/mob/uniform.dmi', "secred2_s")
-			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "jackboots"), ICON_UNDERLAY)
-			clothes_s.Blend(new /icon('icons/mob/suit.dmi', "labcoat_open"), ICON_OVERLAY)
 		if("Chief Engineer")
 			clothes_s = new /icon('icons/mob/uniform.dmi', "chief_s")
 			clothes_s.Blend(new /icon('icons/mob/feet.dmi', "brown"), ICON_UNDERLAY)

@@ -706,13 +706,17 @@ datum
 						for (var/ID in C.virus2)
 							var/datum/disease2/disease/V = C.virus2[ID]
 							if(prob(5))
+								M:antibodies |= V.antigen
 								if(prob(50))
 									M.radiation += 50 // curing it that way may kill you instead
-									var/mob/living/carbon/human/H
-									if(istype(C,/mob/living/carbon/human))
-										H = C
-									if(!H || (H.species && !(H.species.flags & RAD_ABSORB))) M.adjustToxLoss(100)
-								M:antibodies |= V.antigen
+									var/absorbed
+									if(istype(C,/mob/living/carbon))
+										var/mob/living/carbon/H = C
+										var/datum/organ/internal/diona/nutrients/rad_organ = locate() in H.internal_organs
+										if(rad_organ && !rad_organ.is_broken())
+											absorbed = 1
+									if(!absorbed)
+										M.adjustToxLoss(100)
 				..()
 				return
 
@@ -724,6 +728,7 @@ datum
 						if(!glow)
 							new /obj/effect/decal/cleanable/greenglow(T)
 						return
+
 
 
 		ryetalyn

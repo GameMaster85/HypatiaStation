@@ -75,8 +75,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/man_up,
 	/client/proc/global_man_up,
 	/client/proc/response_team, // Response Teams admin verb
-	/client/proc/cmd_mob_weaken,
-	/client/proc/cmd_mob_unweaken,
 	/client/proc/toggle_antagHUD_use,
 	/client/proc/toggle_antagHUD_restrictions,
 	/client/proc/allow_character_respawn    /* Allows a ghost to respawn */

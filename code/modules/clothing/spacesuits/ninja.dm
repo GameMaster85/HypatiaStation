@@ -20,6 +20,7 @@
 	siemens_coefficient = 0.2
 	species_restricted = null //Workaround for spawning alien ninja without internals.
 	body_parts_covered = UPPER_TORSO|LOWER_TORSO|LEGS|ARMS
+	supporting_limbs = list()
 
 		//Important parts of the suit.
 	var/mob/living/carbon/affecting = null//The wearer.

@@ -12,6 +12,8 @@
 	if(say_disabled)	//This is here to try to identify lag problems
 		usr << "\red Speech is currently admin-disabled."
 		return
+
+	set_typing_indicator(0)
 	usr.say(message)
 
 /mob/verb/me_verb(message as text)
@@ -24,6 +26,7 @@
 
 	message = trim(copytext(sanitize(message), 1, MAX_MESSAGE_LEN))
 
+	set_typing_indicator(0)
 	if(use_me)
 		usr.emote("me",usr.emote_type,message)
 	else
@@ -62,7 +65,7 @@
 			M << rendered
 			continue
 
-		if(M.client && M.client.holder && !is_mentor(M.client) && (M.client.prefs.toggles & CHAT_DEAD) ) // Show the message to admins/mods with deadchat toggled on
+		if(M.client && M.client.holder && (M.client.prefs.toggles & CHAT_DEAD) ) // Show the message to admins/mods with deadchat toggled on
 			M << rendered	//Admins can hear deadchat, if they choose to, no matter if they're blind/deaf or not.
 
 
@@ -86,8 +89,6 @@
 		if(isAI(src) && ispAI(other))
 			return 1
 		if (istype(other, src.type) || istype(src, other.type))
-			return 1
-		if(src.alien_talk_understand && other.alien_talk_understand)
 			return 1
 		return 0
 

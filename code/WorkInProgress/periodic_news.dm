@@ -8,6 +8,7 @@
 		author = "NanoTrasen Editor"
 		channel_name = "Nyx Daily"
 		can_be_redacted = 0
+		message_type = "Story"
 
 	revolution_inciting_event
 
