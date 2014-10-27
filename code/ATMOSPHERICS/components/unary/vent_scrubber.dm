@@ -9,8 +9,6 @@
 	active_power_usage = 7500	//This also doubles as a measure of how powerful the pump is, in Watts. 7500 W ~ 10 HP
 	var/last_power_draw = 0
 
-	connect_types = list(1,3) //connects to regular and scrubber pipes
-
 	level = 1
 
 	var/area/initial_loc
@@ -28,13 +26,10 @@
 	var/radio_filter_out
 	var/radio_filter_in
 
-/obj/machinery/atmospherics/unary/vent_scrubber/on
-	on = 1
-
 /obj/machinery/atmospherics/unary/vent_scrubber/New()
 	..()
 	air_contents.volume = ATMOS_DEFAULT_VOLUME_FILTER
-
+	
 	icon = null
 	initial_loc = get_area(loc)
 	if (initial_loc.master)
@@ -75,10 +70,7 @@
 		if(T.intact && node && node.level == 1 && istype(node, /obj/machinery/atmospherics/pipe))
 			return
 		else
-			if(node)
-				add_underlay(T, node, dir, node.icon_connect_type)
-			else
-				add_underlay(T,, dir)
+			add_underlay(T, node, dir)
 
 /obj/machinery/atmospherics/unary/vent_scrubber/proc/set_frequency(new_frequency)
 	radio_controller.remove_object(src, frequency)
@@ -138,7 +130,7 @@
 	if(scrubbing)
 		//limit flow rate from turfs
 		var/transfer_moles = min(environment.total_moles, environment.total_moles*MAX_SCRUBBER_FLOWRATE/environment.volume)	//group_multiplier gets divided out here
-
+		
 		power_draw = scrub_gas(src, scrubbing_gas, environment, air_contents, transfer_moles, active_power_usage)
 	else //Just siphon all air
 		//limit flow rate from turfs
@@ -153,15 +145,14 @@
 		last_flow_rate = 0
 	else
 		last_power_draw = handle_power_draw(power_draw)
-
+	
 	if(network)
 		network.update = 1
-
+	
 	return 1
 
 /obj/machinery/atmospherics/unary/vent_scrubber/hide(var/i) //to make the little pipe section invisible, the icon changes.
 	update_icon()
-	update_underlays()
 
 /obj/machinery/atmospherics/unary/vent_scrubber/receive_signal(datum/signal/signal)
 	if(stat & (NOPOWER|BROKEN))
@@ -195,7 +186,7 @@
 		scrubbing = !scrubbing
 
 	var/list/toggle = list()
-
+	
 	if(!isnull(signal.data["co2_scrub"]) && text2num(signal.data["co2_scrub"]) != ("carbon_dioxide" in scrubbing_gas))
 		toggle += "carbon_dioxide"
 	else if(signal.data["toggle_co2_scrub"])
