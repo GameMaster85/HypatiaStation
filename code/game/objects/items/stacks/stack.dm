@@ -172,6 +172,9 @@
 		del(oldsrc)
 	return
 
+/obj/item/stack/proc/get_amount()
+	return amount
+
 /obj/item/stack/proc/add_to_stacks(mob/usr as mob)
 	var/obj/item/stack/oldsrc = src
 	src = null

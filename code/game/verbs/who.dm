@@ -52,7 +52,7 @@
 	var/num_admins_online = 0
 	if(holder)
 		for(var/client/C in admins)
-			if(R_ADMIN & C.holder.rights || (!R_DONOR & C.holder.rights && !R_MOD & C.holder.rights && !R_MENTOR & C.holder.rights))	//Used to determine who shows up in admin rows
+			if(R_ADMIN & C.holder.rights || (!R_DONOR & C.holder.rights && !R_MOD & C.holder.rights))	//Used to determine who shows up in admin rows
 
 				if(C.holder.fakekey && (!R_ADMIN & holder.rights && !R_MOD & holder.rights))		//Mentors can't see stealthmins
 					continue
@@ -74,7 +74,7 @@
 				msg += "\n"
 
 				num_admins_online++
-			else if(R_MOD & C.holder.rights || R_MENTOR & C.holder.rights)				//Who shows up in mod/mentor rows.
+			else if(R_MOD & C.holder.rights)				//Who shows up in mod/mentor rows.
 				modmsg += "\t[C] is a [C.holder.rank]"
 
 				if(isobserver(C.mob))
@@ -91,11 +91,11 @@
 
 	else
 		for(var/client/C in admins)
-			if(R_ADMIN & C.holder.rights || (!R_DONOR & C.holder.rights && !R_MOD & C.holder.rights && !R_MENTOR & C.holder.rights))
+			if(R_ADMIN & C.holder.rights || (!R_DONOR & C.holder.rights && !R_MOD & C.holder.rights))
 				if(!C.holder.fakekey)
 					msg += "\t[C] is a [C.holder.rank]\n"
 					num_admins_online++
-			else if (R_MOD & C.holder.rights || R_MENTOR & C.holder.rights)
+			else if (R_MOD & C.holder.rights)
 				modmsg += "\t[C] is a [C.holder.rank]\n"
 				num_mods_online++
 

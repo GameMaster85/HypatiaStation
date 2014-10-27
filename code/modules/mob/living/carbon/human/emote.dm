@@ -117,6 +117,19 @@
 				m_type = 2
 				if(miming)
 					m_type = 1
+		if ("flap")
+			if (!src.restrained())
+				message = "<B>[src]</B> flaps his wings."
+				m_type = 2
+				if(miming)
+					m_type = 1
+
+		if ("aflap")
+			if (!src.restrained())
+				message = "<B>[src]</B> flaps his wings ANGRILY!"
+				m_type = 2
+				if(miming)
+					m_type = 1
 
 		if ("drool")
 			message = "<B>[src]</B> drools."
@@ -194,7 +207,7 @@
 					m_type = 2
 
 		if ("deathgasp")
-			message = "<B>[src]</B> seizes up and falls limp, \his eyes dead and lifeless..."
+			message = "<B>[src]</B> [species.death_message]"
 			m_type = 1
 
 		if ("giggle")
