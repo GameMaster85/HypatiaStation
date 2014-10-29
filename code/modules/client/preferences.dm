@@ -20,7 +20,7 @@ var/global/list/special_roles = list( //keep synced with the defines BE_* in set
 	"mutineer" = IS_MODE_COMPILED("mutiny"),             // 13
 )
 
-var/const/MAX_SAVE_SLOTS = 10
+var/const/MAX_SAVE_SLOTS = 30
 
 //used for alternate_option
 #define GET_RANDOM_JOB 0
