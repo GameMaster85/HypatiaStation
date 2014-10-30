@@ -105,6 +105,13 @@ mob/verb/test()
 	src.height         = height
 	src.head           = head
 
+/datum/html_interface/Del()
+	if (src.clients)
+		for (var/client in src.clients)
+			src.hide(src.clients[client])
+
+	return ..()
+
 /*                 * Hooks */
 /datum/html_interface/proc/specificRenderTitle(datum/html_interface_client/hclient, ignore_cache = FALSE)
 
@@ -231,7 +238,6 @@ mob/verb/test()
 
 /datum/html_interface/proc/disableFor(datum/html_interface_client/hclient)
 	hclient.active = FALSE
-	src.hide(hclient)
 
 /*                 * Danger Zone */
 
@@ -302,4 +308,4 @@ mob/verb/test()
 
 				if ("onclose")
 					src.hide(hclient)
-		else if (src.ref && hclient.active) src.ref.Topic(href, href_list)
+		else if (src.ref && hclient.active) src.ref.Topic(href, href_list, hclient)

@@ -366,7 +366,7 @@
 
 
 		if(usr.client)
-			var/client/C = usr.client
+			//var/client/C = usr.client
 			switch(is_special_character(M))
 				if(0)
 					dat += {"<td align=center><A HREF='?src=\ref[src];traitor=\ref[M]'>Traitor?</A></td>"}

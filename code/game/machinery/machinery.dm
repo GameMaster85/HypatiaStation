@@ -309,7 +309,7 @@ Class Procs:
 /obj/machinery/proc/hiIsValidClient(datum/html_interface_client/hclient)
 	if (hclient.client.mob && hclient.client.mob.stat == 0)
 		if (isAI(hclient.client.mob)) return TRUE
-		else                          return hclient.client.mob.machine == src && in_range(hclient.client.mob, src) && !LinkBlocked(hclient.client.mob.loc, src.loc)
+		else                          return hclient.client.mob.machine == src && !src.Adjacent(hclient.client.mob)
 	else
 		return FALSE
 

@@ -30,8 +30,9 @@
 		if(rawlist.len)
 			fdel(TORFILE)
 			var/savefile/F = new(TORFILE)
-			var/linecount = 0
+			//var/linecount = 0
 			for( var/line in rawlist )
+				//linecount++
 				if(!line)	continue
 				var/cleaned = copytext(line,0,length(line))
 				if(!cleaned)	continue
