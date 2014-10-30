@@ -75,8 +75,6 @@ var/list/admin_verbs_admin = list(
 	/client/proc/man_up,
 	/client/proc/global_man_up,
 	/client/proc/response_team, // Response Teams admin verb
-	/client/proc/cmd_mob_weaken,
-	/client/proc/cmd_mob_unweaken,
 	/client/proc/toggle_antagHUD_use,
 	/client/proc/toggle_antagHUD_restrictions,
 	/client/proc/allow_character_respawn    /* Allows a ghost to respawn */
@@ -252,8 +250,6 @@ var/list/admin_verbs_mod = list(
 	/client/proc/player_panel_new,
 	/client/proc/dsay,
 	/datum/admins/proc/show_skills,
-	/datum/admins/proc/show_player_panel,
-	/client/proc/check_antagonists,
 	/client/proc/jobbans,
 	/client/proc/cmd_admin_subtle_message, 	/*send an message to somebody as a 'voice in their head'*/
 	/datum/admins/proc/view_txt_log,	/*shows the server log (diary) for today*/
@@ -275,6 +271,7 @@ var/list/admin_verbs_donor = list(
 	/datum/admins/proc/view_txt_log,	/*shows the server log (diary) for today*/
 	/datum/admins/proc/view_atk_log,	/*shows the server combat-log, doesn't do anything presently*/
 	/client/proc/cmd_admin_say,
+	/client/proc/cmd_mod_say,
 	/client/proc/dsay,
 	/client/proc/admin_ghost
 )

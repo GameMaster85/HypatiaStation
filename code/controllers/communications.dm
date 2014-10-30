@@ -114,6 +114,9 @@ var/list/DEPT_FREQS = list(1351, 1355, 1357, 1359, 1213, 1345, 1341, 1347)
 // central command channels, i.e deathsquid & response teams
 var/list/CENT_FREQS = list(1345, 1341)
 
+// Antag channels, i.e. Syndicate
+var/list/ANTAG_FREQS = list(SYND_FREQ)
+
 var/const/COMM_FREQ = 1353 //command, colored gold in chat window
 var/const/SYND_FREQ = 1213
 
@@ -218,7 +221,7 @@ var/global/datum/controller/radio/radio_controller
 /datum/radio_frequency/proc/send_to_filter(obj/source, datum/signal/signal, var/filter, var/turf/start_point = null, var/range = null)
 	if (range && !start_point)
 		return
-	
+
 	for(var/obj/device in devices[filter])
 		if(device == source)
 			continue
@@ -228,7 +231,7 @@ var/global/datum/controller/radio/radio_controller
 				continue
 			if(start_point.z!=end_point.z || get_dist(start_point, end_point) > range)
 				continue
-		
+
 		device.receive_signal(signal, TRANSMISSION_RADIO, frequency)
 
 /datum/radio_frequency/proc/add_listener(obj/device as obj, var/filter as text|null)

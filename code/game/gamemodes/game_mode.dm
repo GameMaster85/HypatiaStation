@@ -256,7 +256,7 @@ Implants;
 			comm.messagetext.Add(intercepttext)
 	world << sound('sound/AI/commandreport.ogg')
 
-/*	command_alert("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
+/*	command_announcement.Announce("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
 	for(var/mob/M in player_list)
 		if(!istype(M,/mob/new_player))
 			M << sound('sound/AI/intercept.ogg')

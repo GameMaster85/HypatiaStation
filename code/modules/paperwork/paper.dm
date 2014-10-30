@@ -193,7 +193,7 @@
 	update_icon()
 
 
-/obj/item/weapon/paper/proc/parsepencode(var/t, var/obj/item/weapon/pen/P, mob/user as mob, var/iscrayon = 0)
+/obj/item/weapon/paper/proc/parsepencode(var/t, var/color, mob/user as mob, var/iscrayon = 0)
 //	t = copytext(sanitize(t),1,MAX_MESSAGE_LEN)
 
 	t = replacetext(t, "\[center\]", "<center>")
@@ -225,7 +225,7 @@
 		t = replacetext(t, "\[cell\]", "<td>")
 		t = replacetext(t, "\[logo\]", "<img src = http://baystation12.net/wiki/logo.png>")
 
-		t = "<font face=\"[deffont]\" color=[P.colour]>[t]</font>"
+		t = "<font face=\"[deffont]\" color=[color]>[t]</font>"
 	else // If it is a crayon, and he still tries to use these, make them empty!
 		t = replacetext(t, "\[*\]", "")
 		t = replacetext(t, "\[hr\]", "")
@@ -239,7 +239,7 @@
 		t = replacetext(t, "\[cell\]", "")
 		t = replacetext(t, "\[logo\]", "")
 
-		t = "<font face=\"[crayonfont]\" color=[P.colour]><b>[t]</b></font>"
+		t = "<font face=\"[crayonfont]\" color=[color]><b>[t]</b></font>"
 //	t = replacetext(t, "#", "") // Junk converted to nothing!
 
 	return t

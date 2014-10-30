@@ -22,7 +22,7 @@
 	var/obj/item/inventory_back
 	var/facehugger
 
-
+/*
 /mob/living/simple_animal/corgi/Life()
 	..()
 	regenerate_icons()
@@ -41,7 +41,7 @@
 	else
 		dat +=	"<br><b>Back:</b> <a href='?src=\ref[src];add_inv=back'>Nothing</a>"
 
-	user << browse(dat, text("window=mob[];size=325x500", real_name)) //using real_name instead of name to identify the window fixes the problem of popping up a new window when the corgi is renamed. -Chi
+	user << browse(dat, text("window=mob[];size=325x500", name))
 	onclose(user, "mob[real_name]")
 	return
 
@@ -94,7 +94,7 @@
 					usr << "\red There is nothing to remove from its [remove_from]."
 					return
 
-		show_inv(usr) //Commented out because changing Ian's  name and then calling up his inventory opens a new inventory...which is annoying.
+		//show_inv(usr) //Commented out because changing Ian's  name and then calling up his inventory opens a new inventory...which is annoying.
 
 	//Adding things to inventory
 	else if(href_list["add_inv"])
@@ -187,7 +187,8 @@
 					src.inventory_back = item_to_add
 					regenerate_icons()
 
-		show_inv(usr) //Commented out because changing Ian's  name and then calling up his inventory opens a new inventory...which is annoying.
+		//show_inv(usr) //Commented out because changing Ian's  name and then calling up his inventory opens a new inventory...which is annoying.
+	else
 		..()
 
 /mob/living/simple_animal/corgi/proc/place_on_head(obj/item/item_to_add)
@@ -201,7 +202,7 @@
 			name = "Captain [real_name]"
 			desc = "Probably better than the last captain."
 		if(/obj/item/clothing/head/kitty, /obj/item/clothing/head/collectable/kitty)
-			name = "Happy Kitten"
+			name = "Runtime"
 			emote_see = list("coughs up a furball", "stretches")
 			emote_hear = list("purrs")
 			speak = list("Purrr", "Meow!", "MAOOOOOW!", "HISSSSS", "MEEEEEEW")
@@ -253,7 +254,7 @@
 		if(/obj/item/clothing/head/soft)
 			name = "Corgi Tech [real_name]"
 			desc = "The reason your yellow gloves have chew-marks."
-
+*/
 
 
 //IAN! SQUEEEEEEEEE~
