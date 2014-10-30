@@ -315,24 +315,15 @@ ________________________________________________________________________________
 				var/datum/gas_mixture/environment = T.return_air()
 
 				var/pressure = environment.return_pressure()
-				var/total_moles = environment.total_moles()
+				var/total_moles = environment.total_moles
 
 				dat += "Air Pressure: [round(pressure,0.1)] kPa"
 
 				if (total_moles)
-					var/o2_level = environment.oxygen/total_moles
-					var/n2_level = environment.nitrogen/total_moles
-					var/co2_level = environment.carbon_dioxide/total_moles
-					var/plasma_level = environment.toxins/total_moles
-					var/unknown_level =  1-(o2_level+n2_level+co2_level+plasma_level)
 					dat += "<ul>"
-					dat += "<li>Nitrogen: [round(n2_level*100)]%</li>"
-					dat += "<li>Oxygen: [round(o2_level*100)]%</li>"
-					dat += "<li>Carbon Dioxide: [round(co2_level*100)]%</li>"
-					dat += "<li>Plasma: [round(plasma_level*100)]%</li>"
+					for(var/g in environment.gas)
+						dat += "<li>[gas_data.name[g]]: [round((environment.gas[g] / total_moles) * 100)]%</li>"
 					dat += "</ul>"
-					if(unknown_level > 0.01)
-						dat += "OTHER: [round(unknown_level)]%<br>"
 
 					dat += "Temperature: [round(environment.temperature-T0C)]&deg;C"
 		if(2)
@@ -519,7 +510,7 @@ ________________________________________________________________________________
 			var/damage = min(cell.charge, rand(50,150))//Uses either the current energy left over or between 50 and 150.
 			if(damage>1)//So they don't spam it when energy is a factor.
 				spark_system.start()//SPARKS THERE SHALL BE SPARKS
-				U.electrocute_act(damage, src,0.1,1)//The last argument is a safety for the human proc that checks for gloves.
+				U.electrocute_act(damage, src, 0.1)
 				if(cell.charge < damage)
 					cell.use(cell.charge)
 				else
@@ -1040,8 +1031,7 @@ ________________________________________________________________________________
 						drain = rand(G.mindrain,G.maxdrain)
 						var/drained = 0
 						if(PN&&do_after(U,10))
-							drained = min(drain, PN.avail)
-							PN.newload += drained
+							drained = PN.draw_power(drain)
 							if(drained < drain)//if no power on net, drain apcs
 								for(var/obj/machinery/power/terminal/T in PN.nodes)
 									if(istype(T.master, /obj/machinery/power/apc))
@@ -1092,8 +1082,7 @@ ________________________________________________________________________________
 				drain = (round((rand(G.mindrain,G.maxdrain))/2))
 				var/drained = 0
 				if(PN&&do_after(U,10))
-					drained = min(drain, PN.avail)
-					PN.newload += drained
+					drained = PN.draw_power(drain)
 					if(drained < drain)//if no power on net, drain apcs
 						for(var/obj/machinery/power/terminal/T in PN.nodes)
 							if(istype(T.master, /obj/machinery/power/apc))
@@ -1367,26 +1356,27 @@ It is possible to destroy the net by the occupant or someone else.
 				playsound(M.loc, 'sound/effects/sparks4.ogg', 50, 1)
 				anim(M.loc,M,'icons/mob/mob.dmi',,"phaseout",,M.dir)
 
-			M.loc = pick(holdingfacility)//Throw mob in to the holding facility.
-			M << "\red You appear in a strange place!"
+			if(holdingfacility.len)
+				M.loc = pick(holdingfacility)//Throw mob in to the holding facility.
+				spawn(0)
+					var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
+					spark_system.set_up(5, 0, M.loc)
+					spark_system.start()
+					playsound(M.loc, 'sound/effects/phasein.ogg', 25, 1)
+					playsound(M.loc, 'sound/effects/sparks2.ogg', 50, 1)
+					anim(M.loc,M,'icons/mob/mob.dmi',,"phasein",,M.dir)
+					del(src)//Wait for everything to finish, delete the net. Else it will stop everything once net is deleted, including the spawn(0).
 
-			spawn(0)
-				var/datum/effect/effect/system/spark_spread/spark_system = new /datum/effect/effect/system/spark_spread()
-				spark_system.set_up(5, 0, M.loc)
-				spark_system.start()
-				playsound(M.loc, 'sound/effects/phasein.ogg', 25, 1)
-				playsound(M.loc, 'sound/effects/sparks2.ogg', 50, 1)
-				anim(M.loc,M,'icons/mob/mob.dmi',,"phasein",,M.dir)
-				del(src)//Wait for everything to finish, delete the net. Else it will stop everything once net is deleted, including the spawn(0).
+				M << "\red You appear in a strange place!"
 
-			for(var/mob/O in viewers(src, 3))
-				O.show_message(text("[] vanished!", M), 1, text("You hear sparks flying!"), 2)
+				for(var/mob/O in viewers(src, 3))
+					O.show_message(text("[] vanished!", M), 1, text("You hear sparks flying!"), 2)
 
-			if(!isnull(master))//As long as they still exist.
-				master << "\blue <b>SUCCESS</b>: \black transport procedure of \the [affecting] complete."
+				if(!isnull(master))//As long as they still exist.
+					master << "\blue <b>SUCCESS</b>: \black transport procedure of \the [affecting] complete."
 
-			M.captured = 0 //Important.
-			M.anchored = initial(M.anchored) //Changes the mob's anchored status to the original one; this is not handled by the can_move proc.
+				M.captured = 0 //Important.
+				M.anchored = initial(M.anchored) //Changes the mob's anchored status to the original one; this is not handled by the can_move proc.
 
 		else//And they are free.
 			M << "\blue You are free of the net!"
@@ -1444,7 +1434,7 @@ It is possible to destroy the net by the occupant or someone else.
 
 	attack_paw()
 		return attack_hand()
-
+/*
 	attack_alien()
 		if (islarva(usr))
 			return
@@ -1459,7 +1449,7 @@ It is possible to destroy the net by the occupant or someone else.
 				O.show_message(text("\red [] slices the energy net apart!", usr), 1)
 		healthcheck()
 		return
-
+*/
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		var/aforce = W.force
 		health = max(0, health - aforce)

@@ -616,7 +616,7 @@ var/global/datum/tension/tension_master
 		var/time_passed = world.time
 		var/input = "Purify the station."
 		if(prob(10))
-			input = "Save Runtime and any other cute things on the station."
+			input = "Save Happy Kitten and any other cute things on the station."
 	/*
 		if (emergency_shuttle.direction == 1 && emergency_shuttle.online == 1)
 			emergency_shuttle.recall()
@@ -873,4 +873,4 @@ var/global/datum/tension/tension_master
 		for(var/obj/machinery/door/poddoor/P in end_location)
 			P.open()
 		jumpcomplete = 1
-		command_alert("DRADIS contact!  Set condition one throughout the station!")
+		command_announcement.Announce("DRADIS contact!  Set condition one throughout the station!")

@@ -43,8 +43,24 @@
 	health = 80
 	ranged = 1
 
+/mob/living/simple_animal/hostile/hivebot/reaper
+	name = "Reaper Hivebot"
+	desc = "A robot, built with fearsome claws."
+	health = 160
+	maxHealth = 160
+	melee_damage_lower = 20
+	melee_damage_upper = 25
 
-/mob/living/simple_animal/hostile/hivebot/Die()
+/mob/living/simple_animal/hostile/hivebot/juggerbot
+	name = "Juggerbot"
+	desc = "A heavily armoured robot. Its the Juggerbot!"
+	icon_state = "EngBot"
+	health = 1600
+	maxHealth = 1600
+	melee_damage_lower = 15
+	melee_damage_upper = 20
+
+/mob/living/simple_animal/hostile/hivebot/death()
 	..()
 	visible_message("<b>[src]</b> blows apart!")
 	new /obj/effect/decal/cleanable/blood/gibs/robot(src.loc)

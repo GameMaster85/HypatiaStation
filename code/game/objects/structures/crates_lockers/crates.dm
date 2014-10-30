@@ -7,6 +7,7 @@
 	icon_state = "crate"
 	icon_opened = "crateopen"
 	icon_closed = "crate"
+	climbable = 1
 //	mouse_drag_pointer = MOUSE_ACTIVE_POINTER	//???
 	var/rigged = 0
 
@@ -36,6 +37,9 @@
 		O.loc = get_turf(src)
 	icon_state = icon_opened
 	src.opened = 1
+
+	if(climbable)
+		structure_shaken()
 	return 1
 
 /obj/structure/closet/crate/close()
@@ -218,19 +222,6 @@
 			src.req_access += pick(get_all_accesses())
 	..()
 
-/obj/structure/closet/crate/secure/bio
-        desc = "A specialized orange freezer, designed to biologically suspend \
-the valuable stem cells used to clone people on board the station \
-inside the genetics lab. Designed to hold stem cells for very long \
-periods of time. There is some small print on top, \n \
-<B><FONT COLOR=RED>\"Warning: The contents of this Biological Suspension Unit (BSU) are incredibly valuable. Waste of these stem cells will result in termination and you will be expected to compensate.\"</B></FONT>"
-        name = "Biological Suspension Unit (BSU)"
-        icon = 'icons/obj/storage.dmi'
-        density = 1
-        icon_state = "bio"
-        icon_opened = "bioopen"
-        icon_closed = "bio"
-
 /obj/structure/closet/crate/plastic
 	name = "plastic crate"
 	desc = "A rectangular plastic crate."
@@ -332,12 +323,7 @@ periods of time. There is some small print on top, \n \
 		var/datum/gas_mixture/gas = (..())
 		if(!gas)	return null
 		var/datum/gas_mixture/newgas = new/datum/gas_mixture()
-		newgas.oxygen = gas.oxygen
-		newgas.carbon_dioxide = gas.carbon_dioxide
-		newgas.nitrogen = gas.nitrogen
-		newgas.toxins = gas.toxins
-		newgas.volume = gas.volume
-		newgas.temperature = gas.temperature
+		newgas.copy_from(gas)
 		if(newgas.temperature <= target_temp)	return
 
 		if((newgas.temperature - cooling_power) > target_temp)
@@ -388,12 +374,12 @@ periods of time. There is some small print on top, \n \
 	icon_opened = "weaponcrateopen"
 	icon_closed = "weaponcrate"
 
-/obj/structure/closet/crate/secure/plasma
-	desc = "A secure plasma crate."
-	name = "Plasma crate"
-	icon_state = "plasmacrate"
-	icon_opened = "plasmacrateopen"
-	icon_closed = "plasmacrate"
+/obj/structure/closet/crate/secure/phoron
+	desc = "A secure phoron crate."
+	name = "Phoron crate"
+	icon_state = "phoroncrate"
+	icon_opened = "phoroncrateopen"
+	icon_closed = "phoroncrate"
 
 /obj/structure/closet/crate/secure/gear
 	desc = "A secure gear crate."
@@ -501,3 +487,16 @@ periods of time. There is some small print on top, \n \
 //		new /obj/item/weapon/pestspray(src)
 //		new /obj/item/weapon/pestspray(src)
 //		new /obj/item/weapon/pestspray(src)
+
+/obj/structure/closet/crate/secure/bio
+        desc = "A specialized orange freezer, designed to biologically suspend \
+the valuable stem cells used to clone people on board the station \
+inside the genetics lab. Designed to hold stem cells for very long \
+periods of time. There is some small print on top, \n \
+<B><FONT COLOR=RED>\"Warning: The contents of this Biological Suspension Unit (BSU) are incredibly valuable. Waste of these stem cells will result in termination and you will be expected to compensate.\"</B></FONT>"
+        name = "Biological Suspension Unit (BSU)"
+        icon = 'icons/obj/storage.dmi'
+        density = 1
+        icon_state = "bio"
+        icon_opened = "bioopen"
+        icon_closed = "bio"

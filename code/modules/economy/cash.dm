@@ -11,7 +11,7 @@
 	throwforce = 1.0
 	throw_speed = 1
 	throw_range = 2
-	w_class = 1.0
+	w_class = 2.0
 	var/access = list()
 	access = access_crate_cash
 	var/worth = 0
@@ -72,3 +72,15 @@ proc/spawn_money(var/sum, spawnloc)
 			sum -= i
 			new cash_type(spawnloc)
 	return
+
+/obj/item/weapon/spacecash/ewallet
+	name = "Charge card"
+	icon_state = "efundcard"
+	desc = "A card that holds an amount of money."
+	var/owner_name = "" //So the ATM can set it so the EFTPOS can put a valid name on transactions.
+
+/obj/item/weapon/spacecash/ewallet/examine()
+	set src in view()
+	..()
+	if (!(usr in view(2)) && usr!=src.loc) return
+	usr << "\blue Charge card's owner: [src.owner_name]. Credits remaining: [src.worth]."

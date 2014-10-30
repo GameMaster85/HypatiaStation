@@ -10,7 +10,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	icon = 'icons/obj/pda.dmi'
 	icon_state = "pda"
 	item_state = "electronic"
-	w_class = 1.0
+	w_class = 2.0
 	flags = FPRINT | TABLEPASS
 	slot_flags = SLOT_ID | SLOT_BELT
 
@@ -83,8 +83,8 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	icon_state = "pda-j"
 	ttone = "slip"
 
-/obj/item/device/pda/toxins
-	default_cartridge = /obj/item/weapon/cartridge/signal/toxins
+/obj/item/device/pda/science
+	default_cartridge = /obj/item/weapon/cartridge/signal/science
 	icon_state = "pda-tox"
 	ttone = "boom"
 
@@ -207,62 +207,6 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	name = newname + " (" + ownjob + ")"
 
 
-//AI verb and proc for sending PDA messages.
-/obj/item/device/pda/ai/verb/cmd_send_pdamesg()
-	set category = "AI IM"
-	set name = "Send Message"
-	set src in usr
-	if(usr.stat == 2)
-		usr << "You can't send PDA messages because you are dead!"
-		return
-	var/list/plist = available_pdas()
-	if (plist)
-		var/c = input(usr, "Please select a PDA") as null|anything in sortList(plist)
-		if (!c) // if the user hasn't selected a PDA file we can't send a message
-			return
-		var/selected = plist[c]
-		create_message(usr, selected)
-
-
-/obj/item/device/pda/ai/verb/cmd_toggle_pda_receiver()
-	set category = "AI IM"
-	set name = "Toggle Sender/Receiver"
-	set src in usr
-	if(usr.stat == 2)
-		usr << "You can't do that because you are dead!"
-		return
-	toff = !toff
-	usr << "<span class='notice'>PDA sender/receiver toggled [(toff ? "Off" : "On")]!</span>"
-
-
-/obj/item/device/pda/ai/verb/cmd_toggle_pda_silent()
-	set category = "AI IM"
-	set name = "Toggle Ringer"
-	set src in usr
-	if(usr.stat == 2)
-		usr << "You can't do that because you are dead!"
-		return
-	silent=!silent
-	usr << "<span class='notice'>PDA ringer toggled [(silent ? "Off" : "On")]!</span>"
-
-
-/obj/item/device/pda/ai/verb/cmd_show_message_log()
-	set category = "AI IM"
-	set name = "Show Message Log"
-	set src in usr
-	if(usr.stat == 2)
-		usr << "You can't do that because you are dead!"
-		return
-	var/HTML = "<html><head><title>AI PDA Message Log</title></head><body>"
-	for(var/index in tnote)
-		if(index["sent"])
-			HTML += addtext("<i><b>&rarr; To <a href='byond://?src=\ref[src];choice=Message;target=",index["src"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
-		else
-			HTML += addtext("<i><b>&larr; From <a href='byond://?src=\ref[src];choice=Message;target=",index["target"],"'>", index["owner"],"</a>:</b></i><br>", index["message"], "<br>")
-	HTML +="</body></html>"
-	usr << browse(HTML, "window=log;size=400x444;border=1;can_resize=1;can_close=1;can_minimize=0")
-
-
 /obj/item/device/pda/ai/can_use()
 	return 1
 
@@ -328,7 +272,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	return
 
 
-/obj/item/device/pda/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null)
+/obj/item/device/pda/ui_interact(mob/user, ui_key = "main", var/datum/nanoui/ui = null, var/force_open = 1)
 	ui_tick++
 	var/datum/nanoui/old_ui = nanomanager.get_open_ui(user, src, "main")
 	var/auto_update = 1
@@ -338,7 +282,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		return
 
 	lastmode = mode
-		
+
 	var/title = "Personal Data Assistant"
 
 	var/data[0]  // This is the data that will be sent to the PDA
@@ -367,7 +311,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		if(mode in cartmodes)
 			data["records"] = cartridge.create_NanoUI_values()
 
-		if(mode == 0)	
+		if(mode == 0)
 			cartdata["name"] = cartridge.name
 			cartdata["access"] = list(\
 					"access_security" = cartridge.access_security,\
@@ -440,20 +384,20 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			var/datum/gas_mixture/environment = T.return_air()
 
 			var/pressure = environment.return_pressure()
-			var/total_moles = environment.total_moles()
+			var/total_moles = environment.total_moles
 
 			if (total_moles)
-				var/o2_level = environment.oxygen/total_moles
-				var/n2_level = environment.nitrogen/total_moles
-				var/co2_level = environment.carbon_dioxide/total_moles
-				var/plasma_level = environment.toxins/total_moles
-				var/unknown_level =  1-(o2_level+n2_level+co2_level+plasma_level)
+				var/o2_level = environment.gas["oxygen"]/total_moles
+				var/n2_level = environment.gas["nitrogen"]/total_moles
+				var/co2_level = environment.gas["carbon_dioxide"]/total_moles
+				var/phoron_level = environment.gas["phoron"]/total_moles
+				var/unknown_level =  1-(o2_level+n2_level+co2_level+phoron_level)
 				data["aircontents"] = list(\
 					"pressure" = "[round(pressure,0.1)]",\
 					"nitrogen" = "[round(n2_level*100,0.1)]",\
 					"oxygen" = "[round(o2_level*100,0.1)]",\
 					"carbon_dioxide" = "[round(co2_level*100,0.1)]",\
-					"plasma" = "[round(plasma_level*100,0.01)]",\
+					"phoron" = "[round(phoron_level*100,0.01)]",\
 					"other" = "[round(unknown_level, 0.01)]",\
 					"temp" = "[round(environment.temperature-T0C,0.1)]",\
 					"reading" = 1\
@@ -462,7 +406,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			data["aircontents"] = list("reading" = 0)
 
 	// update the ui if it exists, returns null if no ui is passed/found
-	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data)
+	ui = nanomanager.try_update_ui(user, src, ui_key, ui, data, force_open)
 	if (!ui)
 		// the ui does not exist, so we'll create a new() one
         // for a list of parameters and their descriptions see the code docs in \code\modules\nano\nanoui.dm
@@ -556,7 +500,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 			mode = 1
 		if("2")//Messenger
 			mode = 2
-		if("21")//Read messeges
+		if("21")//Read messages
 			mode = 21
 		if("3")//Atmos scan
 			mode = 3
@@ -818,7 +762,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		message += "You feel a searing heat! Your [P] is burning!"
 	if(i>=20 && i<=25) //EMP
 		empulse(P.loc, 3, 6, 1)
-		message += "Your [P] emits a wave of electomagnetic energy!"
+		message += "Your [P] emits a wave of electromagnetic energy!"
 	if(i>=25 && i<=40) //Smoke
 		var/datum/effect/effect/system/smoke_spread/chem/S = new /datum/effect/effect/system/smoke_spread/chem
 		S.attach(P.loc)
@@ -895,7 +839,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 	var/obj/machinery/message_server/useMS = null
 	if(message_servers)
 		for (var/obj/machinery/message_server/MS in message_servers)
-		//PDAs are now dependant on the Message Server.
+		//PDAs are now dependent on the Message Server.
 			if(MS.active)
 				useMS = MS
 				break
@@ -914,10 +858,14 @@ var/global/list/obj/item/device/pda/PDAs = list()
 					t = Gibberish(t, signal.data["compression"] + 50)
 
 	if(useMS && useTC) // only send the message if it's stable
-		if(useTC != 2) // Does our recepient have a broadcaster on their level?
+		if(useTC != 2) // Does our recipient have a broadcaster on their level?
 			U << "ERROR: Cannot reach recipient."
 			return
-		useMS.send_pda_message("[P.owner]","[owner]","[t]")
+		var/send_result = useMS.send_pda_message("[P.owner]","[owner]","[t]")
+		if (send_result)
+			U << "ERROR: Messaging server rejected your message. Reason: contains '[send_result]'."
+			return
+
 		tnote.Add(list(list("sent" = 1, "owner" = "[P.owner]", "job" = "[P.ownjob]", "message" = "[t]", "target" = "\ref[P]")))
 		P.tnote.Add(list(list("sent" = 0, "owner" = "[owner]", "job" = "[ownjob]", "message" = "[t]", "target" = "\ref[src]")))
 		for(var/mob/M in player_list)
@@ -957,7 +905,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 		if(L)
 			L << "\icon[P] <b>Message from [src.owner] ([ownjob]), </b>\"[t]\" (<a href='byond://?src=\ref[P];choice=Message;skiprefresh=1;target=\ref[src]'>Reply</a>)"
-			nanomanager.update_user_uis(L, P) // Update the recieving user's PDA UI so that they can see the new message
+			nanomanager.update_user_uis(L, P) // Update the receiving user's PDA UI so that they can see the new message
 
 		nanomanager.update_user_uis(U, P) // Update the sending user's PDA UI so that they can see the new message
 
@@ -1158,24 +1106,13 @@ var/global/list/obj/item/device/pda/PDAs = list()
 					O << "\red [user] has used [src] on \icon[icon] [A]"
 				var/pressure = A:air_contents.return_pressure()
 
-				var/total_moles = A:air_contents.total_moles()
+				var/total_moles = A:air_contents.total_moles
 
 				user << "\blue Results of analysis of \icon[icon]"
 				if (total_moles>0)
-					var/o2_concentration = A:air_contents.oxygen/total_moles
-					var/n2_concentration = A:air_contents.nitrogen/total_moles
-					var/co2_concentration = A:air_contents.carbon_dioxide/total_moles
-					var/plasma_concentration = A:air_contents.toxins/total_moles
-
-					var/unknown_concentration =  1-(o2_concentration+n2_concentration+co2_concentration+plasma_concentration)
-
 					user << "\blue Pressure: [round(pressure,0.1)] kPa"
-					user << "\blue Nitrogen: [round(n2_concentration*100)]%"
-					user << "\blue Oxygen: [round(o2_concentration*100)]%"
-					user << "\blue CO2: [round(co2_concentration*100)]%"
-					user << "\blue Plasma: [round(plasma_concentration*100)]%"
-					if(unknown_concentration>0.01)
-						user << "\red Unknown: [round(unknown_concentration*100)]%"
+					for(var/g in A:air_contents.gas)
+						user << "\blue [gas_data.name[g]]: [round((A:air_contents.gas[g] / total_moles) * 100)]%"
 					user << "\blue Temperature: [round(A:air_contents.temperature-T0C)]&deg;C"
 				else
 					user << "\blue Tank is empty!"
@@ -1187,31 +1124,66 @@ var/global/list/obj/item/device/pda/PDAs = list()
 
 				var/obj/machinery/atmospherics/pipe/tank/T = A
 				var/pressure = T.parent.air.return_pressure()
-				var/total_moles = T.parent.air.total_moles()
+				var/total_moles = T.parent.air.total_moles
 
 				user << "\blue Results of analysis of \icon[icon]"
 				if (total_moles>0)
-					var/o2_concentration = T.parent.air.oxygen/total_moles
-					var/n2_concentration = T.parent.air.nitrogen/total_moles
-					var/co2_concentration = T.parent.air.carbon_dioxide/total_moles
-					var/plasma_concentration = T.parent.air.toxins/total_moles
-
-					var/unknown_concentration =  1-(o2_concentration+n2_concentration+co2_concentration+plasma_concentration)
-
 					user << "\blue Pressure: [round(pressure,0.1)] kPa"
-					user << "\blue Nitrogen: [round(n2_concentration*100)]%"
-					user << "\blue Oxygen: [round(o2_concentration*100)]%"
-					user << "\blue CO2: [round(co2_concentration*100)]%"
-					user << "\blue Plasma: [round(plasma_concentration*100)]%"
-					if(unknown_concentration>0.01)
-						user << "\red Unknown: [round(unknown_concentration*100)]%"
+					for(var/g in T.parent.air.gas)
+						user << "\blue [gas_data.name[g]]: [round((T.parent.air.gas[g] / total_moles) * 100)]%"
 					user << "\blue Temperature: [round(T.parent.air.temperature-T0C)]&deg;C"
 				else
 					user << "\blue Tank is empty!"
 
 	if (!scanmode && istype(A, /obj/item/weapon/paper) && owner)
-		note = A:info
-		user << "\blue Paper scanned." //concept of scanning paper copyright brainoblivion 2009
+		// JMO 20140705: Makes scanned document show up properly in the notes. Not pretty for formatted documents,
+		// as this will clobber the HTML, but at least it lets you scan a document. You can restore the original
+		// notes by editing the note again. (Was going to allow you to edit, but scanned documents are too long.)
+		var/raw_scan = (A:info)
+		var/formatted_scan = ""
+		// Scrub out the tags (replacing a few formatting ones along the way)
+
+		// Find the beginning and end of the first tag.
+		var/tag_start = findtext(raw_scan,"<")
+		var/tag_stop = findtext(raw_scan,">")
+
+		// Until we run out of complete tags...
+		while(tag_start&&tag_stop)
+			var/pre = copytext(raw_scan,1,tag_start) // Get the stuff that comes before the tag
+			var/tag = lowertext(copytext(raw_scan,tag_start+1,tag_stop)) // Get the tag so we can do intellegent replacement
+			var/tagend = findtext(tag," ") // Find the first space in the tag if there is one.
+
+			// Anything that's before the tag can just be added as is.
+			formatted_scan = formatted_scan+pre
+
+			// If we have a space after the tag (and presumably attributes) just crop that off.
+			if (tagend)
+				tag=copytext(tag,1,tagend)
+
+			if (tag=="p"||tag=="/p"||tag=="br") // Check if it's I vertical space tag.
+				formatted_scan=formatted_scan+"<br>" // If so, add some padding in.
+
+			raw_scan = copytext(raw_scan,tag_stop+1) // continue on with the stuff after the tag
+
+			// Look for the next tag in what's left
+			tag_start = findtext(raw_scan,"<")
+			tag_stop = findtext(raw_scan,">")
+
+		// Anything that is left in the page. just tack it on to the end as is
+		formatted_scan=formatted_scan+raw_scan
+
+    	// If there is something in there already, pad it out.
+		if (length(note)>0)
+			note = note + "<br><br>"
+
+    	// Store the scanned document to the notes
+		note = "Scanned Document. Edit to restore previous notes/delete scan.<br>----------<br>" + formatted_scan + "<br>"
+		// notehtml ISN'T set to allow user to get their old notes back. A better implementation would add a "scanned documents"
+		// feature to the PDA, which would better convey the availability of the feature, but this will work for now.
+
+		// Inform the user
+		user << "\blue Paper scanned and OCRed to notekeeper." //concept of scanning paper copyright brainoblivion 2009
+
 
 
 /obj/item/device/pda/proc/explode() //This needs tuning. //Sure did.
@@ -1228,7 +1200,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		src.id.loc = get_turf(src.loc)
 	..()
 
-/obj/item/device/pda/clown/HasEntered(AM as mob|obj) //Clown PDA is slippery.
+/obj/item/device/pda/clown/Crossed(AM as mob|obj) //Clown PDA is slippery.
 	if (istype(AM, /mob/living/carbon))
 		var/mob/M =	AM
 		if ((istype(M, /mob/living/carbon/human) && (istype(M:shoes, /obj/item/clothing/shoes) && M:shoes.flags&NOSLIP)) || M.m_intent == "walk")
@@ -1293,7 +1265,7 @@ var/global/list/obj/item/device/pda/PDAs = list()
 		var/newcart = pick(	/obj/item/weapon/cartridge/engineering,
 							/obj/item/weapon/cartridge/security,
 							/obj/item/weapon/cartridge/medical,
-							/obj/item/weapon/cartridge/signal/toxins,
+							/obj/item/weapon/cartridge/signal/science,
 							/obj/item/weapon/cartridge/quartermaster)
 		new newcart(src)
 

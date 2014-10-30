@@ -38,7 +38,23 @@
 	var/armor = list(melee = 0, bullet = 0, laser = 0,energy = 0, bomb = 0, bio = 0, rad = 0)
 	var/list/allowed = null //suit storage stuff.
 	var/obj/item/device/uplink/hidden/hidden_uplink = null // All items can have an uplink hidden inside, just remember to add the triggers.
+	var/zoomdevicename = null //name used for message when binoculars/scope is used
+	var/zoom = 0 //1 if item is actively being used to zoom. For scoped guns and binoculars.
+
+	/* Species-specific sprites, concept stolen from Paradise//vg/.
+	ex:
+	sprite_sheets = list(
+		"Tajara" = 'icons/cat/are/bad'
+		)
+	If index term exists and icon_override is not set, this sprite sheet will be used.
+	*/
+	var/list/sprite_sheets = null
 	var/icon_override = null  //Used to override hardcoded clothing dmis in human clothing proc.
+
+	/* Species-specific sprite sheets for inventory sprites
+	Works similarly to worn sprite_sheets, except the alternate sprites are used when the clothing/refit_for_species() proc is called.
+	*/
+	var/list/sprite_sheets_obj = null
 
 /obj/item/device
 	icon = 'icons/obj/device.dmi'
@@ -141,15 +157,6 @@
 
 /obj/item/attack_paw(mob/user as mob)
 
-	if(isalien(user)) // -- TLE
-		var/mob/living/carbon/alien/A = user
-
-		if(!A.has_fine_manipulation || w_class >= 4)
-			if(src in A.contents) // To stop Aliens having items stuck in their pockets
-				A.drop_from_inventory(src)
-			user << "Your claws aren't capable of such fine manipulation."
-			return
-
 	if (istype(src.loc, /obj/item/weapon/storage))
 		for(var/mob/M in range(1, src.loc))
 			if (M.s_active == src.loc)
@@ -210,8 +217,14 @@
 /obj/item/proc/moved(mob/user as mob, old_loc as turf)
 	return
 
+// apparently called whenever an item is removed from a slot, container, or anything else.
 /obj/item/proc/dropped(mob/user as mob)
 	..()
+	if(zoom) //binoculars, scope, etc
+		user.client.view = world.view
+		user.client.pixel_x = 0
+		user.client.pixel_y = 0
+		zoom = 0
 
 // called just as an item is picked up (loc is not yet changed)
 /obj/item/proc/pickup(mob/user)
@@ -237,18 +250,6 @@
 /obj/item/proc/equipped(var/mob/user, var/slot)
 	return
 
-//returns 1 if the item is equipped by a mob, 0 otherwise.
-//This might need some error trapping, not sure if get_equipped_items() is safe for non-human mobs.
-/obj/item/proc/is_equipped()
-	if(!ismob(loc)) 
-		return 0
-	
-	var/mob/M = loc
-	if(src in M.get_equipped_items())
-		return 1
-	else
-		return 0
-
 //the mob M is attempting to equip this item into the slot passed through as 'slot'. Return 1 if it can do this and 0 if it can't.
 //If you are making custom procs but would like to retain partial or complete functionality of this one, include a 'return ..()' to where you want this to happen.
 //Set disable_warning to 1 if you wish it to not give you outputs.
@@ -259,6 +260,12 @@
 	if(ishuman(M))
 		//START HUMAN
 		var/mob/living/carbon/human/H = M
+		var/list/mob_equip = list()
+		if(H.species.hud && H.species.hud.equip_slots)
+			mob_equip = H.species.hud.equip_slots
+
+		if(H.species && !(slot in mob_equip))
+			return 0
 
 		switch(slot)
 			if(slot_l_hand)
@@ -302,7 +309,7 @@
 			if(slot_belt)
 				if(H.belt)
 					return 0
-				if(!H.w_uniform)
+				if(!H.w_uniform && (slot_w_uniform in mob_equip))
 					if(!disable_warning)
 						H << "\red You need a jumpsuit before you can attach this [name]."
 					return 0
@@ -350,7 +357,7 @@
 			if(slot_wear_id)
 				if(H.wear_id)
 					return 0
-				if(!H.w_uniform)
+				if(!H.w_uniform && (slot_w_uniform in mob_equip))
 					if(!disable_warning)
 						H << "\red You need a jumpsuit before you can attach this [name]."
 					return 0
@@ -360,7 +367,7 @@
 			if(slot_l_store)
 				if(H.l_store)
 					return 0
-				if(!H.w_uniform)
+				if(!H.w_uniform && (slot_w_uniform in mob_equip))
 					if(!disable_warning)
 						H << "\red You need a jumpsuit before you can attach this [name]."
 					return 0
@@ -371,7 +378,7 @@
 			if(slot_r_store)
 				if(H.r_store)
 					return 0
-				if(!H.w_uniform)
+				if(!H.w_uniform && (slot_w_uniform in mob_equip))
 					if(!disable_warning)
 						H << "\red You need a jumpsuit before you can attach this [name]."
 					return 0
@@ -383,7 +390,7 @@
 			if(slot_s_store)
 				if(H.s_store)
 					return 0
-				if(!H.wear_suit)
+				if(!H.wear_suit && (slot_wear_suit in mob_equip))
 					if(!disable_warning)
 						H << "\red You need a suit before you can attach this [name]."
 					return 0
@@ -487,6 +494,12 @@
 /obj/item/proc/IsShield()
 	return 0
 
+/obj/item/proc/get_loc_turf()
+	var/atom/L = loc
+	while(L && !istype(L, /turf/))
+		L = L.loc
+	return loc
+
 /obj/item/proc/eyestab(mob/living/carbon/M as mob, mob/living/carbon/user as mob)
 
 	var/mob/living/carbon/human/H = M
@@ -507,8 +520,8 @@
 		user << "\red You're going to need to remove the eye covering first."
 		return
 
-	if(istype(M, /mob/living/carbon/alien) || istype(M, /mob/living/carbon/slime))//Aliens don't have eyes./N     slimes also don't have eyes!
-		user << "\red You cannot locate any eyes on this creature!"
+	if(!M.has_eyes())
+		user << "\red You cannot locate any eyes on [M]!"
 		return
 
 	user.attack_log += "\[[time_stamp()]\]<font color='red'> Attacked [M.name] ([M.ckey]) with [src.name] (INTENT: [uppertext(user.a_intent)])</font>"
@@ -524,18 +537,22 @@
 		M.weakened += 4
 		M.adjustBruteLoss(10)
 		*/
-	if(M != user)
-		for(var/mob/O in (viewers(M) - user - M))
-			O.show_message("\red [M] has been stabbed in the eye with [src] by [user].", 1)
-		M << "\red [user] stabs you in the eye with [src]!"
-		user << "\red You stab [M] in the eye with [src]!"
-	else
-		user.visible_message( \
-			"\red [user] has stabbed themself with [src]!", \
-			"\red You stab yourself in the eyes with [src]!" \
-		)
+
 	if(istype(M, /mob/living/carbon/human))
-		var/datum/organ/internal/eyes/eyes = H.internal_organs["eyes"]
+
+		var/datum/organ/internal/eyes/eyes = H.internal_organs_by_name["eyes"]
+
+		if(M != user)
+			for(var/mob/O in (viewers(M) - user - M))
+				O.show_message("\red [M] has been stabbed in the eye with [src] by [user].", 1)
+			M << "\red [user] stabs you in the eye with [src]!"
+			user << "\red You stab [M] in the eye with [src]!"
+		else
+			user.visible_message( \
+				"\red [user] has stabbed themself with [src]!", \
+				"\red You stab yourself in the eyes with [src]!" \
+			)
+
 		eyes.damage += rand(3,4)
 		if(eyes.damage >= eyes.min_bruised_damage)
 			if(M.stat != 2)
@@ -616,3 +633,77 @@
 	if(I && !I.abstract)
 		I.showoff(src)
 
+/*
+For zooming with scope or binoculars. This is called from
+modules/mob/mob_movement.dm if you move you will be zoomed out
+modules/mob/living/carbon/human/life.dm if you die, you will be zoomed out.
+*/
+
+/obj/item/proc/zoom(var/tileoffset = 11,var/viewsize = 12) //tileoffset is client view offset in the direction the user is facing. viewsize is how far out this thing zooms. 7 is normal view
+
+	var/devicename
+
+	if(zoomdevicename)
+		devicename = zoomdevicename
+	else
+		devicename = src.name
+
+	var/cannotzoom
+
+	if(usr.stat || !(istype(usr,/mob/living/carbon/human)))
+		usr << "You are unable to focus through the [devicename]"
+		cannotzoom = 1
+	else if(!zoom && global_hud.darkMask[1] in usr.client.screen)
+		usr << "Your welding equipment gets in the way of you looking through the [devicename]"
+		cannotzoom = 1
+	else if(!zoom && usr.get_active_hand() != src)
+		usr << "You are too distracted to look through the [devicename], perhaps if it was in your active hand this might work better"
+		cannotzoom = 1
+
+	if(!zoom && !cannotzoom)
+		if(!usr.hud_used.hud_shown)
+			usr.button_pressed_F12(1)	// If the user has already limited their HUD this avoids them having a HUD when they zoom in
+		usr.button_pressed_F12(1)
+		usr.client.view = viewsize
+		zoom = 1
+
+		var/tilesize = 32
+		var/viewoffset = tilesize * tileoffset
+
+		switch(usr.dir)
+			if (NORTH)
+				usr.client.pixel_x = 0
+				usr.client.pixel_y = viewoffset
+			if (SOUTH)
+				usr.client.pixel_x = 0
+				usr.client.pixel_y = -viewoffset
+			if (EAST)
+				usr.client.pixel_x = viewoffset
+				usr.client.pixel_y = 0
+			if (WEST)
+				usr.client.pixel_x = -viewoffset
+				usr.client.pixel_y = 0
+
+		usr.visible_message("[usr] peers through the [zoomdevicename ? "[zoomdevicename] of the [src.name]" : "[src.name]"].")
+
+		/*
+		if(istype(usr,/mob/living/carbon/human/))
+			var/mob/living/carbon/human/H = usr
+			usr.visible_message("[usr] holds [devicename] up to [H.get_visible_gender() == MALE ? "his" : H.get_visible_gender() == FEMALE ? "her" : "their"] eyes.")
+		else
+			usr.visible_message("[usr] holds [devicename] up to its eyes.")
+		*/
+
+	else
+		usr.client.view = world.view
+		if(!usr.hud_used.hud_shown)
+			usr.button_pressed_F12(1)
+		zoom = 0
+
+		usr.client.pixel_x = 0
+		usr.client.pixel_y = 0
+
+		if(!cannotzoom)
+			usr.visible_message("[zoomdevicename ? "[usr] looks up from the [src.name]" : "[usr] lowers the [src.name]"].")
+
+	return

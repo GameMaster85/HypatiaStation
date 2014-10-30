@@ -5,7 +5,6 @@
 	var/maxHealth = 100 //Maximum health that should be possible.
 	var/health = 100 	//A mob's health
 
-	var/stealth = 0 // Moved this here to make huds work.
 	var/hud_updateflag = 0
 
 	//Damage related vars, NOTE: THESE SHOULD ONLY BE MODIFIED BY PROCS
@@ -27,7 +26,7 @@
 	//Allows mobs to move through dense areas without restriction. For instance, in space or out of holder objects.
 	var/incorporeal_move = 0 //0 is off, 1 is normal, 2 is for ninjas.
 
-	var/t_plasma = null
+	var/t_phoron = null
 	var/t_oxygen = null
 	var/t_sl_gas = null
 	var/t_n2 = null
@@ -39,3 +38,11 @@
 	var/tod = null // Time of death
 	var/update_slimes = 1
 	var/silent = null 		//Can't talk. Value goes down every life proc.
+
+	// Putting these here for attack_animal().
+	var/melee_damage_lower = 0
+	var/melee_damage_upper = 0
+	var/attacktext = "attacks"
+	var/attack_sound = null
+	var/friendly = "nuzzles"
+	var/wall_smash = 0

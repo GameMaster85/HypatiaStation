@@ -45,13 +45,13 @@
 	for (var/obj/machinery/computer/communications/comm in world)
 		if (!(comm.stat & (BROKEN | NOPOWER)) && comm.prints_intercept)
 			var/obj/item/weapon/paper/intercept = new /obj/item/weapon/paper( comm.loc )
-			intercept.name = "paper - 'Cent. Com. Status Summary'"
+			intercept.name = "Cent. Com. Status Summary"
 			intercept.info = intercepttext
 
 			comm.messagetitle.Add("Cent. Com. Status Summary")
 			comm.messagetext.Add(intercepttext)
 
-	command_alert("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
+	command_announcement.Announce("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
 
 /datum/game_mode/rp_revolution/post_setup()
 
@@ -87,11 +87,8 @@
 		update_rev_icons_added(rev_mind)
 
 	for(var/datum/mind/rev_mind in head_revolutionaries)
-		var/obj_count = 1
 		rev_mind.current << "\blue You are a member of the revolutionaries' leadership!"
-		for(var/datum/objective/objective in rev_mind.objectives)
-			rev_mind.current << "<B>Objective #[obj_count]</B>: [objective.explanation_text]"
-			obj_count++
+		show_objectives(rev_mind)
 
 	spawn (rand(waittime_l, waittime_h))
 		send_intercept()
@@ -116,16 +113,16 @@
 	for (var/obj/machinery/computer/communications/comm in world)
 		if (!(comm.stat & (BROKEN | NOPOWER)) && comm.prints_intercept)
 			var/obj/item/weapon/paper/intercept = new /obj/item/weapon/paper( comm.loc )
-			intercept.name = "paper - 'Cent. Com. Status Summary'"
+			intercept.name = "Cent. Com. Status Summary"
 			intercept.info = intercepttext
 
 			comm.messagetitle.Add("Cent. Com. Status Summary")
 			comm.messagetext.Add(intercepttext)
 
-	command_alert("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
+	command_announcement.Announce("Summary downloaded and printed out at all communications consoles.", "Enemy communication intercept. Security Level Elevated.")
 
 	spawn(54000)
-		command_alert("Summary downloaded and printed out at all communications consoles.", "The revolution leaders have been determined.")
+		command_announcement.Announce("Summary downloaded and printed out at all communications consoles.", "The revolution leaders have been determined.")
 		intercepttext = "<FONT size = 3><B>Cent. Com. Update</B> Requested status information:</FONT><HR>"
 		intercepttext += "We have determined the revolution leaders to be:"
 		for(var/datum/mind/revmind in head_revolutionaries)
@@ -134,13 +131,13 @@
 		for (var/obj/machinery/computer/communications/comm in world)
 			if (!(comm.stat & (BROKEN | NOPOWER)) && comm.prints_intercept)
 				var/obj/item/weapon/paper/intercept = new /obj/item/weapon/paper( comm.loc )
-				intercept.name = "paper - 'Cent. Com. Status Summary'"
+				intercept.name = "Cent. Com. Status Summary"
 				intercept.info = intercepttext
 
 				comm.messagetitle.Add("Cent. Com. Status Summary")
 				comm.messagetext.Add(intercepttext)
 		spawn(12000)
-			command_alert("Repeating the previous message over intercoms due to urgency. The station has enemy operatives onboard by the names of [reveal_rev_heads()], please arrest them at once.", "The revolution leaders have been determined.")
+			command_announcement.Announce("Repeating the previous message over intercoms due to urgency. The station has enemy operatives onboard by the names of [reveal_rev_heads()], please arrest them at once.", "The revolution leaders have been determined.")
 
 
 /datum/game_mode/rp_revolution/proc/reveal_rev_heads()

@@ -30,6 +30,11 @@
 	R.uneq_all()
 	R.hands.icon_state = "nomod"
 	R.icon_state = "robot"
+	world << R.custom_sprite
+	if(R.custom_sprite == 1)
+		world << R.icon_state
+		icon = 'icons/mob/custom-synthetic.dmi'
+		R.icon_state = "[R.ckey]-Standard"
 	del(R.module)
 	R.module = null
 	R.camera.network.Remove(list("Engineering","Medical","MINE"))
@@ -133,7 +138,7 @@
 /obj/item/borg/upgrade/jetpack
 	name = "mining robot jetpack"
 	desc = "A carbon dioxide jetpack suitable for low-gravity mining operations."
-	construction_cost = list("metal"=10000,"plasma"=15000,"uranium" = 20000)
+	construction_cost = list("metal"=10000,"phoron"=15000,"uranium" = 20000)
 	icon_state = "cyborg_upgrade3"
 	require_module = 1
 

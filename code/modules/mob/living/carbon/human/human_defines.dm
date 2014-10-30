@@ -18,13 +18,28 @@
 
 	var/s_tone = 0	//Skin tone
 
+	//Skin colour
+	var/r_skin = 0
+	var/g_skin = 0
+	var/b_skin = 0
+
+	var/size_multiplier = 1 //multiplier for the mob's icon size
+	var/icon_update = 1 //whether icon updating shall take place
+
 	var/lip_style = null	//no lipstick by default- arguably misleading, as it could be used for general makeup
 
 	var/age = 30		//Player's age (pure fluff)
 	var/b_type = "A+"	//Player's bloodtype
 
 	var/underwear = 1	//Which underwear the player wants
+	var/undershirt = 0	//Which undershirt the player wants.
 	var/backbag = 2		//Which backpack type the player has chosen. Nothing, Satchel or Backpack.
+
+	// General information
+	var/home_system = ""
+	var/citizenship = ""
+	var/personal_faction = ""
+	var/religion = ""
 
 	//Equipment slots
 	var/obj/item/wear_suit = null
@@ -48,6 +63,10 @@
 	var/icon/stand_icon = null
 	var/icon/lying_icon = null
 
+	var/voice = ""	//Instead of new say code calling GetVoice() over and over and over, we're just going to ask this variable, which gets updated in Life()
+
+	var/speech_problem_flag = 0
+
 	var/miming = null //Toggle for the mime's abilities.
 	var/special_voice = "" // For changing our voice. Used by a symptom.
 
@@ -60,3 +79,5 @@
 
 	var/mob/remoteview_target = null
 	var/hand_blood_color
+
+	var/list/flavor_texts = list()

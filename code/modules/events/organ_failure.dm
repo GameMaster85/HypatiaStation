@@ -7,7 +7,7 @@ datum/event/organ_failure/setup()
 	severity = rand(1, 3)
 
 datum/event/organ_failure/announce()
-	command_alert("Confirmed outbreak of level [rand(3,7)] biohazard aboard [station_name()]. All personnel must contain the outbreak.", "Biohazard Alert")
+	command_announcement.Announce("Confirmed outbreak of level [rand(3,7)] biohazard aboard [station_name()]. All personnel must contain the outbreak.", "Biohazard Alert")
 	world << sound('sound/AI/outbreak5.ogg')
 
 datum/event/organ_failure/start()
@@ -21,9 +21,25 @@ datum/event/organ_failure/start()
 	while(severity > 0 && candidates.len)
 		var/mob/living/carbon/human/C = candidates[1]
 
-		// Bruise one of their organs
-		var/O = pick(C.internal_organs)
-		var/datum/organ/internal/I = C.internal_organs[O]
-		I.damage = I.min_bruised_damage
-		candidates.Remove(C)
+		var/acute = prob(15)
+		if (prob(75))
+			//internal organ infection
+			var/O = pick(C.internal_organs)
+			var/datum/organ/internal/I = C.internal_organs[O]
+
+			if (acute)
+				I.germ_level = max(INFECTION_LEVEL_TWO, I.germ_level)
+			else
+				I.germ_level = max(rand(INFECTION_LEVEL_ONE,INFECTION_LEVEL_ONE*2), I.germ_level)
+		else
+			//external organ infection
+			var/datum/organ/external/O = pick(C.organs)
+
+			if (acute)
+				O.germ_level = max(INFECTION_LEVEL_TWO, O.germ_level)
+			else
+				O.germ_level = max(rand(INFECTION_LEVEL_ONE,INFECTION_LEVEL_ONE*2), O.germ_level)
+
+			C.bad_external_organs |= O
+
 		severity--

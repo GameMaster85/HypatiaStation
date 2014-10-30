@@ -69,8 +69,17 @@
 	..()
 
 
+
+/mob/dead/observer/Topic(href, href_list)
+	if (href_list["track"])
+		var/mob/target = locate(href_list["track"]) in mob_list
+		if(target)
+			ManualFollow(target)
+
+
+
 /mob/dead/attackby(obj/item/W, mob/user)
-	if(istype(W,/obj/item/weapon/tome))
+	if(istype(W,/obj/item/weapon/book/tome))
 		var/mob/dead/M = src
 		if(src.invisibility != 0)
 			M.invisibility = 0
@@ -161,6 +170,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		var/response = alert(src, "Are you -sure- you want to ghost?\n(You are alive. If you ghost, you won't be able to play this round for another 30 minutes! You can't change your mind so choose wisely!)","Are you sure you want to ghost?","Ghost","Stay in body")
 		if(response != "Ghost")	return	//didn't want to ghost after-all
 		resting = 1
+		var/turf/location = get_turf(src)
+		message_admins("[key_name_admin(usr)] has ghosted. (<A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[location.x];Y=[location.y];Z=[location.z]'>JMP</a>)")
+		log_game("[key_name_admin(usr)] has ghosted.")
 		var/mob/dead/observer/ghost = ghostize(0)						//0 parameter is so we can never re-enter our body, "Charlie, you can never come baaaack~" :3
 		ghost.timeofdeath = world.time // Because the living mob won't have a time of death and we want the respawn timer to work properly.
 	return
@@ -171,7 +183,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(NewLoc)
 		loc = NewLoc
 		for(var/obj/effect/step_trigger/S in NewLoc)
-			S.HasEntered(src)
+			S.Crossed(src)
 
 		return
 	loc = get_turf(src) //Get out of closets and such as a ghost
@@ -185,7 +197,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		x--
 
 	for(var/obj/effect/step_trigger/S in locate(x, y, z))	//<-- this is dumb
-		S.HasEntered(src)
+		S.Crossed(src)
 
 /mob/dead/observer/examine()
 	if(usr)
@@ -207,10 +219,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 					if(ticker.mode:malf_mode_declared)
 						stat(null, "Time left: [max(ticker.mode:AI_win_timeleft/(ticker.mode:apcs/3), 0)]")
 		if(emergency_shuttle)
-			if(emergency_shuttle.online && emergency_shuttle.location < 2)
-				var/timeleft = emergency_shuttle.timeleft()
-				if (timeleft)
-					stat(null, "ETA-[(timeleft / 60) % 60]:[add_zero(num2text(timeleft % 60), 2)]")
+			var/eta_status = emergency_shuttle.get_status_panel_eta()
+			if(eta_status)
+				stat(null, eta_status)
 
 /mob/dead/observer/verb/reenter_corpse()
 	set category = "Ghost"
@@ -248,20 +259,22 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	set category = "Ghost"
 	set name = "Toggle AntagHUD"
 	set desc = "Toggles AntagHUD allowing you to see who is the antagonist"
-	if(!config.antag_hud_allowed && !client.holder)
-		src << "\red Admins have disabled this for this round."
-		return
+
 	if(!client)
+		return
+	var/mentor = is_mentor(usr.client)
+	if(!config.antag_hud_allowed && (!client.holder || mentor))
+		src << "\red Admins have disabled this for this round."
 		return
 	var/mob/dead/observer/M = src
 	if(jobban_isbanned(M, "AntagHUD"))
 		src << "\red <B>You have been banned from using this feature</B>"
 		return
-	if(config.antag_hud_restricted && !M.has_enabled_antagHUD &&!client.holder)
+	if(config.antag_hud_restricted && !M.has_enabled_antagHUD && (!client.holder || mentor))
 		var/response = alert(src, "If you turn this on, you will not be able to take any part in the round.","Are you sure you want to turn this feature on?","Yes","No")
 		if(response == "No") return
 		M.can_reenter_corpse = 0
-	if(!M.has_enabled_antagHUD && !client.holder)
+	if(!M.has_enabled_antagHUD && (!client.holder || mentor))
 		M.has_enabled_antagHUD = 1
 	if(M.antagHUD)
 		M.antagHUD = 0
@@ -294,14 +307,46 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	usr.loc = pick(L)
 
+
+/*  I tried to improve follow, but couldn't quite get it working.
+	In hopes that someone will do better, I've included my progress
+	In the comments for follow()
+*/
 /mob/dead/observer/verb/follow()
+// /mob/dead/observer/verb/follow(var/query as text)
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
+	/* Start of an experimental query process to pick target.
+	//usr << "Query is [query]"
+	var/list/matches = new()
+	var/list/mobs = getmobs()
+	//usr << "First entry is [mobs[1]]"
+	for(var/thing in mobs)
+		//usr << "Testing [thing] against [query]"
+		if(findtext("[thing]", query))
+			matches += thing
+			//usr << "Matched"
+
+	if(matches.len==0)
+		usr << "Nothing by that name."
+		return
+
+	var/mob/target
+	if(matches.len==1)
+		target = matches[1]
+	else
+		var/choice = input("Please, select a mob!", "Haunt", null, null) as null|anything in matches
+		//usr << "Selected [choice]. Trying to follow [matches[choice]]"
+		target = matches[choice]
+	*/
+
+	// Original process. comment out this block when using experimental.
 	var/list/mobs = getmobs()
 	var/input = input("Please, select a mob!", "Haunt", null, null) as null|anything in mobs
 	var/mob/target = mobs[input]
+
 	ManualFollow(target)
 
 // This is the ghost's follow verb with an argument
@@ -377,9 +422,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 /mob/dead/observer/verb/analyze_air()
 	set name = "Analyze Air"
 	set category = "Ghost"
-	
+
 	if(!istype(usr, /mob/dead/observer)) return
-	
+
 	// Shamelessly copied from the Gas Analyzers
 	if (!( istype(usr.loc, /turf) ))
 		return
@@ -387,7 +432,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	var/datum/gas_mixture/environment = usr.loc.return_air()
 
 	var/pressure = environment.return_pressure()
-	var/total_moles = environment.total_moles()
+	var/total_moles = environment.total_moles
 
 	src << "\blue <B>Results:</B>"
 	if(abs(pressure - ONE_ATMOSPHERE) < 10)
@@ -395,33 +440,8 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	else
 		src << "\red Pressure: [round(pressure,0.1)] kPa"
 	if(total_moles)
-		var/o2_concentration = environment.oxygen/total_moles
-		var/n2_concentration = environment.nitrogen/total_moles
-		var/co2_concentration = environment.carbon_dioxide/total_moles
-		var/plasma_concentration = environment.toxins/total_moles
-
-		var/unknown_concentration =  1-(o2_concentration+n2_concentration+co2_concentration+plasma_concentration)
-		if(abs(n2_concentration - N2STANDARD) < 20)
-			src << "\blue Nitrogen: [round(n2_concentration*100)]% ([round(environment.nitrogen,0.01)] moles)"
-		else
-			src << "\red Nitrogen: [round(n2_concentration*100)]% ([round(environment.nitrogen,0.01)] moles)"
-
-		if(abs(o2_concentration - O2STANDARD) < 2)
-			src << "\blue Oxygen: [round(o2_concentration*100)]% ([round(environment.oxygen,0.01)] moles)"
-		else
-			src << "\red Oxygen: [round(o2_concentration*100)]% ([round(environment.oxygen,0.01)] moles)"
-
-		if(co2_concentration > 0.01)
-			src << "\red CO2: [round(co2_concentration*100)]% ([round(environment.carbon_dioxide,0.01)] moles)"
-		else
-			src << "\blue CO2: [round(co2_concentration*100)]% ([round(environment.carbon_dioxide,0.01)] moles)"
-
-		if(plasma_concentration > 0.01)
-			src << "\red Plasma: [round(plasma_concentration*100)]% ([round(environment.toxins,0.01)] moles)"
-
-		if(unknown_concentration > 0.01)
-			src << "\red Unknown: [round(unknown_concentration*100)]% ([round(unknown_concentration*total_moles,0.01)] moles)"
-
+		for(var/g in environment.gas)
+			src << "\blue [gas_data.name[g]]: [round((environment.gas[g] / total_moles) * 100)]% ([round(environment.gas[g], 0.01)] moles)"
 		src << "\blue Temperature: [round(environment.temperature-T0C,0.1)]&deg;C"
 		src << "\blue Heat Capacity: [round(environment.heat_capacity(),0.1)]"
 

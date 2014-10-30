@@ -75,6 +75,21 @@ var/list/wood_icons = list("wood","wood-broken")
 				src.hotspot_expose(1000,CELL_VOLUME)
 	return
 
+/turf/simulated/floor/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
+	if(!burnt && prob(5))
+		burn_tile()
+	else if(prob(1) && !is_plating())
+		make_plating()
+		burn_tile()
+	return
+
+/turf/simulated/floor/adjacent_fire_act(turf/simulated/floor/adj_turf, datum/gas_mixture/adj_air, adj_temp, adj_volume)
+	var/dir_to = get_dir(src, adj_turf)
+
+	for(var/obj/structure/window/W in src)
+		if(W.dir == dir_to || W.is_fulltile()) //Same direction or diagonal (full tile)
+			W.fire_act(adj_air, adj_temp, adj_volume)
+
 /turf/simulated/floor/blob_act()
 	return
 
@@ -455,7 +470,7 @@ turf/simulated/floor/proc/update_icon()
 				new floor_tile.type(src)
 
 		make_plating()
-		playsound(src.loc, 'sound/items/Crowbar.ogg', 80, 1)
+		playsound(src, 'sound/items/Crowbar.ogg', 80, 1)
 
 		return
 
@@ -468,7 +483,7 @@ turf/simulated/floor/proc/update_icon()
 				new floor_tile.type(src)
 
 		make_plating()
-		playsound(src.loc, 'sound/items/Screwdriver.ogg', 80, 1)
+		playsound(src, 'sound/items/Screwdriver.ogg', 80, 1)
 
 		return
 
@@ -479,7 +494,7 @@ turf/simulated/floor/proc/update_icon()
 				user << "\blue Reinforcing the floor..."
 				if(do_after(user, 30) && R && R.amount >= 2 && is_plating())
 					ChangeTurf(/turf/simulated/floor/engine)
-					playsound(src.loc, 'sound/items/Deconstruct.ogg', 80, 1)
+					playsound(src, 'sound/items/Deconstruct.ogg', 80, 1)
 					R.use(2)
 					return
 			else
@@ -512,7 +527,7 @@ turf/simulated/floor/proc/update_icon()
 				T.use(1)
 				update_icon()
 				levelupdate()
-				playsound(src.loc, 'sound/weapons/Genhit.ogg', 50, 1)
+				playsound(src, 'sound/weapons/Genhit.ogg', 50, 1)
 			else
 				user << "\blue This section is too damaged to support a tile. Use a welder to fix the damage."
 
@@ -539,7 +554,7 @@ turf/simulated/floor/proc/update_icon()
 			if(broken || burnt)
 				if(welder.remove_fuel(0,user))
 					user << "\red You fix some dents on the broken plating."
-					playsound(src.loc, 'sound/items/Welder.ogg', 80, 1)
+					playsound(src, 'sound/items/Welder.ogg', 80, 1)
 					icon_state = "plating"
 					burnt = 0
 					broken = 0

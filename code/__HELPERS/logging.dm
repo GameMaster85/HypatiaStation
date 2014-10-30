@@ -6,11 +6,12 @@
 // in the logs.  ascii character 13 = CR
 
 /var/global/log_end= world.system_type == UNIX ? ascii2text(13) : ""
-								
+
 
 /proc/error(msg)
 	world.log << "## ERROR: [msg][log_end]"
 
+#define WARNING(MSG) warning("[MSG] in [__FILE__] at line [__LINE__] src: [src] usr: [usr].")
 //print a warning message to world.log
 /proc/warning(msg)
 	world.log << "## WARNING: [msg][log_end]"
@@ -21,12 +22,12 @@
 
 /proc/log_admin(text)
 	admin_log.Add(text)
-	if (config.log_admin)
+	if (config && config.log_admin)
 		diary << "\[[time_stamp()]]ADMIN: [text][log_end]"
 
 
 /proc/log_debug(text)
-	if (config.log_debug)
+	if (config && config.log_debug)
 		diary << "\[[time_stamp()]]DEBUG: [text][log_end]"
 
 	for(var/client/C in admins)
@@ -35,48 +36,48 @@
 
 
 /proc/log_game(text)
-	if (config.log_game)
+	if (config && config.log_game)
 		diary << "\[[time_stamp()]]GAME: [text][log_end]"
 
 /proc/log_vote(text)
-	if (config.log_vote)
+	if (config && config.log_vote)
 		diary << "\[[time_stamp()]]VOTE: [text][log_end]"
 
 /proc/log_access(text)
-	if (config.log_access)
+	if (config && config.log_access)
 		diary << "\[[time_stamp()]]ACCESS: [text][log_end]"
 
 /proc/log_say(text)
-	if (config.log_say)
+	if (config && config.log_say)
 		diary << "\[[time_stamp()]]SAY: [text][log_end]"
 
 /proc/log_ooc(text)
-	if (config.log_ooc)
+	if (config && config.log_ooc)
 		diary << "\[[time_stamp()]]OOC: [text][log_end]"
 
 /proc/log_whisper(text)
-	if (config.log_whisper)
+	if (config && config.log_whisper)
 		diary << "\[[time_stamp()]]WHISPER: [text][log_end]"
 
 /proc/log_emote(text)
-	if (config.log_emote)
+	if (config && config.log_emote)
 		diary << "\[[time_stamp()]]EMOTE: [text][log_end]"
 
 /proc/log_attack(text)
-	if (config.log_attack)
+	if (config && config.log_attack)
 		diary << "\[[time_stamp()]]ATTACK: [text][log_end]" //Seperate attack logs? Why?  FOR THE GLORY OF SATAN!
 
 /proc/log_adminsay(text)
-	if (config.log_adminchat)
+	if (config && config.log_adminchat)
 		diary << "\[[time_stamp()]]ADMINSAY: [text][log_end]"
 
 /proc/log_adminwarn(text)
-	if (config.log_adminwarn)
+	if (config && config.log_adminwarn)
 		diary << "\[[time_stamp()]]ADMINWARN: [text][log_end]"
 
 /proc/log_pda(text)
-	if (config.log_pda)
+	if (config && config.log_pda)
 		diary << "\[[time_stamp()]]PDA: [text][log_end]"
 
 /proc/log_misc(text)
-	diary << "\[[time_stamp()]]MISC: [text][log_end]" 
+	diary << "\[[time_stamp()]]MISC: [text][log_end]"

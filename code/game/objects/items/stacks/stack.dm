@@ -148,7 +148,7 @@
 			src = null //dont kill proc after del()
 			usr.before_take_item(oldsrc)
 			del(oldsrc)
-			if (istype(O,/obj/item))
+			if (istype(O,/obj/item) && istype(usr,/mob/living/carbon))
 				usr.put_in_hands(O)
 		O.add_fingerprint(usr)
 		//BubbleWrap - so newly formed boxes are empty
@@ -171,6 +171,9 @@
 			usr.before_take_item(oldsrc)
 		del(oldsrc)
 	return
+
+/obj/item/stack/proc/get_amount()
+	return amount
 
 /obj/item/stack/proc/add_to_stacks(mob/usr as mob)
 	var/obj/item/stack/oldsrc = src

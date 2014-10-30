@@ -46,7 +46,7 @@
 		if(prob(50))
 			user << "\red \b This kills the crab."
 			health -= 20
-			Die()
+			death()
 		else
 			GetMad()
 			get
@@ -178,7 +178,7 @@
 							name = "Captain [real_name]"
 							desc = "Probably better than the last captain."
 						if(/obj/item/clothing/head/kitty, /obj/item/clothing/head/collectable/kitty)
-							name = "Runtime"
+							name = "Happy Kitten"
 							emote_see = list("coughs up a furball", "stretches")
 							emote_hear = list("purrs")
 							speak = list("Purrr", "Meow!", "MAOOOOOW!", "HISSSSS", "MEEEEEEW")

@@ -2,7 +2,7 @@
 
 /mob/living/carbon/alien/humanoid
 	oxygen_alert = 0
-	toxins_alert = 0
+	phoron_alert = 0
 	fire_alert = 0
 
 	var/temperature_alert = 0
@@ -123,7 +123,7 @@
 						breath_moles = (ONE_ATMOSPHERE*BREATH_VOLUME/R_IDEAL_GAS_EQUATION*environment.temperature)
 					else*/
 						// Not enough air around, take a percentage of what's there to model this properly
-					breath_moles = environment.total_moles()*BREATH_PERCENTAGE
+					breath_moles = environment.total_moles*BREATH_PERCENTAGE
 
 					breath = loc.remove_air(breath_moles)
 
@@ -171,25 +171,25 @@
 			//Aliens breathe in vaccuum
 			return 0
 
-		var/toxins_used = 0
-		var/breath_pressure = (breath.total_moles()*R_IDEAL_GAS_EQUATION*breath.temperature)/BREATH_VOLUME
+		var/phoron_used = 0
+		var/breath_pressure = (breath.total_moles * R_IDEAL_GAS_EQUATION * breath.temperature) / BREATH_VOLUME
 
-		//Partial pressure of the toxins in our breath
-		var/Toxins_pp = (breath.toxins/breath.total_moles())*breath_pressure
+		//Partial pressure of the phoron in our breath
+		var/Toxins_pp = (breath.gas["phoron"] / breath.total_moles) * breath_pressure
 
-		if(Toxins_pp) // Detect toxins in air
+		if(Toxins_pp) // Detect phoron in air
 
-			adjustToxLoss(breath.toxins*250)
-			toxins_alert = max(toxins_alert, 1)
+			adjustToxLoss(breath.gas["phoron"] * 250)
+			phoron_alert = max(phoron_alert, 1)
 
-			toxins_used = breath.toxins
+			phoron_used = breath.gas["phoron"]
 
 		else
-			toxins_alert = 0
+			phoron_alert = 0
 
-		//Breathe in toxins and out oxygen
-		breath.toxins -= toxins_used
-		breath.oxygen += toxins_used
+		//Breathe in phoron and out oxygen
+		breath.adjust_gas("phoron", -phoron_used)
+		breath.adjust_gas("oxygen", phoron_used)
 
 		if(breath.temperature > (T0C+66) && !(COLD_RESISTANCE in mutations)) // Hot air hurts :(
 			if(prob(20))
@@ -357,22 +357,7 @@
 				ear_damage = max(ear_damage-0.05, 0)
 
 			//Other
-			if(stunned)
-				AdjustStunned(-1)
-				if(!stunned)
-					update_icons()
-
-			if(weakened)
-				weakened = max(weakened-1,0)	//before you get mad Rockdtben: I done this so update_canmove isn't called multiple times
-
-			if(stuttering)
-				stuttering = max(stuttering-1, 0)
-
-			if(silent)
-				silent = max(silent-1, 0)
-
-			if(druggy)
-				druggy = max(druggy-1, 0)
+			handle_statuses()
 		return 1
 
 
@@ -412,7 +397,7 @@
 		if(pullin)	pullin.icon_state = "pull[pulling ? 1 : 0]"
 
 
-		if (toxin)	toxin.icon_state = "tox[toxins_alert ? 1 : 0]"
+		if (toxin)	toxin.icon_state = "tox[phoron_alert ? 1 : 0]"
 		if (oxygen) oxygen.icon_state = "oxy[oxygen_alert ? 1 : 0]"
 		if (fire) fire.icon_state = "fire[fire_alert ? 1 : 0]"
 		//NOTE: the alerts dont reset when youre out of danger. dont blame me,
@@ -461,3 +446,8 @@
 						if(!(status_flags & GODMODE))
 							M.adjustBruteLoss(5)
 						nutrition += 10
+
+/mob/living/carbon/alien/humanoid/handle_stunned()
+	if(stunned && !..())
+		update_icons()
+	return stunned

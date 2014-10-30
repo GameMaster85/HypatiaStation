@@ -173,7 +173,7 @@
 				if(pod1 && pod1.biomass >= CLONE_BIOMASS)
 					dat += {"<a href='byond://?src=\ref[src];clone=\ref[src.active_record]'>Clone</a><br>"}
 				else
-					dat += {"<b>Insufficient stem cell charges</b><br>"}
+					dat += {"<b>Insufficient biomass</b><br>"}
 
 		if(4)
 			if (!src.active_record)
@@ -299,7 +299,7 @@
 			else if(pod1.occupant)
 				temp = "Error: Clonepod is currently occupied."
 			else if(pod1.biomass < CLONE_BIOMASS)
-				temp = "Error: Not enough stem cell charges."
+				temp = "Error: Not enough biomass."
 			else if(pod1.mess)
 				temp = "Error: Clonepod malfunction."
 			else if(!config.revival_cloning)
@@ -337,8 +337,13 @@
 	if ((isnull(subject)) || (!(ishuman(subject))) || (!subject.dna))
 		scantemp = "Error: Unable to locate valid genetic data."
 		return
-	if (subject.brain_op_stage == 4.0)
-		scantemp = "Error: No signs of intelligence detected."
+	if (!subject.has_brain())
+		if(istype(subject, /mob/living/carbon/human))
+			var/mob/living/carbon/human/H = subject
+			if(H.species.has_organ["brain"])
+				scantemp = "Error: No signs of intelligence detected."
+		else
+			scantemp = "Error: No signs of intelligence detected."
 		return
 	if (subject.suiciding == 1)
 		scantemp = "Error: Subject's brain is not responding to scanning stimuli."
@@ -347,6 +352,9 @@
 		scantemp = "Error: Mental interface failure."
 		return
 	if (NOCLONE in subject.mutations)
+		scantemp = "Error: Mental interface failure."
+		return
+	if (subject.species && subject.species.flags & NO_SCAN)
 		scantemp = "Error: Mental interface failure."
 		return
 	if (!isnull(find_record(subject.ckey)))
@@ -361,6 +369,8 @@
 	R.id= copytext(md5(subject.real_name), 2, 6)
 	R.name=R.dna.real_name
 	R.types=DNA2_BUF_UI|DNA2_BUF_UE|DNA2_BUF_SE
+	R.languages=subject.languages
+	R.flavor=subject.flavor_texts.Copy()
 
 	//Add an implant if needed
 	var/obj/item/weapon/implant/health/imp = locate(/obj/item/weapon/implant/health, subject)

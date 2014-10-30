@@ -100,7 +100,7 @@ var/global/admin_emergency_team = 0 // Used for admin-spawned response teams
 		candidates -= chosen
 		members += chosen
 
-	command_alert("Sensors indicate that [station_name()] has entered Code Red and is in need of assistance. We will prepare and dispatch an emergency response team to deal with the situation.", "NMV Icarus Command")
+	command_announcement.Announce("Sensors indicate that [station_name()] has entered Code Red and is in need of assistance. We will prepare and dispatch an emergency response team to deal with the situation.", "NMV Icarus Command")
 
 	for(var/obj/effect/landmark/L in landmarks_list)
 		if(L.name == "Response Team")
@@ -231,9 +231,7 @@ var/global/admin_emergency_team = 0 // Used for admin-spawned response teams
 	// equip_to_slot_or_del(new /obj/item/weapon/storage/firstaid/regular(src), slot_in_backpack) // Regular medkit
 
 	// Loyalty implants
-	var/obj/item/weapon/implant/loyalty/L = new/obj/item/weapon/implant/loyalty(src)
-	L.imp_in = src
-	L.implanted = 1
+	implant_loyalty(src)
 
 	// ID cards
 	var/obj/item/weapon/card/id/E = new(src)
