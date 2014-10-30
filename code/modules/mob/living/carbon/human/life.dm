@@ -1357,7 +1357,7 @@
 
 			var/tmp/glasses_processed = 0
 			if(istype(wear_mask, /obj/item/clothing/mask/gas/voice/space_ninja))
-				var/obj/item/clothing/mask/gas/voice/space_ninja/O = wear_mask
+				//var/obj/item/clothing/mask/gas/voice/space_ninja/O = wear_mask
 				glasses_processed = 1
 //				process_glasses(O.ninja_vision.glasses)
 			if(glasses)
