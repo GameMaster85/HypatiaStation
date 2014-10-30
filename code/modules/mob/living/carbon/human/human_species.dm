@@ -12,7 +12,7 @@
 
 /mob/living/carbon/human/tajaran/New(var/new_loc)
 	h_style = "Tajaran Ears"
-	..(new_loc, "Tajara")
+	..(new_loc, "Tajaran")
 
 /mob/living/carbon/human/Soghun/New(var/new_loc)
 	h_style = "Soghun Horns"

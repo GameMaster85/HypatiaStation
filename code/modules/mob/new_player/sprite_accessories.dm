@@ -639,22 +639,22 @@
 		species_allowed = list("Tajaran")
 
 	taj_ears_clean
-		name = "Tajara Clean"
+		name = "Tajaran Clean"
 		icon_state = "hair_clean"
 		species_allowed = list("Tajaran")
 
 	taj_ears_bangs
-		name = "Tajara Bangs"
+		name = "Tajaran Bangs"
 		icon_state = "hair_bangs"
 		species_allowed = list("Tajaran")
 
 	taj_ears_braid
-		name = "Tajara Braid"
+		name = "Tajaran Braid"
 		icon_state = "hair_tbraid"
 		species_allowed = list("Tajaran")
 
 	taj_ears_shaggy
-		name = "Tajara Shaggy"
+		name = "Tajaran Shaggy"
 		icon_state = "hair_shaggy"
 		species_allowed = list("Tajaran")
 
@@ -664,32 +664,32 @@
 		species_allowed = list("Tajaran")
 
 	taj_ears_plait
-		name = "Tajara Plait"
+		name = "Tajaran Plait"
 		icon_state = "hair_plait"
 		species_allowed = list("Tajaran")
 
 	taj_ears_straight
-		name = "Tajara Straight"
+		name = "Tajaran Straight"
 		icon_state = "hair_straight"
 		species_allowed = list("Tajaran")
 
 	taj_ears_long
-		name = "Tajara Long"
+		name = "Tajaran Long"
 		icon_state = "hair_long"
 		species_allowed = list("Tajaran")
 
 	taj_ears_rattail
-		name = "Tajara Rat Tail"
+		name = "Tajaran Rat Tail"
 		icon_state = "hair_rattail"
 		species_allowed = list("Tajaran")
 
 	taj_ears_spiky
-		name = "Tajara Spiky"
+		name = "Tajaran Spiky"
 		icon_state = "hair_tajspiky"
 		species_allowed = list("Tajaran")
 
 	taj_ears_messy
-		name = "Tajara Messy"
+		name = "Tajaran Messy"
 		icon_state = "hair_messy"
 		species_allowed = list("Tajaran")
 
@@ -701,32 +701,32 @@
 /datum/sprite_accessory/facial_hair
 
 	taj_sideburns
-		name = "Tajara Sideburns"
+		name = "Tajaran Sideburns"
 		icon_state = "facial_mutton"
 		species_allowed = list("Tajaran")
 
 	taj_mutton
-		name = "Tajara Mutton"
+		name = "Tajaran Mutton"
 		icon_state = "facial_mutton"
 		species_allowed = list("Tajaran")
 
 	taj_pencilstache
-		name = "Tajara Pencilstache"
+		name = "Tajaran Pencilstache"
 		icon_state = "facial_pencilstache"
 		species_allowed = list("Tajaran")
 
 	taj_moustache
-		name = "Tajara Moustache"
+		name = "Tajaran Moustache"
 		icon_state = "facial_moustache"
 		species_allowed = list("Tajaran")
 
 	taj_goatee
-		name = "Tajara Goatee"
+		name = "Tajaran Goatee"
 		icon_state = "facial_goatee"
 		species_allowed = list("Tajaran")
 
 	taj_smallstache
-		name = "Tajara Smallsatche"
+		name = "Tajaran Smallsatche"
 		icon_state = "facial_smallstache"
 		species_allowed = list("Tajaran")
 
