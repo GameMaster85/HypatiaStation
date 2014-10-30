@@ -110,7 +110,7 @@
 	if(byond_version < MIN_CLIENT_VERSION)		//Out of date client.
 		return null
 
-	if(IsGuestKey(key))
+	if(!guests_allowed && IsGuestKey(key))
 		alert(src,"This server doesn't allow guest accounts to play. Please go to http://www.byond.com/ and register for a key.","Guest","OK")
 		del(src)
 		return
@@ -159,6 +159,7 @@
 	log_client_to_db()
 
 	send_resources()
+	nanomanager.send_resources(src)
 
 	if(prefs.lastchangelog != changelog_hash) //bolds the changelog button on the interface so we know there are updates.
 		winset(src, "rpane.changelog", "background-color=#eaeaea;font-style=bold")
@@ -254,13 +255,6 @@
 
 //send resources to the client. It's here in its own proc so we can move it around easiliy if need be
 /client/proc/send_resources()
-
-	spawn
-		// Preload the HTML interface. This needs to be done due to BYOND bug http://www.byond.com/forum/?post=1487244
-		var/datum/html_interface/hi
-		for (var/type in typesof(/datum/html_interface))
-			hi = new type(null)
-			hi.sendResources(src)
 
 	getFiles(
 		'html/search.js',

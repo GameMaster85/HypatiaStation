@@ -159,7 +159,7 @@
 	heat_level_2 = 380 //Default 400
 	heat_level_3 = 800 //Default 1000
 
-	primitive = /mob/living/carbon/monkey/tajara
+	primitive = /mob/living/carbon/monkey/tajaran
 
 	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_TAIL | HAS_SKIN_COLOR
 

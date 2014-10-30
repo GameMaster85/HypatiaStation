@@ -23,9 +23,6 @@
 	photos_taken++
 	P.fields["name"] = "Image [photos_taken][sufix]"
 	aipictures += P
-	if(istype(usr, /mob/living/silicon/ai))
-		var/mob/living/silicon/ai/curai = usr
-		curai.aiInterface()
 
 /obj/item/device/camera/siliconcam/proc/injectmasteralbum(var/datum/picture/P) //stores image information to a list similar to that of the datacore
 	var/mob/living/silicon/robot/C = src.loc
@@ -69,15 +66,13 @@
 	// TG uses a special garbage collector.. qdel(P)
 	del(P) //so 10 thousand pictures items are not left in memory should an AI take them and then view them all.
 
-/obj/item/device/camera/siliconcam/proc/deletepicture(obj/item/device/camera/siliconcam/cam)
-	if(!cam)
-		cam = getsource()
-	var/datum/picture/selection = selectpicture(cam)
+/obj/item/device/camera/siliconcam/proc/deletepicture()
+	var/datum/picture/selection = selectpicture()
 
 	if(!selection)
 		return
 
-	cam.aipictures -= selection
+	aipictures -= selection
 	usr << "<span class='unconscious'>Image deleted</span>"
 
 /obj/item/device/camera/siliconcam/ai_camera/can_capture_turf(turf/T, mob/user)
@@ -104,6 +99,14 @@
 
 /obj/item/device/camera/siliconcam/robot_camera/printpicture(mob/user, datum/picture/P)
 	injectmasteralbum(P)
+
+/obj/item/device/camera/siliconcam/ai_camera/verb/take_image()
+	set category = "AI Commands"
+	set name = "Take Image"
+	set desc = "Takes an image"
+	set src in usr
+
+	toggle_camera_mode()
 
 /obj/item/device/camera/siliconcam/ai_camera/verb/view_images()
 	set category = "AI Commands"
@@ -144,7 +147,12 @@
 	set src in usr
 
 	// Explicitly only allow deletion from the local camera
-	deletepicture(src)
+	var/mob/living/silicon/robot/C = src.loc
+	if(C.connected_ai)
+		C << "Not allowed to delete from the remote database."
+		return
+
+	deletepicture()
 
 obj/item/device/camera/siliconcam/proc/getsource()
 	if(istype(src.loc, /mob/living/silicon/ai))
@@ -157,3 +165,8 @@ obj/item/device/camera/siliconcam/proc/getsource()
 	else
 		Cinfo = src
 	return Cinfo
+
+/mob/living/silicon/proc/GetPicture()
+	if(!aiCamera)
+		return
+	return aiCamera.selectpicture()

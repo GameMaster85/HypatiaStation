@@ -102,7 +102,7 @@ datum/preferences
 	var/job_engsec_low = 0
 
 	//Keeps track of preferrence for not getting any wanted jobs
-	var/alternate_option = 1
+	var/alternate_option = 0
 
 	var/used_skillpoints = 0
 	var/skill_specialization = null
@@ -118,6 +118,7 @@ datum/preferences
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""
+	var/exploit_record = ""
 	var/disabilities = 0
 
 	var/nanotrasen_relation = "Neutral"
@@ -276,15 +277,15 @@ datum/preferences
 	dat += "<br><b>Custom Loadout:</b> "
 	var/total_cost = 0
 
-	if(isnull(gear) || !islist(gear)) gear = list()
+	if(!islist(gear)) gear = list()
 
 	if(gear && gear.len)
 		dat += "<br>"
-		for(var/gear_name in gear)
-			if(gear_datums[gear_name])
-				var/datum/gear/G = gear_datums[gear_name]
+		for(var/i = 1; i <= gear.len; i++)
+			var/datum/gear/G = gear_datums[gear[i]]
+			if(G)
 				total_cost += G.cost
-				dat += "[gear_name] <a href='byond://?src=\ref[user];preference=loadout;task=remove;gear=[gear_name]'>\[remove\]</a><br>"
+				dat += "[gear[i]] ([G.cost] points) <a href='byond://?src=\ref[user];preference=loadout;task=remove;gear=[i]'>\[remove\]</a><br>"
 
 		dat += "<b>Used:</b> [total_cost] points."
 	else
@@ -293,7 +294,7 @@ datum/preferences
 	if(total_cost < MAX_GEAR_COST)
 		dat += " <a href='byond://?src=\ref[user];preference=loadout;task=input'>\[add\]</a>"
 		if(gear && gear.len)
-			dat += " <a href='byond://?src=\ref[user];preference=loadout;task=remove'>\[remove\]</a>"
+			dat += " <a href='byond://?src=\ref[user];preference=loadout;task=clear'>\[clear\]</a>"
 
 	dat += "<br><br><b>Occupation Choices</b><br>"
 	dat += "\t<a href='?_src_=prefs;preference=job;task=menu'><b>Set Preferences</b></a><br>"
@@ -596,6 +597,13 @@ datum/preferences
 	HTML += "<br>"
 	HTML +="Uplink Type : <b><a href='?src=\ref[user];preference=antagoptions;antagtask=uplinktype;active=1'>[uplinklocation]</a></b>"
 	HTML +="<br>"
+	HTML +="Exploitable information about you : "
+	HTML += "<br>"
+	if(jobban_isbanned(user, "Records"))
+		HTML += "<b>You are banned from using character records.</b><br>"
+	else
+		HTML +="<b><a href=\"byond://?src=\ref[user];preference=records;task=exploitable_record\">[TextPreview(exploit_record,40)]</a></b>"
+	HTML +="<br>"
 	HTML +="<hr />"
 	HTML +="<a href='?src=\ref[user];preference=antagoptions;antagtask=done;active=1'>\[Done\]</a>"
 
@@ -874,17 +882,17 @@ datum/preferences
 				total_cost += C.cost
 				if(C && total_cost <= MAX_GEAR_COST)
 					gear += choice
-					user << "\blue Added [choice] for [C.cost] points ([MAX_GEAR_COST - total_cost] points remaining)."
+					user << "<span class='notice'>Added \the '[choice]' for [C.cost] points ([MAX_GEAR_COST - total_cost] points remaining).</span>"
 				else
-					user << "\red That item will exceed the maximum loadout cost of [MAX_GEAR_COST] points."
+					user << "<span class='warning'>Adding \the '[choice]' will exceed the maximum loadout cost of [MAX_GEAR_COST] points.</span>"
 
 		else if(href_list["task"] == "remove")
-			var/to_remove = href_list["gear"]
-			if(!to_remove) return
-			for(var/gear_name in gear)
-				if(gear_name == to_remove)
-					gear -= gear_name
-					break
+			var/i_remove = text2num(href_list["gear"])
+			if(i_remove < 1 || i_remove > gear.len) return
+			gear.Cut(i_remove, i_remove + 1)
+
+		else if(href_list["task"] == "clear")
+			gear.Cut()
 
 	else if(href_list["preference"] == "flavor_text")
 		switch(href_list["task"])
@@ -948,6 +956,16 @@ datum/preferences
 
 				gen_record = genmsg
 				SetRecords(user)
+
+		if(href_list["task"] == "exploitable_record")
+			var/exploitmsg = input(usr,"Set exploitable information about you here.","Exploitable Information",html_decode(exploit_record)) as message
+
+			if(exploitmsg != null)
+				exploitmsg = copytext(exploitmsg, 1, MAX_PAPER_MESSAGE_LEN)
+				exploitmsg = html_encode(exploitmsg)
+
+				exploit_record = exploitmsg
+				SetAntagoptions(user)
 
 	else if (href_list["preference"] == "antagoptions")
 		if(text2num(href_list["active"]) == 0)
@@ -1090,7 +1108,8 @@ datum/preferences
 
 					species = input("Please select a species", "Character Generation", null) in new_species
 
-					if("h_style")
+					if(prev_species != species)
+						//grab one of the valid hair styles for the newly chosen species
 						var/list/valid_hairstyles = list()
 						for(var/hairstyle in hair_styles_list)
 							var/datum/sprite_accessory/S = hair_styles_list[hairstyle]
@@ -1519,6 +1538,7 @@ datum/preferences
 	character.med_record = med_record
 	character.sec_record = sec_record
 	character.gen_record = gen_record
+	character.exploit_record = exploit_record
 
 	character.gender = gender
 	character.age = age
@@ -1545,6 +1565,10 @@ datum/preferences
 	character.h_style = h_style
 	character.f_style = f_style
 
+	character.home_system = home_system
+	character.citizenship = citizenship
+	character.personal_faction = faction
+	character.religion = religion
 
 	character.skills = skills
 	character.used_skillpoints = used_skillpoints
@@ -1555,6 +1579,9 @@ datum/preferences
 		var/datum/organ/external/O = character.organs_by_name[name]
 		var/datum/organ/internal/I = character.internal_organs_by_name[name]
 		var/status = organ_data[name]
+
+		if(!I || !O)
+			continue
 
 		if(status == "amputated")
 			O.amputated = 1
@@ -1568,17 +1595,6 @@ datum/preferences
 			I.mechanize()
 
 		else continue
-
-	// Wheelchair necessary?
-	var/datum/organ/external/l_foot = character.get_organ("l_foot")
-	var/datum/organ/external/r_foot = character.get_organ("r_foot")
-	if((!l_foot || l_foot.status & ORGAN_DESTROYED) && (!r_foot || r_foot.status & ORGAN_DESTROYED))
-		var/obj/structure/stool/bed/chair/wheelchair/W = new /obj/structure/stool/bed/chair/wheelchair (character.loc)
-		character.buckled = W
-		character.update_canmove()
-		W.dir = character.dir
-		W.buckled_mob = character
-		W.add_fingerprint(character)
 
 	if(underwear > underwear_m.len || underwear < 1)
 		underwear = 0 //I'm sure this is 100% unnecessary, but I'm paranoid... sue me. //HAH NOW NO MORE MAGIC CLONING UNDIES

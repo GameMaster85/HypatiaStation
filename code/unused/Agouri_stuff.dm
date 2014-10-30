@@ -1141,7 +1141,7 @@
 	else if(prob(70))
 		ReplaceWithPlating()
 	else
-		src.reduceToLattice()
+		src.ReplaceWithLattice()
 	return 0
 
 
@@ -1300,7 +1300,7 @@ var/list/plating_icons = list("plating","platingdmg1","platingdmg2","platingdmg3
 		if(2.0)
 			switch(pick(1,2;75,3))
 				if (1)
-					src.reduceToLattice()
+					src.ReplaceWithLattice()
 					if(prob(33)) new /obj/item/stack/sheet/metal(src)
 				if(2)
 					src.ReplaceWithSpace()

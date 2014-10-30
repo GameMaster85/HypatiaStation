@@ -1434,7 +1434,7 @@ It is possible to destroy the net by the occupant or someone else.
 
 	attack_paw()
 		return attack_hand()
-
+/*
 	attack_alien()
 		if (islarva(usr))
 			return
@@ -1449,7 +1449,7 @@ It is possible to destroy the net by the occupant or someone else.
 				O.show_message(text("\red [] slices the energy net apart!", usr), 1)
 		healthcheck()
 		return
-
+*/
 	attackby(obj/item/weapon/W as obj, mob/user as mob)
 		var/aforce = W.force
 		health = max(0, health - aforce)

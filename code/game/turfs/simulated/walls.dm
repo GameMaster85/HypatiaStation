@@ -158,7 +158,7 @@
 /turf/simulated/wall/ex_act(severity)
 	switch(severity)
 		if(1.0)
-			src.destroyTile()
+			src.ChangeTurf(/turf/space)
 			return
 		if(2.0)
 			if(prob(75))
@@ -222,7 +222,7 @@
 	else if(prob(70) && !rotting)
 		ChangeTurf(/turf/simulated/floor/plating)
 	else
-		src.reduceToLattice()
+		ReplaceWithLattice()
 	return 0
 
 //Interactions
@@ -242,7 +242,7 @@
 	return src.attack_hand(user)
 
 
-/turf/simulated/wall/attack_animal(mob/living/simple_animal/M as mob)
+/turf/simulated/wall/attack_animal(mob/living/M as mob)
 	if(M.wall_smash)
 		if (istype(src, /turf/simulated/wall/r_wall) && !rotting)
 			M << text("\blue This wall is far too strong for you to destroy.")
