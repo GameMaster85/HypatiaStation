@@ -57,7 +57,7 @@ datum/directive/tau_ceti_needs_women/initialize()
 
 	special_orders = list(
 		"Remove [get_target_gender()] personnel from Command positions.",
-		"Terminate employment of all [get_target_gender()] Skrell, Tajara, and Soghun.")
+		"Terminate employment of all [get_target_gender()] Skrell, Tajaran, and Soghun.")
 
 datum/directive/tau_ceti_needs_women/meets_prerequisites()
 	var/females = 0

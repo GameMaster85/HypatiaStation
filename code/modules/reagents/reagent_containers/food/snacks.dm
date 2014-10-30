@@ -1613,10 +1613,10 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/farwacube
 	name = "farwa cube"
-	monkey_type = /mob/living/carbon/monkey/tajara
+	monkey_type = /mob/living/carbon/monkey/tajaran
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/farwacube
 	name = "farwa cube"
-	monkey_type =/mob/living/carbon/monkey/tajara
+	monkey_type =/mob/living/carbon/monkey/tajaran
 
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/stokcube

@@ -15,7 +15,7 @@
 	var/list/uni_append = list(0x12C,0x4E2)    // Same as above for DNA2.
 	var/update_muts = 1                        // Monkey gene must be set at start.
 
-/mob/living/carbon/monkey/tajara
+/mob/living/carbon/monkey/tajaran
 	name = "farwa"
 	voice_name = "farwa"
 	speak_emote = list("mews")
@@ -90,7 +90,7 @@
 	greaterform = "Skrell"
 	add_language("Skrellian")
 
-/mob/living/carbon/monkey/tajara/New()
+/mob/living/carbon/monkey/tajaran/New()
 
 	..()
 	dna.mutantrace = "tajaran"

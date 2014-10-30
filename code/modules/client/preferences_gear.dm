@@ -184,7 +184,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/head/tajaran/scarf
 	cost = 2
 	slot = slot_head
-	whitelisted = "Tajara"
+	whitelisted = "Tajaran"
 
 // Eyes
 
@@ -462,7 +462,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/suit/tajaran/furs
 	cost = 3
 	slot = slot_wear_suit
-	whitelisted = "Tajara" // You do have a monopoly on a fur suit tho
+	whitelisted = "Tajaran" // You do have a monopoly on a fur suit tho
 
 // Gloves
 

@@ -243,8 +243,8 @@
 	base_color = "#066000"
 
 /datum/species/tajaran
-	name = "Tajara"
-	name_plural = "Tajaran"
+	name = "Tajaran"
+	name_plural = "Tajarans"
 	icobase = 'icons/mob/human_races/r_tajaran.dmi'
 	deform = 'icons/mob/human_races/r_def_tajaran.dmi'
 	language = "Siik'tajr"
@@ -260,7 +260,7 @@
 	heat_level_2 = 380 //Default 400
 	heat_level_3 = 800 //Default 1000
 
-	primitive = /mob/living/carbon/monkey/tajara
+	primitive = /mob/living/carbon/monkey/tajaran
 
 	flags = IS_WHITELISTED | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR
 
