@@ -183,8 +183,6 @@ mob/verb/test()
 	hclient = getClient(hclient, TRUE)
 
 	if (istype(hclient))
-		if (!hclient.active) src.enableFor(hclient)
-
 		// This needs to be commented out due to BYOND bug http://www.byond.com/forum/?post=1487244
 		// /client/proc/send_resources() executes this per client to avoid the bug, but by using it here files may be deleted just as the HTML is loaded,
 		// causing file not found errors.

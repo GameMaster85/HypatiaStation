@@ -13,9 +13,18 @@
 	use_power = 1
 	idle_power_usage = 300
 	active_power_usage = 300
+	var/datum/html_interface/interface
 
 /obj/machinery/power/monitor/New()
 	..()
+
+	var/const/head = "<style type=\"text/css\">span.area { display: block; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width: auto; }</style>\
+	           <script type=\"text/javascript\">function checkSize(){ $(\"span.area\").css(\"width\", \"auto\");\
+	           if ($(window).width() < window.document.body.scrollWidth){ var width = 0; $(\"span.area\").each(function(){ width = Math.max(width, $(this).parent().outerWidth()); });\
+	           width = Math.round($(window).width() - (window.document.body.scrollWidth - width + 16 + 8));$(\"span.area\").css(\"width\", width + \"px\"); } }\
+	           $(window).on(\"resize\", checkSize); $(window).on(\"onUpdateContent\", checkSize); $(document).on(\"ready\", checkSize);</script>"
+	src.interface = new/datum/html_interface/nanotrasen(src, "Power Monitoring", 420, 600, head)
+
 	var/obj/structure/cable/attached = null
 	var/turf/T = loc
 	if(isturf(T))
@@ -42,60 +51,12 @@
 	if ( (get_dist(src, user) > 1 ) || (stat & (BROKEN|NOPOWER)) )
 		if (!istype(user, /mob/living/silicon))
 			user.unset_machine()
-			user << browse(null, "window=powcomp")
+			src.interface.hide(user)
 			return
 
 
 	user.set_machine(src)
-	var/t = "<TT><B>Power Monitoring</B><HR>"
-
-	t += "<BR><HR><A href='?src=\ref[src];update=1'>Refresh</A>"
-	t += "<BR><HR><A href='?src=\ref[src];close=1'>Close</A>"
-
-	if(!powernet)
-		t += "\red No connection"
-	else
-
-		var/list/L = list()
-		for(var/obj/machinery/power/terminal/term in powernet.nodes)
-			if(istype(term.master, /obj/machinery/power/apc))
-				var/obj/machinery/power/apc/A = term.master
-				L += A
-
-		t += "<PRE>Total power: [powernet.avail] W<BR>Total load:  [num2text(powernet.viewload,10)] W<BR>"
-
-		t += "<FONT SIZE=-1>"
-
-		if(L.len > 0)
-			var/total_demand = 0
-			t += "Area                           Eqp./Lgt./Env.  Load   Cell<HR>"
-
-			var/list/S = list(" Off","AOff","  On", " AOn")
-			var/list/chg = list("N","C","F")
-
-			for(var/obj/machinery/power/apc/A in L)
-
-				t += copytext(add_tspace("\The [A.area]", 30), 1, 30)
-				t += " [S[A.equipment+1]] [S[A.lighting+1]] [S[A.environ+1]] [add_lspace(A.lastused_total, 6)]  [A.cell ? "[add_lspace(round(A.cell.percent()), 3)]% [chg[A.charging+1]]" : "  N/C"]<BR>"
-				total_demand += A.lastused_total
-
-			t += "<HR>Total demand: [total_demand] W</FONT>"
-		t += "</PRE></TT>"
-
-	user << browse(t, "window=powcomp;size=420x900")
-	onclose(user, "powcomp")
-
-
-/obj/machinery/power/monitor/Topic(href, href_list)
-	..()
-	if( href_list["close"] )
-		usr << browse(null, "window=powcomp")
-		usr.unset_machine()
-		return
-	if( href_list["update"] )
-		src.updateDialog()
-		return
-
+	src.interface.show(user)
 
 /obj/machinery/power/monitor/power_change()
 	..()
@@ -107,7 +68,6 @@
 				src.icon_state = "c_unpowered"
 		else
 			icon_state = initial(icon_state)
-
 
 //copied from computer.dm
 /obj/machinery/power/monitor/attackby(I as obj, user as mob)
@@ -134,3 +94,52 @@
 	else
 		src.attack_hand(user)
 	return
+
+/obj/machinery/power/monitor/process()
+	var/t
+//	t += "<BR><HR><A href='?src=\ref[src.interface];update=1'>Refresh</A>"
+//	t += "<BR><HR><A href='?src=\ref[src.interface];close=1'>Close</A>"
+
+	if(!powernet)
+		t += "<span class=\"error\">No connection.</span>"
+	else
+
+		var/list/L = list()
+		for(var/obj/machinery/power/terminal/term in powernet.nodes)
+			if(istype(term.master, /obj/machinery/power/apc))
+				var/obj/machinery/power/apc/A = term.master
+				L += A
+
+		t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
+		t = t + "<colgroup><col style=\"width: 180px;\"/><col/></colgroup>"
+		t = t + "<tr><td><strong>Total power:</strong></td><td>[powernet.avail] W</td></tr>"
+		t = t + "<tr><td><strong>Total load:</strong></td><td>[num2text(powernet.viewload,10)] W</td></tr>"
+
+		var/tbl
+
+		if (L.len > 0)
+			var/total_demand = 0
+
+			var/list/S = list(" Off","AOff","  On", " AOn")
+			var/list/chg = list("N","C","F")
+
+			for(var/obj/machinery/power/apc/A in L)
+				tbl = tbl + "<tr>"
+				tbl = tbl + "<td><span class=\"area\">["\The [A.area]"]</span></td>"
+				tbl = tbl + "<td>[S[A.equipment+1]]</td><td>[S[A.lighting+1]]</td><td>[S[A.environ+1]]</td>"
+				tbl = tbl + "<td align=\"right\">[A.lastused_total]</td>"
+				tbl = tbl + "[A.cell ? "<td align=\"right\">[round(A.cell.percent())]%</td><td align=\"right\">[chg[A.charging+1]]" : "<td colspan=\"2\" align=\"right\">N/C</td>"]"
+				tbl = tbl + "</tr>"
+				total_demand += A.lastused_total
+
+
+			t += "<tr><td><strong>Total demand:</strong></td><td>[total_demand] W</td></tr>"
+
+		t = t + "</table>"
+
+		t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
+		t = t + "<colgroup><col /><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 80px;\"/><col style=\"width: 80px;\"/><col style=\"width: 20px;\"/></colgroup>"
+		t = t + "<thead><tr><th>Area</th><th>Eqp.</th><th>Lgt.</th><th>Env.</th><th align=\"right\">Load</th><th align=\"right\">Cell</th><th></th></tr></thead>"
+		t = t + "<tbody>[tbl]</tbody></table>"
+
+	src.interface.updateContent("content", t)
