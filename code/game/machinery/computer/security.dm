@@ -283,7 +283,7 @@ What a mess.*/
 						screen = 1
 //RECORD FUNCTIONS
 			if("Search Records")
-				var/t1 = input("Search String: (Partial Name or ID or Fingerprints or Rank)", "Secure. records", null, null)  as text
+				var/t1 = trim(sanitize(input("Search String: (Partial Name or ID or Fingerprints or Rank)", "Secure. records", null, null)  as text))
 				if ((!( t1 ) || usr.stat || !( authenticated ) || usr.restrained() || !in_range(src, usr)))
 					return
 				Perp = new/list()
@@ -521,7 +521,7 @@ What a mess.*/
 					if("rank")
 						var/list/L = list( "Head of Personnel", "Captain", "AI" )
 						//This was so silly before the change. Now it actually works without beating your head against the keyboard. /N
-						if ((istype(active1, /datum/data/record) && L.Find(rank)))
+						if ((istype(active1, /datum/data/record) && (rank in L)))
 							temp = "<h5>Rank:</h5>"
 							temp += "<ul>"
 							for(var/rank in joblist)
@@ -542,7 +542,7 @@ What a mess.*/
 				switch(href_list["choice"])
 					if ("Change Rank")
 						if (active1)
-							active1.fields["rank"] = href_list["rank"]
+							active1.fields["rank"] = trim(sanitize(href_list["rank"]))
 							if(href_list["rank"] in joblist)
 								active1.fields["real_rank"] = href_list["real_rank"]
 
