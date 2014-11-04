@@ -13,6 +13,8 @@
 	var/reinf = 0
 	var/basestate
 	var/shardtype = /obj/item/weapon/shard
+	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, for the purposes of shuttle glass.
+	var/dismantling = 0
 //	var/silicate = 0 // number of units of silicate
 //	var/icon/silicateIcon = null // the silicated icon
 
@@ -210,6 +212,24 @@
 		state = 1 - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, 1)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
+	else if(istype(W, /obj/item/weapon/wrench))
+		if(!anchored)
+			if(!state || !reinf)
+				if(!glasstype)
+					user << "<span class='notice'>You're not sure how to dismantle the [src] properly.</span>"
+				else
+					visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
+					dismantling = 1
+					if(dir == SOUTHWEST)
+						var/index = null
+						index = 0
+						while(index < 2)
+							new glasstype(loc)
+							index++
+					else
+						new glasstype(loc)
+					del(src)
+
 	else
 		if(W.damtype == BRUTE || W.damtype == BURN)
 			hit(W.force)
@@ -308,7 +328,8 @@
 /obj/structure/window/Del()
 	density = 0
 	update_nearby_tiles()
-	playsound(src, "shatter", 70, 1)
+	if(!dismantling)
+		playsound(src, "shatter", 70, 1)
 	update_nearby_icons()
 	..()
 
@@ -378,6 +399,7 @@
 	desc = "It looks thin and flimsy. A few knocks with... anything, really should shatter it."
 	icon_state = "window"
 	basestate = "window"
+	glasstype = /obj/item/stack/sheet/glass
 
 /obj/structure/window/phoronbasic
 	name = "phoron window"
@@ -385,6 +407,7 @@
 	basestate = "phoronwindow"
 	icon_state = "phoronwindow"
 	shardtype = /obj/item/weapon/shard/phoron
+	glasstype = /obj/item/stack/sheet/glass/phoronglass
 	health = 120
 
 /obj/structure/window/phoronbasic/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -398,6 +421,7 @@
 	basestate = "phoronrwindow"
 	icon_state = "phoronrwindow"
 	shardtype = /obj/item/weapon/shard/phoron
+	glasstype = /obj/item/stack/sheet/glass/phoronrglass
 	reinf = 1
 	health = 160
 
@@ -411,6 +435,7 @@
 	basestate = "rwindow"
 	health = 40
 	reinf = 1
+	glasstype = /obj/item/stack/sheet/rglass
 
 /obj/structure/window/reinforced/tinted
 	name = "tinted window"
