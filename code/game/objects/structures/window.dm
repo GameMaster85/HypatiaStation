@@ -212,24 +212,21 @@
 		state = 1 - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, 1)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
-	else if(istype(W, /obj/item/weapon/wrench))
-		if(!anchored)
-			if(!state || !reinf)
-				if(!glasstype)
-					user << "<span class='notice'>You're not sure how to dismantle the [src] properly.</span>"
-				else
-					visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
-					dismantling = 1
-					if(dir == SOUTHWEST)
-						var/index = null
-						index = 0
-						while(index < 2)
-							new glasstype(loc)
-							index++
-					else
-						new glasstype(loc)
-					del(src)
-
+	else if(istype(W, /obj/item/weapon/wrench) && !anchored && (!state || !reinf))
+		if(!glasstype)
+			user << "<span class='notice'>You're not sure how to dismantle the [src] properly.</span>"
+		else
+			visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
+			dismantling = 1
+			if(dir == SOUTHWEST)
+				var/index = null
+				index = 0
+				while(index < 2)
+					new glasstype(loc)
+					index++
+			else
+				new glasstype(loc)
+			del(src)
 	else
 		if(W.damtype == BRUTE || W.damtype == BURN)
 			hit(W.force)
