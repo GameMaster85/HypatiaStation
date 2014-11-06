@@ -477,3 +477,6 @@ datum/projectile_data
 					rstats[i] = environment.vars[stats[i]]
 		temps[direction] = rstats
 	return temps
+
+/turf/proc/isFloor()
+	return istype(src, /turf/simulated/floor) || istype(src, /turf/simulated/shuttle/floor) || istype(src, /turf/unsimulated/floor)

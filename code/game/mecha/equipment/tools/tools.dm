@@ -304,7 +304,8 @@
 						chassis.spark_system.start()
 						chassis.use_power(energy_drain*2)
 			if(2)
-				if(istype(target, /turf/simulated/floor))
+				var/turf/turf = target
+				if(istype(turf) && turf.isFloor())
 					occupant_message("Building Airlock...")
 					set_ready_state(0)
 					if(do_after_cooldown(target))
