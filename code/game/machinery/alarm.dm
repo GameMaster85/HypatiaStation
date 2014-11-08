@@ -155,6 +155,12 @@
 
 /obj/machinery/alarm/initialize()
 	set_frequency(frequency)
+
+	// FIX: This is a patch for a runtime error that occurs due to the area being null at this point. Test case: when you place a frame in an area already containing an alarm.
+	alarm_area = get_area(src)
+	if (alarm_area.master)
+		alarm_area = alarm_area.master
+
 	if (!master_is_operating())
 		elect_master()
 
@@ -216,7 +222,7 @@
 			regulating_temperature = 0
 			visible_message("\The [src] clicks quietly as it stops [environment.temperature > target_temperature ? "cooling" : "heating"] the room.",\
 			"You hear a click as a faint electronic humming stops.")
-	
+
 	if (regulating_temperature)
 		if(target_temperature > T0C + MAX_TEMPERATURE)
 			target_temperature = T0C + MAX_TEMPERATURE
@@ -227,26 +233,26 @@
 		var/datum/gas_mixture/gas
 		gas = environment.remove(0.25*environment.total_moles)
 		if(gas)
-			
+
 			if (gas.temperature <= target_temperature)	//gas heating
 				var/energy_used = min( gas.get_thermal_energy_change(target_temperature) , active_power_usage)
-				
+
 				gas.add_thermal_energy(energy_used)
 				//use_power(energy_used, ENVIRON) //handle by update_use_power instead
 			else	//gas cooling
 				var/heat_transfer = min(abs(gas.get_thermal_energy_change(target_temperature)), active_power_usage)
-				
+
 				//Assume the heat is being pumped into the hull which is fixed at 20 C
 				//none of this is really proper thermodynamics but whatever
-				
+
 				var/cop = gas.temperature/T20C	//coefficient of performance -> power used = heat_transfer/cop
-				
+
 				heat_transfer = min(heat_transfer, cop * active_power_usage)	//this ensures that we don't use more than active_power_usage amount of power
-				
+
 				heat_transfer = -gas.add_thermal_energy(-heat_transfer)	//get the actual heat transfer
-				
+
 				//use_power(heat_transfer / cop, ENVIRON)	//handle by update_use_power instead
-			
+
 			environment.merge(gas)
 
 /obj/machinery/alarm/proc/overall_danger_level(var/datum/gas_mixture/environment)
@@ -412,7 +418,7 @@
 	for (var/area/RA in alarm_area.related)
 		for (var/obj/machinery/alarm/AA in RA)
 			AA.mode = mode
-	
+
 	switch(mode)
 		if(AALARM_MODE_SCRUBBING)
 			for(var/device_id in alarm_area.air_scrub_names)
@@ -1208,7 +1214,7 @@ Code shamelessly copied from apc_frame
 
 	var/turf/loc = get_turf(usr)
 	var/area/A = loc.loc
-	if (!istype(loc, /turf/simulated/floor))
+	if (!loc.isFloor())
 		usr << "\red Air Alarm cannot be placed on this spot."
 		return
 	if (A.requires_power == 0 || A.name == "Space")

@@ -179,7 +179,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 
 /mob/dead/observer/Move(NewLoc, direct)
-	following = null
 	dir = direct
 	if(NewLoc)
 		loc = NewLoc
@@ -307,17 +306,27 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		usr << "No area available."
 
 	usr.loc = pick(L)
-	following = null
 
-/mob/dead/observer/verb/follow()
+/mob/dead/observer/verb/follow_mob(var/input as mob in world)
+	set category = null
+	set name = "Follow Mob"
+
+	if (input) ManualFollow(input)
+
+/*  I tried to improve follow, but couldn't quite get it working.
+	In hopes that someone will do better, I've included my progress
+	In the comments for follow()
+*/
+/mob/dead/observer/verb/follow(var/input as anything in getmobs())
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
-	var/list/mobs = getmobs()
-	var/input = input("Please, select a mob!", "Haunt", null, null) as null|anything in mobs
-	var/mob/target = mobs[input]
-	ManualFollow(target)
+	if (input)
+		var/list/mobs = getmobs()
+		var/mob/target = mobs[input]
+
+		ManualFollow(target)
 
 // This is the ghost's follow verb with an argument
 /mob/dead/observer/proc/ManualFollow(var/atom/movable/target)
@@ -327,14 +336,18 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		following = target
 		src << "\blue Now following [target]"
 		spawn(0)
-			while(target && following == target && client)
+			var/turf/pos = get_turf(src)
+			while(loc == pos && target && following == target && client)
 				var/turf/T = get_turf(target)
 				if(!T)
 					break
 				// To stop the ghost flickering.
 				if(loc != T)
 					loc = T
+				pos = loc
 				sleep(15)
+			following = null
+
 
 /mob/dead/observer/verb/jumptomob() //Moves the ghost instead of just changing the ghosts's eye -Nodrak
 	set category = "Ghost"
@@ -359,7 +372,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 			if(T && isturf(T))	//Make sure the turf exists, then move the source to that destination.
 				A.loc = T
-				following = null
 			else
 				A << "This mob is not located in the game world."
 /*
