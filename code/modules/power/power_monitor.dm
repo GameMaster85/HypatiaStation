@@ -14,6 +14,7 @@
 	idle_power_usage = 300
 	active_power_usage = 300
 	var/datum/html_interface/interface
+	var/tmp/last_time_processed = 0
 
 /obj/machinery/power/monitor/New()
 	..()
@@ -96,50 +97,51 @@
 	return
 
 /obj/machinery/power/monitor/process()
-	var/t
-//	t += "<BR><HR><A href='?src=\ref[src.interface];update=1'>Refresh</A>"
-//	t += "<BR><HR><A href='?src=\ref[src.interface];close=1'>Close</A>"
+	// src.last_time_processed == 0 is in place to make it update the first time around, then wait until someone watches
+	if ((src.last_time_processed == 0 || src.interface.isUsed()) && world.time - src.last_time_processed > 10)
+		var/t
+	//	t += "<BR><HR><A href='?src=\ref[src.interface];update=1'>Refresh</A>"
+	//	t += "<BR><HR><A href='?src=\ref[src.interface];close=1'>Close</A>"
 
-	if(!powernet)
-		t += "<span class=\"error\">No connection.</span>"
-	else
+		if(!powernet)
+			t += "<span class=\"error\">No connection.</span>"
+		else
 
-		var/list/L = list()
-		for(var/obj/machinery/power/terminal/term in powernet.nodes)
-			if(istype(term.master, /obj/machinery/power/apc))
-				var/obj/machinery/power/apc/A = term.master
-				L += A
+			t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
+			t = t + "<colgroup><col style=\"width: 180px;\"/><col/></colgroup>"
+			t = t + "<tr><td><strong>Total power:</strong></td><td>[powernet.avail] W</td></tr>"
+			t = t + "<tr><td><strong>Total load:</strong></td><td>[num2text(powernet.viewload,10)] W</td></tr>"
 
-		t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
-		t = t + "<colgroup><col style=\"width: 180px;\"/><col/></colgroup>"
-		t = t + "<tr><td><strong>Total power:</strong></td><td>[powernet.avail] W</td></tr>"
-		t = t + "<tr><td><strong>Total load:</strong></td><td>[num2text(powernet.viewload,10)] W</td></tr>"
-
-		var/tbl
-
-		if (L.len > 0)
+			var/tbl
 			var/total_demand = 0
 
 			var/list/S = list(" Off","AOff","  On", " AOn")
 			var/list/chg = list("N","C","F")
+			var/found = FALSE
 
-			for(var/obj/machinery/power/apc/A in L)
-				tbl = tbl + "<tr>"
-				tbl = tbl + "<td><span class=\"area\">["\The [A.area]"]</span></td>"
-				tbl = tbl + "<td>[S[A.equipment+1]]</td><td>[S[A.lighting+1]]</td><td>[S[A.environ+1]]</td>"
-				tbl = tbl + "<td align=\"right\">[A.lastused_total]</td>"
-				tbl = tbl + "[A.cell ? "<td align=\"right\">[round(A.cell.percent())]%</td><td align=\"right\">[chg[A.charging+1]]" : "<td colspan=\"2\" align=\"right\">N/C</td>"]"
-				tbl = tbl + "</tr>"
-				total_demand += A.lastused_total
+			for(var/obj/machinery/power/terminal/term in powernet.nodes)
+				if(istype(term.master, /obj/machinery/power/apc))
+					found = TRUE
 
+					var/obj/machinery/power/apc/A = term.master
+					tbl = tbl + "<tr>"
+					tbl = tbl + "<td><span class=\"area\">["\The [A.area]"]</span></td>"
+					tbl = tbl + "<td>[S[A.equipment+1]]</td><td>[S[A.lighting+1]]</td><td>[S[A.environ+1]]</td>"
+					tbl = tbl + "<td align=\"right\">[A.lastused_total]</td>"
+					tbl = tbl + "[A.cell ? "<td align=\"right\">[round(A.cell.percent())]%</td><td align=\"right\">[chg[A.charging+1]]" : "<td colspan=\"2\" align=\"right\">N/C</td>"]"
+					tbl = tbl + "</tr>"
+					total_demand = total_demand + A.lastused_total
 
-			t += "<tr><td><strong>Total demand:</strong></td><td>[total_demand] W</td></tr>"
+			if (found)
+				t += "<tr><td><strong>Total demand:</strong></td><td>[total_demand] W</td></tr>"
 
-		t = t + "</table>"
+			t = t + "</table>"
 
-		t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
-		t = t + "<colgroup><col /><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 80px;\"/><col style=\"width: 80px;\"/><col style=\"width: 20px;\"/></colgroup>"
-		t = t + "<thead><tr><th>Area</th><th>Eqp.</th><th>Lgt.</th><th>Env.</th><th align=\"right\">Load</th><th align=\"right\">Cell</th><th></th></tr></thead>"
-		t = t + "<tbody>[tbl]</tbody></table>"
+			t = t + "<table class=\"table\" width=\"100%; table-layout: fixed;\">"
+			t = t + "<colgroup><col /><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 60px;\"/><col style=\"width: 80px;\"/><col style=\"width: 80px;\"/><col style=\"width: 20px;\"/></colgroup>"
+			t = t + "<thead><tr><th>Area</th><th>Eqp.</th><th>Lgt.</th><th>Env.</th><th align=\"right\">Load</th><th align=\"right\">Cell</th><th></th></tr></thead>"
+			t = t + "<tbody>[tbl]</tbody></table>"
 
-	src.interface.updateContent("content", t)
+		src.last_time_processed = world.time
+
+		src.interface.updateContent("content", t)
