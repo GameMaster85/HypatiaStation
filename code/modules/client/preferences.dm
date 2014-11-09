@@ -619,7 +619,7 @@ datum/preferences
 	HTML += "<tt><center>"
 	HTML += "<b>Set Flavour Text</b> <hr />"
 	HTML += "<br></center>"
-	HTML += "<b>Old Flavour Text:</b>"
+	HTML += "<a href='byond://?src=\ref[flavor_text];preference=flavor_text;task=general'>Old Flavour Text:</a> "
 	HTML += TextPreview(flavor_text)
 	HTML += "<br>"
 	HTML += "<a href='byond://?src=\ref[user];preference=flavor_text;task=general'>General:</a> "

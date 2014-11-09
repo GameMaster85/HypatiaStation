@@ -21,6 +21,7 @@
 	var/dead = 0               // Is it dead?
 	var/harvest = 0            // Is it ready to harvest?
 	var/age = 0                // Current plant age
+	var/sampled = 0            // Have wa taken a sample?
 
 	// Harvest/mutation mods.
 	var/yield_mod = 0          // Modifier to yield
@@ -117,8 +118,8 @@
 	// Mutagen list specifies minimum value for the mutation to take place, rather
 	// than a bound as the lists above specify.
 	var/global/list/mutagenic_reagents = list(
-		"radium" =  3,
-		"mutagen" = 8
+		"radium" =  8,
+		"mutagen" = 15
 		)
 
 /obj/machinery/portable_atmospherics/hydroponics/New()
@@ -172,11 +173,11 @@
 
 	// Weeds like water and nutrients, there's a chance the weed population will increase.
 	// Bonus chance if the tray is unoccupied.
-	if(waterlevel > 10 && nutrilevel > 2 && prob(isnull(seed) ? 6 : 3))
+	if(waterlevel > 10 && nutrilevel > 2 && prob(isnull(seed) ? 5 : 1))
 		weedlevel += 1 * HYDRO_SPEED_MULTIPLIER
 
 	// There's a chance for a weed explosion to happen if the weeds take over.
-	// Plants that are themselves weeds (weed_tolernace > 10) are unaffected.
+	// Plants that are themselves weeds (weed_tolerance > 10) are unaffected.
 	if (weedlevel >= 10 && prob(10))
 		if(!seed || weedlevel >= seed.weed_tolerance)
 			weed_invasion()
@@ -184,10 +185,11 @@
 	// If there is no seed data (and hence nothing planted),
 	// or the plant is dead, process nothing further.
 	if(!seed || dead)
+		if(draw_warnings) update_icon() //Harvesting would fail to set alert icons properly.
 		return
 
 	// Advance plant age.
-	if(prob(50)) age += 1 * HYDRO_SPEED_MULTIPLIER
+	if(prob(30)) age += 1 * HYDRO_SPEED_MULTIPLIER
 
 	//Highly mutable plants have a chance of mutating every tick.
 	if(seed.immutable == -1)
@@ -197,7 +199,7 @@
 	// Other plants also mutate if enough mutagenic compounds have been added.
 	if(!seed.immutable)
 		if(prob(min(mutation_level,100)))
-			mutate((rand(100) < 25) ? 2 : 1)
+			mutate((rand(100) < 15) ? 2 : 1)
 			mutation_level = 0
 
 	// Maintain tray nutrient and water levels.
@@ -344,7 +346,7 @@
 			if(weedkiller_reagents[R.id])
 				weedlevel -= weedkiller_reagents[R.id] * reagent_total
 			if(pestkiller_reagents[R.id])
-				pestlevel -= pestkiller_reagents[R.id] * reagent_total
+				pestlevel += pestkiller_reagents[R.id] * reagent_total
 
 			// Beneficial reagents have a few impacts along with health buffs.
 			if(beneficial_reagents[R.id])
@@ -397,6 +399,8 @@
 		seed = null
 		dead = 0
 		age = 0
+		sampled = 0
+		mutation_mod = 0
 
 	check_level_sanity()
 	update_icon()
@@ -412,6 +416,11 @@
 
 	seed = null
 	dead = 0
+	sampled = 0
+	age = 0
+	yield_mod = 0
+	mutation_mod = 0
+
 	user << "You remove the dead plant from the [src]."
 	check_level_sanity()
 	update_icon()
@@ -488,6 +497,7 @@
 	harvest = 0
 	weedlevel = 0
 	pestlevel = 0
+	sampled = 0
 	update_icon()
 	visible_message("\blue [src] has been overtaken by [seed.display_name].")
 
@@ -500,7 +510,7 @@
 		return
 
 	// Check if we should even bother working on the current seed datum.
-	if(seed.mutants. && seed.mutants.len && severity > 1 && prob(10+mutation_mod))
+	if(seed.mutants. && seed.mutants.len && severity > 1)
 		mutate_species()
 		return
 
@@ -561,13 +571,20 @@
 			user << "There is nothing to take a sample from in \the [src]."
 			return
 
+		if(sampled)
+			user << "You have already sampled from this plant."
+			return
+
 		if(dead)
-			user << "\The plant is dead."
+			user << "The plant is dead."
 			return
 
 		// Create a sample.
 		seed.harvest(user,yield_mod,1)
 		health -= (rand(3,5)*10)
+
+		if(prob(30))
+			sampled = 1
 
 		// Bookkeeping.
 		check_level_sanity()
@@ -634,26 +651,6 @@
 
 		else
 			user << "\red \The [src] already has seeds in it!"
-
-	else if (istype(O, /obj/item/weapon/reagent_containers/spray/plantbgone))
-		if(seed)
-			health -= rand(5,20)
-
-			if(pestlevel > 0)
-				pestlevel -= 2
-
-			if(weedlevel > 0)
-				weedlevel -= 3
-
-			toxins += 4
-
-			check_level_sanity()
-
-			visible_message("\red <B>\The [src] has been sprayed with \the [O][(user ? " by [user]." : ".")]")
-			playsound(loc, 'sound/effects/spray3.ogg', 50, 1, -6)
-			update_icon()
-		else
-			user << "There's nothing in [src] to spray!"
 
 	else if (istype(O, /obj/item/weapon/minihoe))  // The minihoe
 
