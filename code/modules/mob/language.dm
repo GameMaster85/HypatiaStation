@@ -61,6 +61,7 @@
 	exclaim_verb = "yowls"
 	colour = "tajaran"
 	key = "y"
+	native = 1
 	flags = WHITELISTED
 
 /datum/language/tajaran_sign
