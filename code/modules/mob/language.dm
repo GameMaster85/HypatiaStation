@@ -60,7 +60,7 @@
 	ask_verb = "mrowls"
 	exclaim_verb = "yowls"
 	colour = "tajaran"
-	key = "j"
+	key = "y"
 	flags = WHITELISTED
 
 /datum/language/tajaran_sign
@@ -68,7 +68,7 @@
 	desc = "An expressive language that combines yowls and chirps with posture, tail and ears. Spoken by many Tajaran."
 	speech_verb = "mrowls"
 	colour = "tajaran_signlang"
-	key = "y"		//only "dfpqxyz" left.
+	key = "j"		//only "dfpqxyz" left.
 
 	//need to find a way to resolve possesive macros
 	signlang_verb = list("flicks their left ear", "flicks their right ear", "swivels their ears", "twitches their tail", "curls the end of their tail", "arches their tail", "wiggles the end of their tail", "waves their tail about", "holds up a claw", "gestures with their left hand", "gestures with their right hand", "gestures with their tail", "gestures with their ears")
