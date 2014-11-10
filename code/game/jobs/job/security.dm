@@ -172,7 +172,7 @@
 	supervisors = "the warden and the head of security"
 	selection_color = "#ffeeee"
 	access = list(access_medical, access_chemistry, access_surgery, access_sec_doors, access_security, access_brig, access_court, access_maint_tunnels, access_morgue)
-	minimal_access = list(access_medical, access_sec_doors, access_brig, access_court, access_maint_tunnels)
+	minimal_access = list(access_medical, access_sec_doors, access_security, access_brig, access_court, access_maint_tunnels)
 	minimal_player_age = 7
 	equip(var/mob/living/carbon/human/H)
 		if(!H)	return 0
