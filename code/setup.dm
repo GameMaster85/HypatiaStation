@@ -27,7 +27,7 @@
 #define MIN_TOXIN_DAMAGE 1	//This and MAX_TOXIN_DAMAGE are for when a mob breathes poisonous air
 #define MAX_TOXIN_DAMAGE 10	//This and MIN_TOXIN_DAMAGE are for when a mob breathes poisonous air
 
-#define BREATH_VOLUME 0.5	//liters in a normal breath
+#define BREATH_VOLUME 0.5	//Liters in a normal breath
 #define BREATH_MOLES (ONE_ATMOSPHERE * BREATH_VOLUME /(T20C*R_IDEAL_GAS_EQUATION))
 #define BREATH_PERCENTAGE BREATH_VOLUME/CELL_VOLUME
 	//Amount of air to take a from a tile
@@ -37,8 +37,8 @@
 #define SOUND_MINIMUM_PRESSURE 10
 
 // Pressure limits.
-#define HAZARD_HIGH_PRESSURE 550	//This determins at what pressure the ultra-high pressure red icon is displayed. (This one is set as a constant)
-#define WARNING_HIGH_PRESSURE 325 	//This determins when the orange pressure icon is displayed (it is 0.7 * HAZARD_HIGH_PRESSURE)
+#define HAZARD_HIGH_PRESSURE 550	//This determines at what pressure the ultra-high pressure red icon is displayed. (This one is set as a constant)
+#define WARNING_HIGH_PRESSURE 325 	//This determines when the orange pressure icon is displayed (it is 0.7 * HAZARD_HIGH_PRESSURE)
 #define WARNING_LOW_PRESSURE 50 	//This is when the gray low pressure icon is displayed. (it is 2.5 * HAZARD_LOW_PRESSURE)
 #define HAZARD_LOW_PRESSURE 20		//This is when the black ultra-low pressure icon is displayed. (This one is set as a constant)
 
@@ -71,7 +71,7 @@
 
 #define PRESSURE_DAMAGE_COEFFICIENT 4 //The amount of pressure damage someone takes is equal to (pressure / HAZARD_HIGH_PRESSURE)*PRESSURE_DAMAGE_COEFFICIENT, with the maximum of MAX_PRESSURE_DAMAGE
 #define MAX_HIGH_PRESSURE_DAMAGE 4	//This used to be 20... I got this much random rage for some retarded decision by polymorph?! Polymorph now lies in a pool of blood with a katana jammed in his spleen. ~Errorage --PS: The katana did less than 20 damage to him :(
-#define LOW_PRESSURE_DAMAGE 2 	//The amounb of damage someone takes when in a low pressure area (The pressure threshold is so low that it doesn't make sense to do any calculations, so it just applies this flat value).
+#define LOW_PRESSURE_DAMAGE 2 	//The amount of damage someone takes when in a low pressure area (The pressure threshold is so low that it doesn't make sense to do any calculations, so it just applies this flat value).
 
 // Doors!
 #define DOOR_CRUSH_DAMAGE 10
@@ -83,7 +83,7 @@
 #define REAGENTS_METABOLISM 0.2
 
 // By defining the effect multiplier this way, it'll exactly adjust
-// all effects according to how they originally were with the 0.4 metabolism
+// All effects according to how they originally were with the 0.4 metabolism
 #define REAGENTS_EFFECT_MULTIPLIER REAGENTS_METABOLISM / 0.4
 
 
@@ -309,16 +309,16 @@ var/MAX_EXPLOSION_RANGE = 14
 
 //bitflags for mutations
 	// Extra powers:
-#define SHADOW			(1<<10)	// shadow teleportation (create in/out portals anywhere) (25%)
-#define SCREAM			(1<<11)	// supersonic screaming (25%)
-#define EXPLOSIVE		(1<<12)	// exploding on-demand (15%)
-#define REGENERATION	(1<<13)	// superhuman regeneration (30%)
-#define REPROCESSOR		(1<<14)	// eat anything (50%)
-#define SHAPESHIFTING	(1<<15)	// take on the appearance of anything (40%)
-#define PHASING			(1<<16)	// ability to phase through walls (40%)
-#define SHIELD			(1<<17)	// shielding from all projectile attacks (30%)
-#define SHOCKWAVE		(1<<18)	// attack a nearby tile and cause a massive shockwave, knocking most people on their asses (25%)
-#define ELECTRICITY		(1<<19)	// ability to shoot electric attacks (15%)
+#define SHADOW			(1<<10)	// Shadow teleportation (create in/out portals anywhere) (25%)
+#define SCREAM			(1<<11)	// Supersonic screaming (25%)
+#define EXPLOSIVE		(1<<12)	// Exploding on-demand (15%)
+#define REGENERATION	(1<<13)	// Superhuman regeneration (30%)
+#define REPROCESSOR		(1<<14)	// Eat anything (50%)
+#define SHAPESHIFTING	(1<<15)	// Take on the appearance of anything (40%)
+#define PHASING			(1<<16)	// Ability to phase through walls (40%)
+#define SHIELD			(1<<17)	// Shielding from all projectile attacks (30%)
+#define SHOCKWAVE		(1<<18)	// Attack a nearby tile and cause a massive shockwave, knocking most people on their asses (25%)
+#define ELECTRICITY		(1<<19)	// Ability to shoot electric attacks (15%)
 
 
 // String identifiers for associative list lookup
@@ -340,27 +340,27 @@ var/MAX_EXPLOSION_RANGE = 14
 
 
 	// Extra powers:
-#define LASER			9 	// harm intent - click anywhere to shoot lasers from eyes
-#define HEAL			10 	// healing people with hands
-#define SHADOW			11 	// shadow teleportation (create in/out portals anywhere) (25%)
-#define SCREAM			12 	// supersonic screaming (25%)
-#define EXPLOSIVE		13 	// exploding on-demand (15%)
-#define REGENERATION	14 	// superhuman regeneration (30%)
-#define REPROCESSOR		15 	// eat anything (50%)
-#define SHAPESHIFTING	16 	// take on the appearance of anything (40%)
-#define PHASING			17 	// ability to phase through walls (40%)
-#define SHIELD			18 	// shielding from all projectile attacks (30%)
-#define SHOCKWAVE		19 	// attack a nearby tile and cause a massive shockwave, knocking most people on their asses (25%)
-#define ELECTRICITY		20 	// ability to shoot electric attacks (15%)
+#define LASER			9 	// Harm intent - click anywhere to shoot lasers from eyes
+#define HEAL			10 	// Healing people with hands
+#define SHADOW			11 	// Shadow teleportation (create in/out portals anywhere) (25%)
+#define SCREAM			12 	// Supersonic screaming (25%)
+#define EXPLOSIVE		13 	// Exploding on-demand (15%)
+#define REGENERATION	14 	// Superhuman regeneration (30%)
+#define REPROCESSOR		15 	// Eat anything (50%)
+#define SHAPESHIFTING	16 	// Take on the appearance of anything (40%)
+#define PHASING			17 	// Ability to phase through walls (40%)
+#define SHIELD			18 	// Shielding from all projectile attacks (30%)
+#define SHOCKWAVE		19 	// Attack a nearby tile and cause a massive shockwave, knocking most people on their asses (25%)
+#define ELECTRICITY		20 	// Ability to shoot electric attacks (15%)
 
 	//2spooky
 #define SKELETON 29
 #define PLANT 30
 
 // Other Mutations:
-#define mNobreath		100 	// no need to breathe
-#define mRemote			101 	// remote viewing
-#define mRegen			102 	// health regen
+#define mNobreath		100 	// No need to breathe
+#define mRemote			101 	// Remote viewing
+#define mRegen			102 	// Health regen
 #define mRun			103 	// no slowdown
 #define mRemotetalk		104 	// remote talking
 #define mMorph			105 	// changing appearance
