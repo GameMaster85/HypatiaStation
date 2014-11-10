@@ -109,7 +109,8 @@ RCD
 					return 0
 
 			if(2)
-				if(istype(A, /turf/simulated/floor))
+				var/turf/turf = A
+				if(istype(turf) && turf.isFloor())
 					if(checkResource(10, user))
 						user << "Building Airlock..."
 						playsound(src.loc, 'sound/machines/click.ogg', 50, 1)

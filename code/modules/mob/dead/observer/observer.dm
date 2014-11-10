@@ -307,47 +307,26 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	usr.loc = pick(L)
 
+/mob/dead/observer/verb/follow_mob(var/input as mob in world)
+	set category = null
+	set name = "Follow Mob"
+
+	if (input) ManualFollow(input)
 
 /*  I tried to improve follow, but couldn't quite get it working.
 	In hopes that someone will do better, I've included my progress
 	In the comments for follow()
 */
-/mob/dead/observer/verb/follow()
-// /mob/dead/observer/verb/follow(var/query as text)
+/mob/dead/observer/verb/follow(var/input as anything in getmobs())
 	set category = "Ghost"
 	set name = "Follow" // "Haunt"
 	set desc = "Follow and haunt a mob."
 
-	/* Start of an experimental query process to pick target.
-	//usr << "Query is [query]"
-	var/list/matches = new()
-	var/list/mobs = getmobs()
-	//usr << "First entry is [mobs[1]]"
-	for(var/thing in mobs)
-		//usr << "Testing [thing] against [query]"
-		if(findtext("[thing]", query))
-			matches += thing
-			//usr << "Matched"
+	if (input)
+		var/list/mobs = getmobs()
+		var/mob/target = mobs[input]
 
-	if(matches.len==0)
-		usr << "Nothing by that name."
-		return
-
-	var/mob/target
-	if(matches.len==1)
-		target = matches[1]
-	else
-		var/choice = input("Please, select a mob!", "Haunt", null, null) as null|anything in matches
-		//usr << "Selected [choice]. Trying to follow [matches[choice]]"
-		target = matches[choice]
-	*/
-
-	// Original process. comment out this block when using experimental.
-	var/list/mobs = getmobs()
-	var/input = input("Please, select a mob!", "Haunt", null, null) as null|anything in mobs
-	var/mob/target = mobs[input]
-
-	ManualFollow(target)
+		ManualFollow(target)
 
 // This is the ghost's follow verb with an argument
 /mob/dead/observer/proc/ManualFollow(var/atom/movable/target)

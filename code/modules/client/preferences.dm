@@ -115,6 +115,7 @@ datum/preferences
 
 	var/list/flavor_texts = list()
 
+	var/flavor_text = "" //For transition
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""
@@ -618,6 +619,9 @@ datum/preferences
 	HTML += "<tt><center>"
 	HTML += "<b>Set Flavour Text</b> <hr />"
 	HTML += "<br></center>"
+	HTML += "<a href='byond://?src=\ref[flavor_text];preference=flavor_text;task=general'>Old Flavour Text:</a> "
+	HTML += TextPreview(flavor_text)
+	HTML += "<br>"
 	HTML += "<a href='byond://?src=\ref[user];preference=flavor_text;task=general'>General:</a> "
 	HTML += TextPreview(flavor_texts["general"])
 	HTML += "<br>"
