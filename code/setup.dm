@@ -361,16 +361,16 @@ var/MAX_EXPLOSION_RANGE = 14
 #define mNobreath		100 	// No need to breathe
 #define mRemote			101 	// Remote viewing
 #define mRegen			102 	// Health regen
-#define mRun			103 	// no slowdown
-#define mRemotetalk		104 	// remote talking
-#define mMorph			105 	// changing appearance
-#define mBlend			106 	// nothing (seriously nothing)
-#define mHallucination	107 	// hallucinations
-#define mFingerprints	108 	// no fingerprints
-#define mShock			109 	// insulated hands
-#define mSmallsize		110 	// table climbing
+#define mRun			103 	// No slowdown
+#define mRemotetalk		104 	// Remote talking
+#define mMorph			105 	// Changing appearance
+#define mBlend			106 	// Nothing (seriously nothing)
+#define mHallucination	107 	// Hallucinations
+#define mFingerprints	108 	// No fingerprints
+#define mShock			109 	// Insulated hands
+#define mSmallsize		110 	// Table climbing
 
-//disabilities
+//Disabilities
 #define NEARSIGHTED		1
 #define EPILEPSY		2
 #define COUGHING		4
@@ -387,7 +387,7 @@ var/MAX_EXPLOSION_RANGE = 14
 #define UNCONSCIOUS	1
 #define DEAD		2
 
-// channel numbers for power
+// Channel numbers for power
 #define EQUIP	1
 #define LIGHT	2
 #define ENVIRON	3
@@ -409,7 +409,7 @@ var/MAX_EXPLOSION_RANGE = 14
 
 #define ENGINE_EJECT_Z	3
 
-//metal, glass, rod stacks
+//Metal, glass, rod stacks
 #define MAX_STACK_AMOUNT_METAL	50
 #define MAX_STACK_AMOUNT_GLASS	50
 #define MAX_STACK_AMOUNT_RODS	60
@@ -427,7 +427,7 @@ var/list/accessable_z_levels = list("1" = 5, "3" = 10, "4" = 15, "5" = 10, "6" =
 //Was list("3" = 30, "4" = 70).
 //Spacing should be a reliable method of getting rid of a body -- Urist.
 //Go away Urist, I'm restoring this to the longer list. ~Errorage
-
+//Shaddup ~Lorwp
 #define IS_MODE_COMPILED(MODE) (ispath(text2path("/datum/game_mode/"+(MODE))))
 
 
@@ -511,9 +511,9 @@ var/list/liftable_structures = list(\
 	/obj/structure/reagent_dispensers, \
 	/obj/machinery/portable_atmospherics/canister)
 
-//A set of constants used to determine which type of mute an admin wishes to apply:
-//Please read and understand the muting/automuting stuff before changing these. MUTE_IC_AUTO etc = (MUTE_IC << 1)
-//Therefore there needs to be a gap between the flags for the automute flags
+//A set of constants used to determine which type of mute an Admin wishes to apply:
+//Please read and understand the muting/auto-muting stuff before changing these. MUTE_IC_AUTO etc = (MUTE_IC << 1)
+//Therefore there needs to be a gap between the flags for the auto-mute flags
 #define MUTE_IC			1
 #define MUTE_OOC		2
 #define MUTE_PRAY		4
@@ -521,7 +521,7 @@ var/list/liftable_structures = list(\
 #define MUTE_DEADCHAT	16
 #define MUTE_ALL		31
 
-//Number of identical messages required to get the spam-prevention automute thing to trigger warnings and automutes
+//Number of identical messages required to get the spam-prevention auto-mute thing to trigger warnings and auto-mutes
 #define SPAM_TRIGGER_WARNING 5
 #define SPAM_TRIGGER_AUTOMUTE 10
 
@@ -562,7 +562,7 @@ var/list/liftable_structures = list(\
 #define BORGTHERM 2
 #define BORGXRAY  4
 
-//some arbitrary defines to be used by self-pruning global lists. (see master_controller)
+//Some arbitrary defines to be used by self-pruning global lists. (see master_controller)
 #define PROCESS_KILL 26	//Used to trigger removal from a processing list
 
 
@@ -755,7 +755,7 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 
 //Language flags.
 #define WHITELISTED 1  		// Language is available if the speaker is whitelisted.
-#define RESTRICTED 2   		// Language can only be accquired by spawning or an admin.
+#define RESTRICTED 2   		// Language can only be acquired by spawning or an Admin.
 #define NONVERBAL 4    		// Language has a significant non-verbal component. Speech is garbled without line-of-sight
 #define SIGNLANG 8     		// Language is completely non-verbal. Speech is displayed through emotes for those who can understand.
 #define HIVEMIND 16         // Broadcast to all mobs with this language.
@@ -764,7 +764,7 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 #define ZONE_ACTIVE 1
 #define ZONE_SLEEPING 0
 
-//some colors
+//some colours
 #define COLOR_RED 		"#FF0000"
 #define COLOR_GREEN 	"#00FF00"
 #define COLOR_BLUE 		"#0000FF"
