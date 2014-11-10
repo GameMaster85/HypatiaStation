@@ -437,7 +437,7 @@ var/list/global_mutations = list() // list of hidden mutation things
 
 
 //Damage things	//TODO: merge these down to reduce on defines
-//Way to waste perfectly good damagetype names (BRUTE) on this... If you were really worried about case sensitivity, you could have just used lowertext(damagetype) in the proc...
+//Way to waste perfectly good damage type names (BRUTE) on this... If you were really worried about case sensitivity, you could have just used lowertext(damagetype) in the proc...
 #define BRUTE		"brute"
 #define BURN		"fire"
 #define TOX			"tox"
@@ -469,8 +469,8 @@ var/list/global_mutations = list() // list of hidden mutation things
 #define PASSEMOTES	32      //Mob has a cortical borer or holders inside of it that need to see emotes.
 #define GODMODE		4096
 #define FAKEDEATH	8192	//Replaces stuff like changeling.changeling_fakedeath
-#define DISFIGURED	16384	//I'll probably move this elsewhere if I ever get wround to writing a bitflag mob-damage system
-#define XENO_HOST	32768	//Tracks whether we're gonna be a baby alien's mummy.
+#define DISFIGURED	16384	//I'll probably move this elsewhere if I ever get around to writing a bitflag mob-damage system
+#define XENO_HOST	32768	//Tracks whether we're going to be a baby alien's mummy.
 
 var/static/list/scarySounds = list('sound/weapons/thudswoosh.ogg','sound/weapons/Taser.ogg','sound/weapons/armbomb.ogg','sound/voice/hiss1.ogg','sound/voice/hiss2.ogg','sound/voice/hiss3.ogg','sound/voice/hiss4.ogg','sound/voice/hiss5.ogg','sound/voice/hiss6.ogg','sound/effects/Glassbr1.ogg','sound/effects/Glassbr2.ogg','sound/effects/Glassbr3.ogg','sound/items/Welder.ogg','sound/items/Welder2.ogg','sound/machines/airlock.ogg','sound/effects/clownstep1.ogg','sound/effects/clownstep2.ogg')
 
@@ -794,7 +794,7 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 
 // these define the time taken for the shuttle to get to SS13
 // and the time before it leaves again
-#define SHUTTLE_PREPTIME 				300	// 5 minutes = 300 seconds - after this time, the shuttle departs centcom and cannot be recalled
+#define SHUTTLE_PREPTIME 				300	// 5 minutes = 300 seconds - after this time, the shuttle departs Centcom and cannot be recalled
 #define SHUTTLE_LEAVETIME 				180	// 3 minutes = 180 seconds - the duration for which the shuttle will wait at the station after arriving
 #define SHUTTLE_TRANSIT_DURATION		300	// 5 minutes = 300 seconds - how long it takes for the shuttle to get to the station
 #define SHUTTLE_TRANSIT_DURATION_RETURN 120	// 2 minutes = 120 seconds - for some reason it takes less time to come back, go figure.
@@ -825,7 +825,7 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 #define IS_SOGHUN 4
 #define IS_XENOS 5
 
-#define MAX_GEAR_COST 5 //Used in chargen for loadout limit.
+#define MAX_GEAR_COST 5 //Used in character generation for loadout limit.
 
 
 /*
