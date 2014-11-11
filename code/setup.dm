@@ -74,7 +74,7 @@
 #define LOW_PRESSURE_DAMAGE 2 	//The amount of damage someone takes when in a low pressure area (The pressure threshold is so low that it doesn't make sense to do any calculations, so it just applies this flat value).
 
 // Doors!
-#define DOOR_CRUSH_DAMAGE 10
+#define DOOR_CRUSH_DAMAGE 10 // How much damage a door does when it crushes a player
 
 // Factor of how fast mob nutrition decreases
 #define HUNGER_FACTOR 0.05
@@ -190,39 +190,39 @@ var/MAX_EXPLOSION_RANGE = 14
 //FLAGS BITMASK
 #define STOPSPRESSUREDMAGE 1	//This flag is used on the flags variable for SUIT and HEAD items which stop pressure damage. Note that the flag 1 was previous used as ONBACK, so it is possible for some code to use (flags & 1) when checking if something can be put on your back. Replace this code with (inv_flags & SLOT_BACK) if you see it anywhere
                                 //To successfully stop you taking all pressure damage you must have both a suit and head item with this flag.
-#define TABLEPASS 2			// can pass by a table or rack
+#define TABLEPASS 2			// Can pass by a table or rack
 
-#define MASKINTERNALS	8	// mask allows internals
-//#define SUITSPACE		8	// suit protects against space
+#define MASKINTERNALS	8	// Mask allows internals
+//#define SUITSPACE		8	// Suit protects against space
 
 #define USEDELAY 	16		// 1 second extra delay on use (Can be used once every 2s)
 #define NODELAY 	32768	// 1 second attackby delay skipped (Can be used once every 0.2s). Most objects have a 1s attackby delay, which doesn't require a flag.
-#define NOSHIELD	32		// weapon not affected by shield
-#define CONDUCT		64		// conducts electricity (metal etc.)
-#define FPRINT		256		// takes a fingerprint
-#define ON_BORDER	512		// item has priority to check when entering or leaving
-#define NOBLUDGEON  4  // when an item has this it produces no "X has been hit by Y with Z" message with the default handler
-#define NOBLOODY	2048	// used to items if they don't want to get a blood overlay
+#define NOSHIELD	32		// Weapon not affected by shield
+#define CONDUCT		64		// Conducts electricity (metal etc.)
+#define FPRINT		256		// Takes a fingerprint
+#define ON_BORDER	512		// Item has priority to check when entering or leaving
+#define NOBLUDGEON  4  // When an item has this it produces no "X has been hit by Y with Z" message with the default handler
+#define NOBLOODY	2048	// Used to items if they don't want to get a blood overlay
 
 #define GLASSESCOVERSEYES	1024
-#define MASKCOVERSEYES		1024		// get rid of some of the other retardation in these flags
-#define HEADCOVERSEYES		1024		// feel free to reallocate these numbers for other purposes
-#define MASKCOVERSMOUTH		2048		// on other items, these are just for mask/head
+#define MASKCOVERSEYES		1024		// Get rid of some of the other retardation in these flags
+#define HEADCOVERSEYES		1024		// Feel free to reallocate these numbers for other purposes
+#define MASKCOVERSMOUTH		2048		// On other items, these are just for mask/head
 #define HEADCOVERSMOUTH		2048
 
 #define THICKMATERIAL 1024		//From /tg: prevents syringes, parapens and hypos if the external suit or helmet (if targeting head) has this flag. Example: space suits, biosuit, bombsuits, thick suits that cover your body. (NOTE: flag shared with NOSLIP for shoes)
-#define NOSLIP		1024 		//prevents from slipping on wet floors, in space etc
+#define NOSLIP		1024 		//Prevents from slipping on wet floors, in space etc
 
-#define OPENCONTAINER	4096	// is an open container for chemistry purposes
+#define OPENCONTAINER	4096	// Is an open container for chemistry purposes
 
-#define BLOCK_GAS_SMOKE_EFFECT 8192	// blocks the effect that chemical clouds would have on a mob --glasses, mask and helmets ONLY! (NOTE: flag shared with ONESIZEFITSALL)
+#define BLOCK_GAS_SMOKE_EFFECT 8192	// Blocks the effect that chemical clouds would have on a mob --glasses, mask and helmets ONLY! (NOTE: flag shared with ONESIZEFITSALL)
 #define ONESIZEFITSALL 8192
 #define PHORONGUARD 16384			//Does not get contaminated by phoron.
 
 #define	NOREACT		16384 			//Reagents dont' react inside this container.
 
-#define BLOCKHEADHAIR 4             // temporarily removes the user's hair overlay. Leaves facial hair.
-#define BLOCKHAIR	32768			// temporarily removes the user's hair, facial and otherwise.
+#define BLOCKHEADHAIR 4             // Temporarily removes the user's hair overlay. Leaves facial hair.
+#define BLOCKHAIR	32768			// Temporarily removes the user's hair, facial and otherwise.
 
 //flags for pass_flags
 #define PASSTABLE	1
@@ -245,7 +245,7 @@ var/MAX_EXPLOSION_RANGE = 14
 #define HIDEEYES	4	//APPLIES ONLY TO HELMETS/MASKS!! (eyes means glasses)
 #define HIDEFACE	8	//APPLIES ONLY TO HELMETS/MASKS!! Dictates whether we appear as unknown.
 
-//slots
+//Slots
 #define slot_back 1
 #define slot_wear_mask 2
 #define slot_handcuffed 3
@@ -270,7 +270,7 @@ var/MAX_EXPLOSION_RANGE = 14
 
 //Cant seem to find a mob bitflags area other than the powers one
 
-// bitflags for clothing parts
+// Bitflags for clothing parts
 #define HEAD			1
 #define FACE			2
 #define EYES			4
@@ -290,7 +290,7 @@ var/MAX_EXPLOSION_RANGE = 14
 #define HANDS			6144
 #define FULL_BODY		8191
 
-// bitflags for the percentual amount of protection a piece of clothing which covers the body part offers.
+// Bitflags for the percentual amount of protection a piece of clothing which covers the body part offers.
 // Used with human/proc/get_heat_protection() and human/proc/get_cold_protection()
 // The values here should add up to 1.
 // Hands and feet have 2.5%, arms and legs 7.5%, each of the torso parts has 15% and the head has 30%
@@ -307,7 +307,7 @@ var/MAX_EXPLOSION_RANGE = 14
 #define THERMAL_PROTECTION_HAND_RIGHT	0.025
 
 
-//bitflags for mutations
+//Bitflags for mutations
 	// Extra powers:
 #define SHADOW			(1<<10)	// Shadow teleportation (create in/out portals anywhere) (25%)
 #define SCREAM			(1<<11)	// Supersonic screaming (25%)
@@ -393,14 +393,14 @@ var/MAX_EXPLOSION_RANGE = 14
 #define ENVIRON	3
 #define TOTAL	4	//for total power used only
 
-// bitflags for machine stat variable
+// Bitflags for machine stat variable
 #define BROKEN		1
 #define NOPOWER		2
 #define POWEROFF	4		// tbd
-#define MAINT		8			// under maintaince
-#define EMPED		16		// temporary broken by EMP pulse
+#define MAINT		8			// Under maintaince
+#define EMPED		16		// Temporary broken by EMP pulse
 
-//bitflags for door switches.
+//Bitflags for door switches.
 #define OPEN	1
 #define IDSCAN	2
 #define BOLTS	4
@@ -614,20 +614,20 @@ var/list/liftable_structures = list(\
 
 //Please don't edit these values without speaking to Errorage first	~Carn
 //Admin Permissions
-#define R_REJUVINATE 1
-#define R_BUILDMODE 2
-#define R_POSSESS 4
-#define R_STEALTH 8
-#define R_SOUNDS 16 //sort of singe-tasked
-#define R_SPAWN 32
-#define R_VAREDIT 64
+#define R_REJUVINATE 1 //Rejuvinate
+#define R_BUILDMODE 2  //Buildmode
+#define R_POSSESS 4    //Possess
+#define R_STEALTH 8    //Stealth
+#define R_SOUNDS 16 //Sort of singe-tasked
+#define R_SPAWN 32 
+#define R_VAREDIT 64  //Editing Varables
 #define R_DONOR 128//lowest "rank"/perm
 #define R_MOD 256//MOD > DONOR
-#define R_BAN 512
-#define R_ADMIN 1024
-#define R_FUN 2048
-#define R_SERVER 4096
-#define R_DEBUG 8192
+#define R_BAN 512 //BANHAMMER!
+#define R_ADMIN 1024 //Admin Tab
+#define R_FUN 2048   //'Fun' Tab
+#define R_SERVER 4096 //Server Tab
+#define R_DEBUG 8192 //Debug Tab
 #define R_MENTOR		16384
 #define R_ZAS 16384
 #define R_PERMISSIONS 32768
@@ -636,7 +636,7 @@ var/list/liftable_structures = list(\
 #define R_HOST 65535
 
 //Preference toggles
-#define SOUND_ADMINHELP	1
+#define SOUND_ADMINHELP	1 
 #define SOUND_MIDI		2
 #define SOUND_AMBIENCE	4
 #define SOUND_LOBBY		8
@@ -687,23 +687,23 @@ var/list/be_special_flags = list(
 	"Mutineer" = BE_MUTINEER
 	)
 
-#define AGE_MIN 17			//youngest a character can be
-#define AGE_MAX 85			//oldest a character can be
+#define AGE_MIN 17			//Youngest a character can be
+#define AGE_MAX 85			//Oldest a character can be
 
 //Languages!
-#define LANGUAGE_HUMAN		1
-#define LANGUAGE_ALIEN		2
-#define LANGUAGE_DOG		4
-#define LANGUAGE_CAT		8
-#define LANGUAGE_BINARY		16
-#define LANGUAGE_OTHER		32768
+#define LANGUAGE_HUMAN		1 //Common
+#define LANGUAGE_ALIEN		2 //Alien speak
+#define LANGUAGE_DOG		4 //Dog speak
+#define LANGUAGE_CAT		8 //Cat speak
+#define LANGUAGE_BINARY		16 //Beep Speak
+#define LANGUAGE_OTHER		32768 //Everything else!
 
 #define LANGUAGE_UNIVERSAL	65535
 
 #define LEFT 1
 #define RIGHT 2
 
-// for secHUDs and medHUDs and variants. The number is the location of the image on the list hud_list of humans.
+// For secHUDs and medHUDs and variants. The number is the location of the image on the list hud_list of humans.
 #define HEALTH_HUD		1 // a simple line rounding the mob's number health
 #define STATUS_HUD		2 // alive, dead, diseased, etc.
 #define ID_HUD			3 // the job asigned to your ID
@@ -792,8 +792,8 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 	Shuttles
 */
 
-// these define the time taken for the shuttle to get to SS13
-// and the time before it leaves again
+// These define the time taken for the shuttle to get to SS13
+// And the time before it leaves again
 #define SHUTTLE_PREPTIME 				300	// 5 minutes = 300 seconds - after this time, the shuttle departs Centcom and cannot be recalled
 #define SHUTTLE_LEAVETIME 				180	// 3 minutes = 180 seconds - the duration for which the shuttle will wait at the station after arriving
 #define SHUTTLE_TRANSIT_DURATION		300	// 5 minutes = 300 seconds - how long it takes for the shuttle to get to the station
@@ -839,7 +839,7 @@ var/list/RESTRICTED_CAMERA_NETWORKS = list( //Those networks can only be accesse
 #define ATMOS_PUMP_EFFICIENCY	2.5
 #define ATMOS_FILTER_EFFICIENCY	2.5
 
-//will not bother pumping or filtering if the gas source as fewer than this amount of moles, to help with performance.
+//Will not bother pumping or filtering if the gas source as fewer than this amount of moles, to help with performance.
 #define MINUMUM_MOLES_TO_PUMP	0.01
 #define MINUMUM_MOLES_TO_FILTER	0.1
 
