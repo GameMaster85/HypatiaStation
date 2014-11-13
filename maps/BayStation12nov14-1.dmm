@@ -9070,7 +9070,7 @@
 "dsv" = (/obj/machinery/computer/station_alert,/turf/simulated/shuttle/floor,/area/shuttle/escape/centcom)
 "dsw" = (/obj/structure/stool/bed/chair{dir = 8; name = "Chief Engineer"},/turf/simulated/shuttle/floor{icon_state = "floor3"},/area/shuttle/escape/centcom)
 "dsx" = (/obj/structure/table,/obj/item/weapon/storage/box/autoinjectors,/turf/simulated/shuttle/floor,/area/shuttle/escape/centcom)
-"dsy" = (/obj/machinery/computer/shuttle,/obj/machinery/embedded_controller/radio/simple_docking_controller{step_x = 0; pixel_x = 8; pixel_y = 25; req_access_txt = "0"; req_one_access_txt = "13"; id_tag = "escape_shuttle"; frequency = 1380; tag_door = "escape_shuttle_hatch"},/turf/simulated/shuttle/floor{icon_state = "floor3"},/area/shuttle/escape/centcom)
+"dsy" = (/obj/machinery/computer/shuttle,/obj/machinery/embedded_controller/radio/simple_docking_controller{pixel_x = 0; pixel_x = 8; pixel_y = 25; req_access_txt = "0"; req_one_access_txt = "13"; id_tag = "escape_shuttle"; frequency = 1380; tag_door = "escape_shuttle_hatch"},/turf/simulated/shuttle/floor{icon_state = "floor3"},/area/shuttle/escape/centcom)
 "dsz" = (/obj/structure/table,/obj/item/weapon/storage/fancy/donut_box,/turf/simulated/shuttle/floor,/area/shuttle/escape/centcom)
 "dsA" = (/obj/structure/stool/bed/chair{dir = 4; name = "Head of Personnel"},/turf/simulated/shuttle/floor{icon_state = "floor3"},/area/shuttle/escape/centcom)
 "dsB" = (/obj/machinery/computer/communications,/turf/simulated/shuttle/floor,/area/shuttle/escape/centcom)
