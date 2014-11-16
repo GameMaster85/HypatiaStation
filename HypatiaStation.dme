@@ -805,6 +805,7 @@
 #include "code\modules\admin\verbs\ticklag.dm"
 #include "code\modules\admin\verbs\tripAI.dm"
 #include "code\modules\admin\verbs\vox_raiders.dm"
+#include "code\modules\apartment\apartment.dm"
 #include "code\modules\assembly\assembly.dm"
 #include "code\modules\assembly\bomb.dm"
 #include "code\modules\assembly\helpers.dm"
@@ -1561,5 +1562,5 @@
 #include "code\ZAS\Zone.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\BayStation18sept14.dmm"
+#include "maps\Apartments-Dev1.dmm"
 // END_INCLUDE
