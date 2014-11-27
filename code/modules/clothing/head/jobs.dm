@@ -89,6 +89,7 @@
 	icon_state = "purpleberet"
 	flags = FPRINT | TABLEPASS
 
+
 //Medical
 /obj/item/clothing/head/surgery
 	name = "surgical cap"

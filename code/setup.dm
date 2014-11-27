@@ -636,7 +636,7 @@ var/list/liftable_structures = list(\
 #define R_HOST 65535
 
 //Preference toggles
-#define SOUND_ADMINHELP	1 
+#define SOUND_ADMINHELP	1
 #define SOUND_MIDI		2
 #define SOUND_AMBIENCE	4
 #define SOUND_LOBBY		8

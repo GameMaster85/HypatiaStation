@@ -108,7 +108,7 @@ var/list/blob_nodes = list()
 				return
 
 			if (1)
-				command_announcement.Announce("Confirmed outbreak of level 5 biohazard aboard [station_name()]. All personnel must contain the outbreak.", "Biohazard Alert")
+				command_alert("Confirmed outbreak of level 5 biohazard aboard [station_name()]. All personnel must contain the outbreak.", "Biohazard Alert")
 				for(var/mob/M in player_list)
 					if(!istype(M,/mob/new_player))
 						M << sound('sound/AI/outbreak5.ogg')
@@ -121,7 +121,7 @@ var/list/blob_nodes = list()
 
 			if (2)
 				if((blobs.len > blobnukecount) && (declared == 1))
-					command_announcement.Announce("Uncontrolled spread of the biohazard onboard the station. We have issued directive 7-12 for [station_name()].  Any living Heads of Staff are ordered to enact directive 7-12 at any cost, a print out with detailed instructions has been sent to your communications computers.", "Biohazard Alert")
+					command_alert("Uncontrolled spread of the biohazard onboard the station. We have issued directive 7-12 for [station_name()].  Any living Heads of Staff are ordered to enact directive 7-12 at any cost, a print out with detailed instructions has been sent to your communications computers.", "Biohazard Alert")
 					send_intercept(2)
 					declared = 2
 					spawn(20)

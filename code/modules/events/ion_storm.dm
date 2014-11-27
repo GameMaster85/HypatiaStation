@@ -6,7 +6,7 @@
 
 /datum/event/ionstorm/announce()
 	endWhen = rand(500, 1500)
-//		command_announcement.Announce("The station has entered an ion storm.  Monitor all electronic equipment for malfunctions", "Anomaly Alert")
+//		command_alert("The station has entered an ion storm.  Monitor all electronic equipment for malfunctions", "Anomaly Alert")
 	for (var/mob/living/carbon/human/player in world)
 		if(player.client)
 			players += player.real_name

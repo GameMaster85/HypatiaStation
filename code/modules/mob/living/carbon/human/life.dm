@@ -1357,9 +1357,9 @@
 
 			var/tmp/glasses_processed = 0
 			if(istype(wear_mask, /obj/item/clothing/mask/gas/voice/space_ninja))
-				//var/obj/item/clothing/mask/gas/voice/space_ninja/O = wear_mask
+				var/obj/item/clothing/mask/gas/voice/space_ninja/O = wear_mask
 				glasses_processed = 1
-//				process_glasses(O.ninja_vision.glasses)
+				process_glasses(O.ninja_vision.glasses)
 			if(glasses)
 				glasses_processed = 1
 				process_glasses(glasses)
@@ -1470,7 +1470,7 @@
 
 			var/masked = 0
 
-			if( istype(head, /obj/item/clothing/head/welding))
+			if( istype(head, /obj/item/clothing/head/welding) || istype(head, /obj/item/clothing/head/helmet/space/soghun))
 				var/obj/item/clothing/head/welding/O = head
 				if(!O.up && tinted_weldhelh)
 					client.screen += global_hud.darkMask
@@ -1496,8 +1496,8 @@
 	proc/process_glasses(var/obj/item/clothing/glasses/G)
 		if(G && G.active)
 			see_in_dark += G.darkness_view
-//			if(G.overlay)
-//				client.screen |= G.overlay
+			if(G.overlay)
+				client.screen |= G.overlay
 			if(G.vision_flags)
 				sight |= G.vision_flags
 				if(!druggy)

@@ -885,14 +885,17 @@ About the new airlock wires panel:
 	return
 
 /obj/machinery/door/airlock/proc/check_synth_access(mob/user as mob)
-	if(emagged)
-		user << "<span class='warning'>Unable to interface: Airlock is unresponsive.</span>"
+	if(operating < 0) //emagged
+		user << "<span class='warning'>Unable to interface: Internal error.</span>"
 		return 0
 	if(!src.canAIControl())
 		if(src.canAIHack(user))
 			src.hack(user)
 		else
-			user << "<span class='warning'>Airlock AI control has been blocked with a firewall.</span>"
+			if (src.isAllPowerLoss()) //don't really like how this gets checked a second time, but not sure how else to do it.
+				user << "<span class='warning'>Unable to interface: Connection timed out.</span>"
+			else
+				user << "<span class='warning'>Unable to interface: Connection refused.</span>"
 		return 0
 	return 1
 
@@ -1292,7 +1295,10 @@ About the new airlock wires panel:
 				S.loc = M.loc
 				spawn(20)
 					del(S)
-				M.emote("scream")
+				if (iscarbon(M))
+					var/mob/living/carbon/C = M
+					if (!(C.species && (C.species.flags & NO_PAIN)))
+						M.emote("scream")
 			var/turf/location = src.loc
 			if(istype(location, /turf/simulated))
 				location.add_blood(M)

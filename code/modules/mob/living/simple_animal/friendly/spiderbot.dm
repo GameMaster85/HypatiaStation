@@ -249,36 +249,31 @@
 	set category = "Spiderbot"
 	set desc = "Allows you to take a nearby small item."
 
-	if (stat)
+	if(stat)
 		return -1
 
-	if (held_item)
+	if(held_item)
 		src << "\red You are already holding \the [held_item]"
 		return 1
 
 	var/list/items = list()
-	for (var/obj/item/I in view(1,src))
-		if (I.loc != src && I.w_class <= 2 && I.Adjacent(src) )
+	for(var/obj/item/I in view(1,src))
+		if(I.loc != src && I.w_class <= 2 && I.Adjacent(src) )
 			items.Add(I)
 
-	if (items.len > 0)
-		var/obj/selection = input("Select an item.", "Pickup") as null|anything in items
+	var/obj/selection = input("Select an item.", "Pickup") in items
 
-		if(selection)
-			if (held_item)
-				src << "\red You are already holding \the [held_item]"
-				return 1
+	if(selection)
+		for(var/obj/item/I in view(1, src))
+			if(selection == I)
+				held_item = selection
+				selection.loc = src
+				visible_message("\blue [src] scoops up \the [held_item]!", "\blue You grab \the [held_item]!", "You hear a skittering noise and a clink.")
+				return held_item
+		src << "\red \The [selection] is too far away."
+		return 0
 
-			for(var/obj/item/I in view(1, src))
-				if(selection == I)
-					held_item = selection
-					selection.loc = src
-					visible_message("\blue [src] scoops up \the [held_item]!", "\blue You grab \the [held_item]!", "You hear a skittering noise and a clink.")
-					return held_item
-			src << "\red \The [selection] is too far away."
-	else
-		src << "\red There is nothing of interest to take."
-
+	src << "\red There is nothing of interest to take."
 	return 0
 
 /mob/living/simple_animal/spiderbot/examine()
