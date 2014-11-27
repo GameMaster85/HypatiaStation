@@ -15,7 +15,7 @@
 			user << "<span class='notice'>The [src] are already wired.</span>"
 			return
 
-		if(C.amount < 2)
+		if(C.get_amount() < 2)
 			user << "<span class='notice'>There is not enough wire to cover the [src].</span>"
 			return
 
@@ -67,7 +67,7 @@
 			desc = "[desc]<br>They have had the fingertips cut off of them."
 			if("exclude" in species_restricted)
 				species_restricted -= "Soghun"
-				species_restricted -= "Tajaran"
+				species_restricted -= "Tajara"
 			return
 		else
 			user << "<span class='notice'>The [src] have already been clipped!</span>"

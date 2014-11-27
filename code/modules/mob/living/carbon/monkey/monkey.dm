@@ -15,11 +15,12 @@
 	var/list/uni_append = list(0x12C,0x4E2)    // Same as above for DNA2.
 	var/update_muts = 1                        // Monkey gene must be set at start.
 
-/mob/living/carbon/monkey/tajaran
+/mob/living/carbon/monkey/tajara
 	name = "farwa"
 	voice_name = "farwa"
 	speak_emote = list("mews")
 	icon_state = "tajkey1"
+	greaterform = "Tajara"
 	uni_append = list(0x0A0,0xE00) // 0A0E00
 
 /mob/living/carbon/monkey/skrell
@@ -27,6 +28,7 @@
 	voice_name = "neaera"
 	speak_emote = list("squicks")
 	icon_state = "skrellkey1"
+	greaterform = "Skrell"
 	uni_append = list(0x01C,0xC92) // 01CC92
 
 /mob/living/carbon/monkey/soghun
@@ -34,12 +36,16 @@
 	voice_name = "stok"
 	speak_emote = list("hisses")
 	icon_state = "stokkey1"
+	greaterform = "Soghun"
 	uni_append = list(0x044,0xC5D) // 044C5D
 
 /mob/living/carbon/monkey/New()
 	var/datum/reagents/R = new/datum/reagents(1000)
 	reagents = R
 	R.my_atom = src
+
+	species = all_species[greaterform]
+	add_language(species.language)
 
 	if(name == initial(name)) //To stop Pun-Pun becoming generic.
 		name = "[name] ([rand(1, 1000)])"
@@ -77,25 +83,16 @@
 	return
 
 /mob/living/carbon/monkey/Soghun/New()
-
 	..()
 	dna.mutantrace = "lizard"
-	greaterform = "Soghun"
-	add_language("Sinta'Soghun")
 
 /mob/living/carbon/monkey/skrell/New()
-
 	..()
 	dna.mutantrace = "skrell"
-	greaterform = "Skrell"
-	add_language("Skrellian")
 
-/mob/living/carbon/monkey/tajaran/New()
-
+/mob/living/carbon/monkey/tajara/New()
 	..()
 	dna.mutantrace = "tajaran"
-	greaterform = "Tajara"
-	add_language("Siik'tajr")
 
 /mob/living/carbon/monkey/movement_delay()
 	var/tally = 0

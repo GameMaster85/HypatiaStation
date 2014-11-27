@@ -178,7 +178,7 @@
 							name = "Captain [real_name]"
 							desc = "Probably better than the last captain."
 						if(/obj/item/clothing/head/kitty, /obj/item/clothing/head/collectable/kitty)
-							name = "Happy Kitten"
+							name = "Runtime"
 							emote_see = list("coughs up a furball", "stretches")
 							emote_hear = list("purrs")
 							speak = list("Purrr", "Meow!", "MAOOOOOW!", "HISSSSS", "MEEEEEEW")

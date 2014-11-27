@@ -19,6 +19,18 @@
 	keyslot1 = new /obj/item/device/encryptionkey/
 	recalculateChannels()
 
+/obj/item/device/radio/headset/handle_message_mode(mob/living/M as mob, message, channel)
+	if (channel == "special")
+		if (translate_binary)
+			var/datum/language/binary = all_languages["Robot Talk"]
+			binary.broadcast(M, message)
+		if (translate_hive)
+			var/datum/language/hivemind = all_languages["Hivemind"]
+			hivemind.broadcast(M, message)
+		return null
+
+	return ..()
+
 /obj/item/device/radio/headset/receive_range(freq, level, aiOverride = 0)
 	if (aiOverride)
 		return ..(freq, level)
@@ -153,7 +165,7 @@
 
 /obj/item/device/radio/headset/heads/hop
 	name = "head of personnel's headset"
-	desc = "The headset of the guy who will one day be captain. Channels are as follows: :c - command, :s - security"
+	desc = "The headset of the guy who will one day be captain. Channels are as follows: :u - supply, :c - command, :s - security"
 	icon_state = "com_headset"
 	item_state = "headset"
 	keyslot2 = new /obj/item/device/encryptionkey/heads/hop
@@ -167,7 +179,7 @@
 */
 /obj/item/device/radio/headset/heads/qm
 	name = "quartermaster's headset"
-	desc = "The headset of the man who control your toiletpaper supply. To access the supply channel, use :u. For command, use :c."
+	desc = "The headset of the man who control your toiletpaper supply. To access the cargo channel, use :q. For mining, use :d."
 	icon_state = "cargo_headset"
 	item_state = "headset"
 	keyslot2 = new /obj/item/device/encryptionkey/heads/qm

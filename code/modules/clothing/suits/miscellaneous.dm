@@ -62,7 +62,7 @@
 
 /obj/item/clothing/suit/greatcoat
 	name = "great coat"
-	desc = "A Nazi great coat"
+	desc = "A heavy great coat"
 	icon_state = "nazi"
 	item_state = "nazi"
 	flags = FPRINT | TABLEPASS
@@ -219,7 +219,7 @@
 	else
 		usr << "You button-up some imaginary buttons on your [src]."
 		return
-	usr.update_inv_wear_suit()
+	update_clothing_icon()
 
 //pyjamas
 //originally intended to be pinstripes >.>
@@ -367,7 +367,7 @@
 	item_state = "redponcho"
 
 /obj/item/clothing/suit/bomber
-	name = "bomber jacker"
+	name = "bomber jacket"
 	desc = "A well-worn WW2 leather bomber jacket."
 	icon_state = "bomber"
 	item_state = "bomber"

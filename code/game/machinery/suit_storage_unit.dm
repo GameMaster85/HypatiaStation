@@ -329,14 +329,18 @@
 	for(i=0,i<4,i++)
 		sleep(50)
 		if(src.OCCUPANT)
-			if(src.issuperUV)
-				var/burndamage = rand(28,35)
-				OCCUPANT.take_organ_damage(0,burndamage)
-				OCCUPANT.emote("scream")
-			else
-				var/burndamage = rand(6,10)
-				OCCUPANT.take_organ_damage(0,burndamage)
-				OCCUPANT.emote("scream")
+			var/datum/organ/internal/diona/nutrients/rad_organ = locate() in OCCUPANT.internal_organs
+			if (!rad_organ)
+				if(src.issuperUV)
+					var/burndamage = rand(28,35)
+					OCCUPANT.take_organ_damage(0,burndamage)
+					if (!(OCCUPANT.species && (OCCUPANT.species.flags & NO_PAIN)))
+						OCCUPANT.emote("scream")
+				else
+					var/burndamage = rand(6,10)
+					OCCUPANT.take_organ_damage(0,burndamage)
+					if (!(OCCUPANT.species && (OCCUPANT.species.flags & NO_PAIN)))
+						OCCUPANT.emote("scream")
 		if(i==3) //End of the cycle
 			if(!src.issuperUV)
 				if(src.HELMET)
@@ -602,7 +606,7 @@
 	//Departments that the cycler can paint suits to look like.
 	var/list/departments = list("Engineering","Mining","Medical","Security","Atmos")
 	//Species that the suits can be configured to fit.
-	var/list/species = list("Human","Skrell","Soghun","Tajaran")
+	var/list/species = list("Human","Skrell","Soghun","Tajara")
 
 	var/target_department
 	var/target_species
@@ -622,35 +626,35 @@
 	model_text = "Engineering"
 	req_access = list(access_construction)
 	departments = list("Engineering","Atmos")
-	species = list("Human","Tajaran","Skrell","Soghun") //Add Soghun when sprites exist for their suits.
+	species = list("Human","Tajara","Skrell","Soghun") //Add Soghun when sprites exist for their suits.
 
 /obj/machinery/suit_cycler/mining
 	name = "Mining suit cycler"
 	model_text = "Mining"
 	req_access = list(access_mining)
 	departments = list("Mining")
-	species = list("Human","Tajaran","Skrell","Soghun")
+	species = list("Human","Tajara","Skrell","Soghun")
 
 /obj/machinery/suit_cycler/security
 	name = "Security suit cycler"
 	model_text = "Security"
 	req_access = list(access_security)
 	departments = list("Security")
-	species = list("Human","Tajaran","Skrell","Soghun")
+	species = list("Human","Tajara","Skrell","Soghun")
 
 /obj/machinery/suit_cycler/medical
 	name = "Medical suit cycler"
 	model_text = "Medical"
 	req_access = list(access_medical)
 	departments = list("Medical")
-	species = list("Human","Tajaran","Skrell","Soghun")
+	species = list("Human","Tajara","Skrell","Soghun")
 
 /obj/machinery/suit_cycler/syndicate
 	name = "Nonstandard suit cycler"
 	model_text = "Nonstandard"
 	req_access = list(access_syndicate)
 	departments = list("Mercenary")
-	species = list("Human","Tajaran","Skrell","Soghun")
+	species = list("Human","Tajara","Skrell","Soghun")
 	can_repair = 1
 
 /obj/machinery/suit_cycler/attack_ai(mob/user as mob)

@@ -214,25 +214,18 @@
 		var/obj/item/weapon/card/id/C = I
 		visible_message("<span class='info'>[usr] swipes a card through [src].</span>")
 		var/datum/money_account/CH = get_account(C.associated_account_number)
-		if (CH) // Only proceed if card contains proper account number.
-			if(!CH.suspended)
-				if(CH.security_level != 0) //If card requires pin authentication (ie seclevel 1 or 2)
-					if(vendor_account)
-						var/attempt_pin = input("Enter pin code", "Vendor transaction") as num
-						var/datum/money_account/D = attempt_account_access(C.associated_account_number, attempt_pin, 2)
-						if(D)
-							transfer_and_vend(D, C)
-						else
-							usr << "\icon[src]<span class='warning'>Unable to access account. Check security settings and try again.</span>"
-					else
-						usr << "\icon[src]<span class='warning'>Unable to access vendor account. Please record the machine ID and call CentComm Support.</span>"
+		if(CH.security_level != 0) //If card requires pin authentication (ie seclevel 1 or 2)
+			if(vendor_account)
+				var/attempt_pin = input("Enter pin code", "Vendor transaction") as num
+				var/datum/money_account/D = attempt_account_access(C.associated_account_number, attempt_pin, 2)
+				if(D)
+					transfer_and_vend(D, C)
 				else
-					transfer_and_vend(CH, C)
+					usr << "\icon[src]<span class='warning'>Unable to access account. Check security settings and try again.</span>"
 			else
-				usr << "\icon[src]<span class='warning'>Connected account has been suspended.</span>"
+				usr << "\icon[src]<span class='warning'>Unable to access vendor account. Please record the machine ID and call CentComm Support.</span>"
 		else
-			usr << "\icon[src]<span class='warning'>Error: Unable to access your account. Please contact technical support if problem persists.</span>"
-
+			transfer_and_vend(CH, C)
 
 
 // Transfers money and vends the laptop.

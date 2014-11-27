@@ -175,11 +175,6 @@
 	desc = "A warning sign which reads 'HYDROPONICS'."
 	icon_state = "hydro1"
 
-/obj/structure/sign/carp
-	name = "Spess carp trophy"
-	desc = "A large space carp that has been stuffed and mounted. The plaque indicates it was killed by John McNamara."
-	icon_state = "carptrophy"
-
 /obj/structure/sign/directions/science
 	name = "\improper Science department"
 	desc = "A direction sign, pointing out which way the Science department is."

@@ -184,7 +184,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/head/tajaran/scarf
 	cost = 2
 	slot = slot_head
-	whitelisted = "Tajaran"
+	whitelisted = "Tajara"
 
 // Eyes
 
@@ -230,7 +230,7 @@ var/global/list/gear_datums = list()
 /datum/gear/sterilemask
 	display_name = "sterile mask"
 	path = /obj/item/clothing/mask/surgical
-	slot = slot_w_uniform
+	slot = slot_wear_mask
 	cost = 2
 
 // Uniform slot
@@ -406,7 +406,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/suit/Soghun/mantle
 	cost = 2
 	slot = slot_wear_suit
-	whitelisted = "Unathi"
+	whitelisted = "Soghun"
 
 /datum/gear/labcoat
 	display_name = "labcoat"
@@ -443,7 +443,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/suit/Soghun/robe
 	cost = 3
 	slot = slot_wear_suit
-//	whitelisted = "Unathi" // You don't have a monopoly on a robe!
+//	whitelisted = "Soghun" // You don't have a monopoly on a robe!
 
 /datum/gear/suspenders
 	display_name = "suspenders"
@@ -462,7 +462,7 @@ var/global/list/gear_datums = list()
 	path = /obj/item/clothing/suit/tajaran/furs
 	cost = 3
 	slot = slot_wear_suit
-	whitelisted = "Tajaran" // You do have a monopoly on a fur suit tho
+	whitelisted = "Tajara" // You do have a monopoly on a fur suit tho
 
 // Gloves
 

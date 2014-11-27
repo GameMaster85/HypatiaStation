@@ -1,7 +1,6 @@
 #define SOLID 1
 #define LIQUID 2
 #define GAS 3
-#define FOOD_METABOLISM 0.4
 #define REAGENTS_OVERDOSE 30
 #define REM REAGENTS_EFFECT_MULTIPLIER
 
@@ -95,7 +94,7 @@ datum
 
 
 		blood
-			data = new/list("donor"=null,"viruses"=null,"blood_DNA"=null,"blood_type"=null,"resistances"=null,"trace_chem"=null, "antibodies" = null)
+			data = new/list("donor"=null,"viruses"=null,"species"="Human","blood_DNA"=null,"blood_type"=null,"blood_colour"= "#A10808","resistances"=null,"trace_chem"=null, "antibodies" = null)
 			name = "Blood"
 			id = "blood"
 			reagent_state = LIQUID
@@ -128,49 +127,30 @@ datum
 					var/mob/living/carbon/C = M
 					C.antibodies |= self.data["antibodies"]
 
+			on_merge(var/data)
+				if(data["blood_colour"])
+					color = data["blood_colour"]
+				return ..()
 
-
+			on_update(var/atom/A)
+				if(data["blood_colour"])
+					color = data["blood_colour"]
+				return ..()
 
 			reaction_turf(var/turf/simulated/T, var/volume)//splash the blood all over the place
 				if(!istype(T)) return
 				var/datum/reagent/blood/self = src
 				src = null
 				if(!(volume >= 3)) return
-				//var/datum/disease/D = self.data["virus"]
+
 				if(!self.data["donor"] || istype(self.data["donor"], /mob/living/carbon/human))
-					var/obj/effect/decal/cleanable/blood/blood_prop = locate() in T //find some blood here
-					if(!blood_prop) //first blood!
-						blood_prop = new(T)
-						blood_prop.blood_DNA[self.data["blood_DNA"]] = self.data["blood_type"]
-
-					for(var/datum/disease/D in self.data["viruses"])
-						var/datum/disease/newVirus = D.Copy(1)
-						blood_prop.viruses += newVirus
-						newVirus.holder = blood_prop
-
-					if(self.data["virus2"])
-						blood_prop.virus2 = virus_copylist(self.data["virus2"])
-
-
+					blood_splatter(T,self,1)
 				else if(istype(self.data["donor"], /mob/living/carbon/monkey))
-					var/obj/effect/decal/cleanable/blood/blood_prop = locate() in T
-					if(!blood_prop)
-						blood_prop = new(T)
-						blood_prop.blood_DNA["Non-Human DNA"] = "A+"
-					for(var/datum/disease/D in self.data["viruses"])
-						var/datum/disease/newVirus = D.Copy(1)
-						blood_prop.viruses += newVirus
-						newVirus.holder = blood_prop
-
+					var/obj/effect/decal/cleanable/blood/B = blood_splatter(T,self,1)
+					if(B) B.blood_DNA["Non-Human DNA"] = "A+"
 				else if(istype(self.data["donor"], /mob/living/carbon/alien))
-					var/obj/effect/decal/cleanable/blood/xeno/blood_prop = locate() in T
-					if(!blood_prop)
-						blood_prop = new(T)
-						blood_prop.blood_DNA["UNKNOWN DNA STRUCTURE"] = "X*"
-					for(var/datum/disease/D in self.data["viruses"])
-						var/datum/disease/newVirus = D.Copy(1)
-						blood_prop.viruses += newVirus
-						newVirus.holder = blood_prop
+					var/obj/effect/decal/cleanable/blood/B = blood_splatter(T,self,1)
+					if(B) B.blood_DNA["UNKNOWN DNA STRUCTURE"] = "X*"
 				return
 
 /* Must check the transfering of reagents and their data first. They all can point to one disease datum.
@@ -365,40 +345,6 @@ datum
 					else
 						new_mob.key = M.key
 					del(M)
-				..()
-				return
-
-		srejuvenate
-			name = "Soporific Rejuvenant"
-			id = "stoxin2"
-			description = "Put people to sleep, and heals them."
-			reagent_state = LIQUID
-			color = "#C8A5DC" // rgb: 200, 165, 220
-			overdose = REAGENTS_OVERDOSE
-
-			on_mob_life(var/mob/living/M as mob)
-				if(!M) M = holder.my_atom
-				if(!data) data = 1
-				data++
-				if(M.losebreath >= 10)
-					M.losebreath = max(10, M.losebreath-10)
-				holder.remove_reagent(src.id, 0.2)
-				switch(data)
-					if(1 to 15)
-						M.eye_blurry = max(M.eye_blurry, 10)
-					if(15 to 25)
-						M.drowsyness  = max(M.drowsyness, 20)
-					if(25 to INFINITY)
-						M.sleeping += 1
-						M.adjustOxyLoss(-M.getOxyLoss())
-						M.SetWeakened(0)
-						M.SetStunned(0)
-						M.SetParalysis(0)
-						M.dizziness = 0
-						M.drowsyness = 0
-						M.stuttering = 0
-						M.confused = 0
-						M.jitteriness = 0
 				..()
 				return
 
@@ -728,7 +674,6 @@ datum
 						if(!glow)
 							new /obj/effect/decal/cleanable/greenglow(T)
 						return
-
 
 
 		ryetalyn
@@ -1152,7 +1097,7 @@ datum
 				return
 
 		anti_toxin
-			name = "Anti-Toxin (Dylovene)"
+			name = "Dylovene"
 			id = "anti_toxin"
 			description = "Dylovene is a broad-spectrum antitoxin."
 			reagent_state = LIQUID
@@ -1315,7 +1260,7 @@ datum
 				if(ishuman(M))
 					var/mob/living/carbon/human/H = M
 					var/datum/organ/internal/eyes/E = H.internal_organs_by_name["eyes"]
-					if(istype(E))
+					if(E && istype(E))
 						if(E.damage > 0)
 							E.damage = max(E.damage - 1, 0)
 				..()
@@ -1551,11 +1496,11 @@ datum
 			var/toxpwr = 0.7 // Toxins are really weak, but without being treated, last very long.
 			custom_metabolism = 0.1
 
-			on_mob_life(var/mob/living/M as mob)
+			on_mob_life(var/mob/living/M as mob,var/alien)
 				if(!M) M = holder.my_atom
 				if(toxpwr)
 					M.adjustToxLoss(toxpwr*REM)
-				..()
+					if(alien) ..() //Kind of a catch-all for aliens without kidneys.
 				return
 
 		toxin/amatoxin
@@ -1784,7 +1729,18 @@ datum
 					del(O)
 				else if(istype(O,/obj/effect/plantsegment))
 					if(prob(50)) del(O) //Kills kudzu too.
-				// Damage that is done to growing plants is separately at code/game/machinery/hydroponics at obj/item/hydroponics
+				else if(istype(O,/obj/machinery/portable_atmospherics/hydroponics))
+					var/obj/machinery/portable_atmospherics/hydroponics/tray = O
+
+					if(tray.seed)
+						tray.health -= rand(30,50)
+						if(tray.pestlevel > 0)
+							tray.pestlevel -= 2
+						if(tray.weedlevel > 0)
+							tray.weedlevel -= 3
+						tray.toxins += 4
+						tray.check_level_sanity()
+						tray.update_icon()
 
 			reaction_mob(var/mob/living/M, var/method=TOUCH, var/volume)
 				src = null
@@ -1799,7 +1755,7 @@ datum
 								H.adjustToxLoss(50)
 
 		toxin/stoxin
-			name = "Sleep Toxin"
+			name = "Soporific"
 			id = "stoxin"
 			description = "An effective hypnotic used to treat insomnia."
 			reagent_state = LIQUID
@@ -1985,7 +1941,8 @@ datum
 								if(affecting.take_damage(4*toxpwr, 2*toxpwr))
 									H.UpdateDamageIcon()
 								if(prob(meltprob)) //Applies disfigurement
-									H.emote("scream")
+									if (!(H.species && (H.species.flags & NO_PAIN)))
+										H.emote("scream")
 									H.status_flags |= DISFIGURED
 						else
 							M.take_organ_damage(min(6*toxpwr, volume * toxpwr)) // uses min() and volume to make sure they aren't being sprayed in trace amounts (1 unit != insta rape) -- Doohl
@@ -2147,7 +2104,7 @@ datum
 						if ( eyes_covered && mouth_covered )
 							victim << "\red Your [safe_thing] protects you from the pepperspray!"
 							return
-						else if ( mouth_covered )	// Reduced effects if partially protected
+						else if ( eyes_covered )	// Reduced effects if partially protected
 							victim << "\red Your [safe_thing] protect you from most of the pepperspray!"
 							victim.eye_blurry = max(M.eye_blurry, 15)
 							victim.eye_blind = max(M.eye_blind, 5)
@@ -2156,13 +2113,15 @@ datum
 							//victim.Paralyse(10)
 							//victim.drop_item()
 							return
-						else if ( eyes_covered ) // Eye cover is better than mouth cover
-							victim << "\red Your [safe_thing] protects your eyes from the pepperspray!"
-							victim.emote("scream")
+						else if ( mouth_covered ) // Mouth cover is better than eye cover
+							victim << "\red Your [safe_thing] protects your face from the pepperspray!"
+							if (!(victim.species && (victim.species.flags & NO_PAIN)))
+								victim.emote("scream")
 							victim.eye_blurry = max(M.eye_blurry, 5)
 							return
 						else // Oh dear :D
-							victim.emote("scream")
+							if (!(victim.species && (victim.species.flags & NO_PAIN)))
+								victim.emote("scream")
 							victim << "\red You're sprayed directly in the eyes with pepperspray!"
 							victim.eye_blurry = max(M.eye_blurry, 25)
 							victim.eye_blind = max(M.eye_blind, 10)
@@ -3019,7 +2978,7 @@ datum
 
 			on_mob_life(var/mob/living/M as mob, var/alien)
 				M:nutrition += nutriment_factor
-				holder.remove_reagent(src.id, FOOD_METABOLISM)
+				holder.remove_reagent(src.id, (alien ? FOOD_METABOLISM : ALCOHOL_METABOLISM)) // Catch-all for creatures without livers.
 
 				if (adj_drowsy)	M.drowsyness = max(0,M.drowsyness + adj_drowsy)
 				if (adj_sleepy) M.sleeping = max(0,M.sleeping + adj_sleepy)
@@ -3052,7 +3011,9 @@ datum
 					if(ishuman(M))
 						var/mob/living/carbon/human/H = M
 						var/datum/organ/internal/liver/L = H.internal_organs_by_name["liver"]
-						if (istype(L))
+						if (!L)
+							H.adjustToxLoss(5)
+						else if(istype(L))
 							L.take_damage(0.1, 1)
 						H.adjustToxLoss(0.1)
 				..()
@@ -3292,13 +3253,13 @@ datum
 						if(prob(5)) if(ishuman(M))
 							var/mob/living/carbon/human/H = M
 							var/datum/organ/internal/heart/L = H.internal_organs_by_name["heart"]
-							if (istype(L))
+							if (L && istype(L))
 								L.take_damage(5, 0)
 					if (300 to INFINITY)
 						if(ishuman(M))
 							var/mob/living/carbon/human/H = M
 							var/datum/organ/internal/heart/L = H.internal_organs_by_name["heart"]
-							if (istype(L))
+							if (L && istype(L))
 								L.take_damage(100, 0)
 				holder.remove_reagent(src.id, FOOD_METABOLISM)
 
@@ -3405,7 +3366,7 @@ datum
 		ethanol/brave_bull
 			name = "Brave Bull"
 			id = "bravebull"
-			description = "It's just as effective as Dutch-Courage!."
+			description = "It's just as effective as Dutch-Courage!"
 			color = "#664300" // rgb: 102, 67, 0
 			boozepwr = 3
 
@@ -3418,7 +3379,7 @@ datum
 
 		ethanol/toxins_special
 			name = "Toxins Special"
-			id = "toxinsspecial"
+			id = "phoronspecial"
 			description = "This thing is ON FIRE! CALL THE DAMN SHUTTLE!"
 			reagent_state = LIQUID
 			color = "#664300" // rgb: 102, 67, 0

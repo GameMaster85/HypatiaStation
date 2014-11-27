@@ -8,16 +8,12 @@
 	anchored = 1.0
 	flags = ON_BORDER
 	var/health = 14.0
-	var/ini_dir = null
 	var/state = 2
 	var/reinf = 0
 	var/basestate
 	var/shardtype = /obj/item/weapon/shard
-	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, for the purposes of shuttle glass.
-	var/dismantling = 0
 //	var/silicate = 0 // number of units of silicate
 //	var/icon/silicateIcon = null // the silicated icon
-
 
 /obj/structure/window/bullet_act(var/obj/item/projectile/Proj)
 
@@ -64,11 +60,16 @@
 	if(reinf) new /obj/item/stack/rods( loc)
 	del(src)
 
+//TODO: Make full windows a separate type of window.
+//Once a full window, it will always be a full window, so there's no point
+//having the same type for both.
+/obj/structure/window/proc/is_full_window()
+	return (dir == SOUTHWEST || dir == SOUTHEAST || dir == NORTHWEST || dir == NORTHEAST)
 
 /obj/structure/window/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if(istype(mover) && mover.checkpass(PASSGLASS))
 		return 1
-	if(dir == SOUTHWEST || dir == SOUTHEAST || dir == NORTHWEST || dir == NORTHEAST)
+	if(is_full_window())
 		return 0	//full tile window, you can't move into it!
 	if(get_dir(loc, target) == dir)
 		return !density
@@ -212,21 +213,6 @@
 		state = 1 - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, 1)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
-	else if(istype(W, /obj/item/weapon/wrench) && !anchored && (!state || !reinf))
-		if(!glasstype)
-			user << "<span class='notice'>You're not sure how to dismantle the [src] properly.</span>"
-		else
-			visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
-			dismantling = 1
-			if(dir == SOUTHWEST)
-				var/index = null
-				index = 0
-				while(index < 2)
-					new glasstype(loc)
-					index++
-			else
-				new glasstype(loc)
-			del(src)
 	else
 		if(W.damtype == BRUTE || W.damtype == BURN)
 			hit(W.force)
@@ -272,7 +258,6 @@
 	dir = turn(dir, 90)
 //	updateSilicate()
 	update_nearby_tiles(need_rebuild=1)
-	ini_dir = dir
 	return
 
 
@@ -289,7 +274,6 @@
 	dir = turn(dir, 270)
 //	updateSilicate()
 	update_nearby_tiles(need_rebuild=1)
-	ini_dir = dir
 	return
 
 
@@ -309,29 +293,30 @@
 */
 
 
-/obj/structure/window/New(Loc,re=0)
+/obj/structure/window/New(Loc, start_dir=null, constructed=0)
 	..()
 
-//	if(re)	reinf = re
-
-	ini_dir = dir
+	//player-constructed windows
+	if (constructed)
+		anchored = 0
+	
+	if (start_dir)
+		dir = start_dir
 
 	update_nearby_tiles(need_rebuild=1)
 	update_nearby_icons()
-
-	return
 
 
 /obj/structure/window/Del()
 	density = 0
 	update_nearby_tiles()
-	if(!dismantling)
-		playsound(src, "shatter", 70, 1)
+	playsound(src, "shatter", 70, 1)
 	update_nearby_icons()
 	..()
 
 
 /obj/structure/window/Move()
+	var/ini_dir = dir
 	update_nearby_tiles(need_rebuild=1)
 	..()
 	dir = ini_dir
@@ -396,7 +381,6 @@
 	desc = "It looks thin and flimsy. A few knocks with... anything, really should shatter it."
 	icon_state = "window"
 	basestate = "window"
-	glasstype = /obj/item/stack/sheet/glass
 
 /obj/structure/window/phoronbasic
 	name = "phoron window"
@@ -404,7 +388,6 @@
 	basestate = "phoronwindow"
 	icon_state = "phoronwindow"
 	shardtype = /obj/item/weapon/shard/phoron
-	glasstype = /obj/item/stack/sheet/glass/phoronglass
 	health = 120
 
 /obj/structure/window/phoronbasic/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -418,7 +401,6 @@
 	basestate = "phoronrwindow"
 	icon_state = "phoronrwindow"
 	shardtype = /obj/item/weapon/shard/phoron
-	glasstype = /obj/item/stack/sheet/glass/phoronrglass
 	reinf = 1
 	health = 160
 
@@ -432,7 +414,13 @@
 	basestate = "rwindow"
 	health = 40
 	reinf = 1
-	glasstype = /obj/item/stack/sheet/rglass
+
+/obj/structure/window/New(Loc, constructed=0)
+	..()
+
+	//player-constructed windows
+	if (constructed)
+		state = 0
 
 /obj/structure/window/reinforced/tinted
 	name = "tinted window"

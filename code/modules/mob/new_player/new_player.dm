@@ -95,9 +95,9 @@
 			return 1
 
 		if(href_list["ready"])
-			if(!ticker || ticker.current_state <= GAME_STATE_PREGAME) // Check that the round hasn't started.
+			if(!ticker || ticker.current_state <= GAME_STATE_PREGAME) // Make sure we don't ready up after the round has started
 				ready = !ready
-			else // Being ready after round start breaks things.
+			else
 				ready = 0
 
 		if(href_list["refresh"])

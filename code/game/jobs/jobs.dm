@@ -146,4 +146,3 @@ var/list/nonhuman_positions = list(
 			titles = J.alt_titles
 
 	return titles
-

@@ -177,9 +177,6 @@
 	name = "Phazon wreckage"
 	icon_state = "phazon-broken"
 
-/obj/effect/decal/mecha_wreckage/obphazon
-	name = "Dark Phazon wreckage"
-	icon_state = "obphazon-broken"
 
 /obj/effect/decal/mecha_wreckage/odysseus
 	name = "Odysseus wreckage"
@@ -200,3 +197,7 @@
 				welder_salvage += part
 				parts -= part
 		return
+
+/obj/effect/decal/mecha_wreckage/hoverpod
+	name = "Hover pod wreckage"
+	icon_state = "engineering_pod-broken"

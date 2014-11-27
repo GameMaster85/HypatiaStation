@@ -70,7 +70,7 @@
 
 
 /datum/job/hydro
-	title = "Botanist"
+	title = "Gardener"
 	flag = BOTANIST
 	department_flag = CIVILIAN
 	faction = "Station"

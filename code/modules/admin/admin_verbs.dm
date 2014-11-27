@@ -152,6 +152,7 @@ var/list/admin_verbs_debug = list(
 	/client/proc/restart_controller,
 	/client/proc/remake_distribution_map,
 	/client/proc/show_distribution_map,
+	/client/proc/show_plant_genes,
 	/client/proc/enable_debug_verbs,
 	/client/proc/callproc,
 	/client/proc/toggledebuglogs,
@@ -252,6 +253,8 @@ var/list/admin_verbs_mod = list(
 	/client/proc/player_panel_new,
 	/client/proc/dsay,
 	/datum/admins/proc/show_skills,
+	/datum/admins/proc/show_player_panel,
+	/client/proc/check_antagonists,
 	/client/proc/jobbans,
 	/client/proc/cmd_admin_subtle_message, 	/*send an message to somebody as a 'voice in their head'*/
 	/datum/admins/proc/view_txt_log,	/*shows the server log (diary) for today*/
