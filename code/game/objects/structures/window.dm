@@ -213,6 +213,12 @@
 		state = 1 - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, 1)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
+	else if(istype(W, /obj/item/weapon/wrench) && state == 0 && !anchored) // extrachecks are gud.
+		if(reinf) new /obj/item/stack/sheet/glass/reinforced(loc)
+		else new /obj/item/stack/sheet/glass(loc)
+		usr << "<span class='notice'>You have removed the window.</span>"
+		del(src)
+
 	else
 		if(W.damtype == BRUTE || W.damtype == BURN)
 			hit(W.force)
@@ -299,7 +305,7 @@
 	//player-constructed windows
 	if (constructed)
 		anchored = 0
-	
+
 	if (start_dir)
 		dir = start_dir
 
