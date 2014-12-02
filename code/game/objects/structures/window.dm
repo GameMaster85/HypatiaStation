@@ -12,6 +12,8 @@
 	var/reinf = 0
 	var/basestate
 	var/shardtype = /obj/item/weapon/shard
+	var/glasstype = null // Set this in subtypes. Null is assumed strange or otherwise impossible to dismantle, such as for the purposes of shuttle glass.
+	var/dismantling = 0
 //	var/silicate = 0 // number of units of silicate
 //	var/icon/silicateIcon = null // the silicated icon
 
@@ -213,6 +215,18 @@
 		state = 1 - state
 		playsound(loc, 'sound/items/Crowbar.ogg', 75, 1)
 		user << (state ? "<span class='notice'>You have pried the window into the frame.</span>" : "<span class='notice'>You have pried the window out of the frame.</span>")
+	else if(istype(W, /obj/item/weapon/wrench) && !anchored && (!state || !reinf))
+		if(!glasstype)
+			user << "<span class='notice'>You're not sure how to dismantle \the [src] properly.</span>"
+		else
+			dismantling = 1
+			visible_message("<span class='notice'>[user] dismantles \the [src].</span>")
+			if(dir == SOUTHWEST)
+				var/obj/item/stack/sheet/mats = new glasstype(loc)
+				mats.amount = 4
+			else
+				new glasstype(loc)
+			del(src)
 	else
 		if(W.damtype == BRUTE || W.damtype == BURN)
 			hit(W.force)
@@ -299,7 +313,7 @@
 	//player-constructed windows
 	if (constructed)
 		anchored = 0
-	
+
 	if (start_dir)
 		dir = start_dir
 
@@ -310,7 +324,8 @@
 /obj/structure/window/Del()
 	density = 0
 	update_nearby_tiles()
-	playsound(src, "shatter", 70, 1)
+	if(!dismantling)
+		playsound(src, "shatter", 70, 1)
 	update_nearby_icons()
 	..()
 
@@ -381,6 +396,7 @@
 	desc = "It looks thin and flimsy. A few knocks with... anything, really should shatter it."
 	icon_state = "window"
 	basestate = "window"
+	glasstype = /obj/item/stack/sheet/glass
 
 /obj/structure/window/phoronbasic
 	name = "phoron window"
@@ -388,6 +404,7 @@
 	basestate = "phoronwindow"
 	icon_state = "phoronwindow"
 	shardtype = /obj/item/weapon/shard/phoron
+	glasstype = /obj/item/stack/sheet/glass/phoronglass
 	health = 120
 
 /obj/structure/window/phoronbasic/fire_act(datum/gas_mixture/air, exposed_temperature, exposed_volume)
@@ -401,6 +418,7 @@
 	basestate = "phoronrwindow"
 	icon_state = "phoronrwindow"
 	shardtype = /obj/item/weapon/shard/phoron
+	glasstype = /obj/item/stack/sheet/glass/phoronrglass
 	reinf = 1
 	health = 160
 
@@ -412,6 +430,7 @@
 	desc = "It looks rather strong. Might take a few good hits to shatter it."
 	icon_state = "rwindow"
 	basestate = "rwindow"
+	glasstype = /obj/item/stack/sheet/glass/reinforced
 	health = 40
 	reinf = 1
 
