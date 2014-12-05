@@ -179,7 +179,7 @@
 */
 /obj/item/device/radio/headset/heads/qm
 	name = "quartermaster's headset"
-	desc = "The headset of the man who control your toiletpaper supply. To access the cargo channel, use :q. For mining, use :d."
+	desc = "The headset of the man who control your toiletpaper supply. To access the supply channel, use :u. For command, use :c."
 	icon_state = "cargo_headset"
 	item_state = "headset"
 	keyslot2 = new /obj/item/device/encryptionkey/heads/qm
