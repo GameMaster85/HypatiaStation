@@ -1,6 +1,5 @@
 /obj/item/weapon/reagent_containers/food/drinks/cans
 	var canopened = 0
-	volume = 30
 
 	attack_self(mob/user as mob)
 		if (canopened == 0)
