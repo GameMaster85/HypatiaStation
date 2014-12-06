@@ -74,7 +74,7 @@
 				msg += "\n"
 
 				num_admins_online++
-			else if(R_MOD & C.holder.rights)				//Who shows up in mod/mentor rows.
+			else if(R_MOD & C.holder.rights || R_MENTOR & C.holder.rights)				//Who shows up in mod/mentor rows.
 				modmsg += "\t[C] is a [C.holder.rank]"
 
 				if(isobserver(C.mob))
@@ -95,7 +95,7 @@
 				if(!C.holder.fakekey)
 					msg += "\t[C] is a [C.holder.rank]\n"
 					num_admins_online++
-			else if (R_MOD & C.holder.rights)
+			else if (R_MOD & C.holder.rights || R_MENTOR & C.holder.rights)
 				modmsg += "\t[C] is a [C.holder.rank]\n"
 				num_mods_online++
 

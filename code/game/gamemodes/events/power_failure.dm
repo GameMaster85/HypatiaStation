@@ -1,9 +1,7 @@
 
 /proc/power_failure(var/announce = 1)
 	if(announce)
-		command_announcement.Announce("Abnormal activity detected in [station_name()]'s powernet. As a precautionary measure, the station's power will be shut off for an indeterminate duration.", "Critical Power Failure")
-		for(var/mob/M in player_list)
-			M << sound('sound/AI/poweroff.ogg')
+		command_announcement.Announce("Abnormal activity detected in [station_name()]'s powernet. As a precautionary measure, the station's power will be shut off for an indeterminate duration.", "Critical Power Failure", new_sound = 'sound/AI/poweroff.ogg')
 
 	var/list/skipped_areas = list(/area/turret_protected/ai)
 
@@ -29,9 +27,7 @@
 	var/list/skipped_areas = list(/area/turret_protected/ai)
 
 	if(announce)
-		command_announcement.Announce("Power has been restored to [station_name()]. We apologize for the inconvenience.", "Power Systems Nominal")
-		for(var/mob/M in player_list)
-			M << sound('sound/AI/poweron.ogg')
+		command_announcement.Announce("Power has been restored to [station_name()]. We apologize for the inconvenience.", "Power Systems Nominal", new_sound = 'sound/AI/poweron.ogg')
 	for(var/obj/machinery/power/apc/C in world)
 		if(C.cell && C.z == 1)
 			C.cell.charge = C.cell.maxcharge
@@ -48,14 +44,12 @@
 /proc/power_restore_quick(var/announce = 1)
 
 	if(announce)
-		command_announcement.Announce("All SMESs on [station_name()] have been recharged. We apologize for the inconvenience.", "Power Systems Nominal")
-		for(var/mob/M in player_list)
-			M << sound('sound/AI/poweron.ogg')
+		command_announcement.Announce("All SMESs on [station_name()] have been recharged. We apologize for the inconvenience.", "Power Systems Nominal", new_sound = 'sound/AI/poweron.ogg')
 	for(var/obj/machinery/power/smes/S in world)
 		if(S.z != 1)
 			continue
 		S.charge = S.capacity
-		S.output = 200000
+		S.output = S.output_level_max // Most new SMESs on map are of buildable type, and may actually have higher output limit than 200kW. Use max output of that SMES instead.
 		S.online = 1
 		S.updateicon()
 		S.power_change()

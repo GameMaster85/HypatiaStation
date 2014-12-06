@@ -115,7 +115,6 @@ datum/preferences
 
 	var/list/flavor_texts = list()
 
-	var/flavor_text = "" //For transition
 	var/med_record = ""
 	var/sec_record = ""
 	var/gen_record = ""
@@ -619,9 +618,6 @@ datum/preferences
 	HTML += "<tt><center>"
 	HTML += "<b>Set Flavour Text</b> <hr />"
 	HTML += "<br></center>"
-	HTML += "<a href='byond://?src=\ref[flavor_text];preference=flavor_text;task=general'>Old Flavour Text:</a> "
-	HTML += TextPreview(flavor_text)
-	HTML += "<br>"
 	HTML += "<a href='byond://?src=\ref[user];preference=flavor_text;task=general'>General:</a> "
 	HTML += TextPreview(flavor_texts["general"])
 	HTML += "<br>"
@@ -1191,7 +1187,7 @@ datum/preferences
 						b_type = new_b_type
 
 				if("hair")
-					if(species == "Human" || species == "Soghun" || species == "Tajaran" || species == "Skrell")
+					if(species == "Human" || species == "Soghun" || species == "Tajara" || species == "Skrell")
 						var/new_hair = input(user, "Choose your character's hair colour:", "Character Preference") as color|null
 						if(new_hair)
 							r_hair = hex2num(copytext(new_hair, 2, 4))
@@ -1271,7 +1267,7 @@ datum/preferences
 						s_tone = 35 - max(min( round(new_s_tone), 220),1)
 
 				if("skin")
-					if(species == "Soghun" || species == "Tajaran" || species == "Skrell")
+					if(species == "Soghun" || species == "Tajara" || species == "Skrell")
 						var/new_skin = input(user, "Choose your character's skin colour: ", "Character Preference") as color|null
 						if(new_skin)
 							r_skin = hex2num(copytext(new_skin, 2, 4))
@@ -1580,25 +1576,23 @@ datum/preferences
 	// Destroy/cyborgize organs
 
 	for(var/name in organ_data)
-		var/datum/organ/external/O = character.organs_by_name[name]
-		var/datum/organ/internal/I = character.internal_organs_by_name[name]
-		var/status = organ_data[name]
 
-		if(!I || !O)
-			continue
-
-		if(status == "amputated")
-			O.amputated = 1
-			O.status |= ORGAN_DESTROYED
-			O.destspawn = 1
-		if(status == "cyborg")
-			O.status |= ORGAN_ROBOT
-		if(status == "assisted")
-			I.mechassist()
-		else if(status == "mechanical")
-			I.mechanize()
-
-		else continue
+		var/status = organ_data[name]		
+		var/datum/organ/external/O = character.organs_by_name[name]		
+		if(O)
+			if(status == "amputated")
+				O.amputated = 1
+				O.status |= ORGAN_DESTROYED
+				O.destspawn = 1
+			else if(status == "cyborg")
+				O.status |= ORGAN_ROBOT
+		else			
+			var/datum/organ/internal/I = character.internal_organs_by_name[name]
+			if(I)
+				if(status == "assisted")
+					I.mechassist()
+				else if(status == "mechanical")
+					I.mechanize()
 
 	if(underwear > underwear_m.len || underwear < 1)
 		underwear = 0 //I'm sure this is 100% unnecessary, but I'm paranoid... sue me. //HAH NOW NO MORE MAGIC CLONING UNDIES

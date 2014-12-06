@@ -4,6 +4,7 @@
 /area/apartments
 	name = "Apartments"
 	icon_state = "fpmaint"
+	requires_power = 0
 
 /area/apartments/house_1
 	name = "House #1"

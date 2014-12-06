@@ -5,6 +5,7 @@
 	icon = 'icons/obj/radio.dmi'
 	icon_state = "cypherkey"
 	item_state = ""
+	w_class = 1
 	var/translate_binary = 0
 	var/translate_hive = 0
 	var/syndie = 0
@@ -114,7 +115,7 @@
 	name = "Head of Personnel's Encryption Key"
 	desc = "An encyption key for a radio headset.  Contains cypherkeys."
 	icon_state = "hop_cypherkey"
-	channels = list("Command" = 1, "Security" = 0)
+	channels = list("Supply" = 1, "Command" = 1, "Security" = 0)
 /*
 /obj/item/device/encryptionkey/headset_mine
 	name = "Mining Radio Encryption Key"

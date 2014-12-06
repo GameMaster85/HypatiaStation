@@ -55,7 +55,7 @@
 	var/A
 	A = input("Area to jump bombard", "Open Fire", A) in teleportlocs
 	var/area/thearea = teleportlocs[A]
-	command_announcement.Announce("Bluespace artillery fire detected. Brace for impact.")
+	command_alert("Bluespace artillery fire detected. Brace for impact.")
 	spawn(30)
 	var/list/L = list()
 

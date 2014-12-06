@@ -216,6 +216,8 @@
 								step_towards(W,my_target)
 								if(!W)
 									return
+								if(!W.reagents)
+									break
 								var/turf/W_turf = get_turf(W)
 								W.reagents.reaction(W_turf)
 								for(var/atom/atm in W_turf)
@@ -304,8 +306,7 @@
 						chassis.spark_system.start()
 						chassis.use_power(energy_drain*2)
 			if(2)
-				var/turf/turf = target
-				if(istype(turf) && turf.isFloor())
+				if(istype(target, /turf/simulated/floor))
 					occupant_message("Building Airlock...")
 					set_ready_state(0)
 					if(do_after_cooldown(target))
@@ -1099,7 +1100,7 @@
 	set category = "Exosuit Interface"
 	set src = usr.loc
 	set popup_menu = 0
-
+		
 	if(usr != occupant)
 		return
 	occupant << "You climb out from \the [src]."
@@ -1130,7 +1131,7 @@
 	if(occupant)
 		occupant_message("Unable to detach [src] - equipment occupied.")
 		return
-
+		
 	var/obj/mecha/M = chassis
 	..()
 	if (M && !(locate(/obj/item/mecha_parts/mecha_equipment/tool/passenger) in M))
@@ -1146,7 +1147,7 @@
 		occupant_message("Passenger compartment hatch [door_locked? "locked" : "unlocked"].")
 		if (chassis)
 			chassis.visible_message("The hatch on \the [chassis] [door_locked? "locks" : "unlocks"].", "You hear something latching.")
-
+		
 
 #define LOCKED 1
 #define OCCUPIED 2
@@ -1160,20 +1161,20 @@
 	//check that usr can climb in
 	if (usr.stat || !ishuman(usr))
 		return
-
+	
 	if (!usr.Adjacent(src))
 		return
-
+	
 	if (!isturf(usr.loc))
 		usr << "\red You can't reach the passenger compartment from here."
 		return
-
+	
 	if(iscarbon(usr))
 		var/mob/living/carbon/C = usr
 		if(C.handcuffed)
 			usr << "\red Kinda hard to climb in while handcuffed don't you think?"
 			return
-
+	
 	for(var/mob/living/carbon/slime/M in range(1,usr))
 		if(M.Victim == usr)
 			usr << "\red You're too busy getting your life sucked out of you."
@@ -1188,11 +1189,11 @@
 		if (P.door_locked)
 			feedback |= LOCKED
 			continue
-
+		
 		//found a boardable compartment
 		P.move_inside(usr)
 		return
-
+	
 	//didn't find anything
 	switch (feedback)
 		if (OCCUPIED)

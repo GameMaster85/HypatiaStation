@@ -23,38 +23,13 @@
 		src << "\red The forum URL is not set in the server configuration."
 	return
 
-//rules and donate cloned from HypatiaStationOld --TwistedAkai
-
-//#define RULES_FILE "config/rules.html"
-/client/verb/rules() //This is better --Numbers
+#define RULES_FILE "config/rules.html"
+/client/verb/rules()
 	set name = "Rules"
 	set desc = "Show Server Rules."
 	set hidden = 1
-
-	var/rules = {"
-		<html><head>
-		</head>
-
-		<body>
-		<iframe width='100%' height='97%' src="http://hypatiastation.net/viewtopic.php?f=2&t=204&view=print" frameborder="0" id="main_frame"></iframe>		</body>
-
-		</html>"}
-
-	//src << browse(file(RULES_FILE), "window=rules;size=480x320")
-	src << browse(rules, "window=rules;size=920x820") //:)
-//#undef RULES_FILE
-
-/client/verb/donate()
-	set name = "donate"
-	set desc = "Donate to the server."
-	set hidden = 1
-	if( config.donateurl )
-		if(alert("This will open the donation URL in your browser. Are you sure?",,"Yes","No")=="No")
-			return
-		src << link(config.donateurl)
-	else
-		src << "\red The donation URL is not set in the server configuration."
-	return
+	src << browse(file(RULES_FILE), "window=rules;size=480x320")
+#undef RULES_FILE
 
 /client/verb/hotkeys_help()
 	set name = "hotkeys-help"
@@ -118,10 +93,3 @@ Admin:
 	src << other
 	if(holder)
 		src << admin
-
-// Needed to circumvent a bug where .winset does not work when used on the window.on-size event in skins.
-// Used by /datum/html_interface/nanotrasen (code/modules/html_interface/nanotrasen/nanotrasen.dm)
-/client/verb/_swinset(var/x as text)
-	set name = ".swinset"
-	set hidden = 1
-	winset(src, null, x)

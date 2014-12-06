@@ -68,6 +68,7 @@
 	active_power_usage = 1000 //For heating/cooling rooms. 1000 joules equates to about 1 degree every 2 seconds for a single tile of air.
 	power_channel = ENVIRON
 	req_one_access = list(access_atmospherics, access_engine_equip)
+	var/alarm_id = null
 	var/breach_detection = 1 // Whether to use automatic breach detection or not
 	var/frequency = 1439
 	//var/skipprocess = 0 //Experimenting
@@ -101,6 +102,14 @@
 	var/phoron_dangerlevel = 0
 	var/temperature_dangerlevel = 0
 	var/other_dangerlevel = 0
+
+	var/apply_danger_level = 1
+	var/post_alert = 1
+
+/obj/machinery/alarm/monitor
+	apply_danger_level = 0
+	breach_detection = 0
+	post_alert = 0
 
 /obj/machinery/alarm/server/New()
 	..()
@@ -155,12 +164,6 @@
 
 /obj/machinery/alarm/initialize()
 	set_frequency(frequency)
-
-	// FIX: This is a patch for a runtime error that occurs due to the area being null at this point. Test case: when you place a frame in an area already containing an alarm.
-	alarm_area = get_area(src)
-	if (alarm_area.master)
-		alarm_area = alarm_area.master
-
 	if (!master_is_operating())
 		elect_master()
 
@@ -451,12 +454,15 @@
 				send_signal(device_id, list("power"= 0) )
 
 /obj/machinery/alarm/proc/apply_danger_level(var/new_danger_level)
-	if (alarm_area.atmosalert(new_danger_level))
+	if (apply_danger_level && alarm_area.atmosalert(new_danger_level))
 		post_alert(new_danger_level)
 
 	update_icon()
 
 /obj/machinery/alarm/proc/post_alert(alert_level)
+	if(!post_alert)
+		return
+
 	var/datum/radio_frequency/frequency = radio_controller.return_frequency(alarm_frequency)
 	if(!frequency)
 		return
@@ -981,7 +987,7 @@ table tr:first-child th:first-child { border: none;}
 					var/list/selected = TLV[env]
 					var/list/thresholds = list("lower bound", "low warning", "high warning", "upper bound")
 					var/newval = input("Enter [thresholds[threshold]] for [env]", "Alarm triggers", selected[threshold]) as null|num
-					if (isnull(newval) || ..() || (locked && issilicon(usr)))
+					if (isnull(newval) || ..() || (locked && !issilicon(usr)))
 						return
 					if (newval<0)
 						selected[threshold] = -1.0
@@ -1119,20 +1125,16 @@ table tr:first-child th:first-child { border: none;}
 
 		if(1)
 			if(istype(W, /obj/item/stack/cable_coil))
-				var/obj/item/stack/cable_coil/coil = W
-				if(coil.amount < 5)
-					user << "You need more cable for this!"
+				var/obj/item/stack/cable_coil/C = W
+				if (C.use(5))
+					user << "<span class='notice'>You wire \the [src].</span>"
+					buildstage = 2
+					update_icon()
+					first_run()
 					return
-
-				user << "You wire \the [src]!"
-				coil.amount -= 5
-				if(!coil.amount)
-					del(coil)
-
-				buildstage = 2
-				update_icon()
-				first_run()
-				return
+				else
+					user << "<span class='warning'>You need 5 pieces of cable to do wire \the [src].</span>"
+					return
 
 			else if(istype(W, /obj/item/weapon/crowbar))
 				user << "You start prying out the circuit."
@@ -1214,7 +1216,7 @@ Code shamelessly copied from apc_frame
 
 	var/turf/loc = get_turf(usr)
 	var/area/A = loc.loc
-	if (!loc.isFloor())
+	if (!istype(loc, /turf/simulated/floor))
 		usr << "\red Air Alarm cannot be placed on this spot."
 		return
 	if (A.requires_power == 0 || A.name == "Space")
@@ -1308,21 +1310,21 @@ FIRE ALARM
 						user.visible_message("\red [user] has reconnected [src]'s detecting unit!", "You have reconnected [src]'s detecting unit.")
 					else
 						user.visible_message("\red [user] has disconnected [src]'s detecting unit!", "You have disconnected [src]'s detecting unit.")
+				else if (istype(W, /obj/item/weapon/wirecutters))
+					user.visible_message("\red [user] has cut the wires inside \the [src]!", "You have cut the wires inside \the [src].")
+					playsound(src.loc, 'sound/items/Wirecutter.ogg', 50, 1)
+					buildstage = 1
+					update_icon()
 			if(1)
 				if(istype(W, /obj/item/stack/cable_coil))
-					var/obj/item/stack/cable_coil/coil = W
-					if(coil.amount < 5)
-						user << "You need more cable for this!"
+					var/obj/item/stack/cable_coil/C = W
+					if (C.use(5))
+						user << "<span class='notice'>You wire \the [src].</span>"
+						buildstage = 2
 						return
-
-					coil.amount -= 5
-					if(!coil.amount)
-						del(coil)
-
-					buildstage = 2
-					user << "You wire \the [src]!"
-					update_icon()
-
+					else
+						user << "<span class='warning'>You need 5 pieces of cable to do wire \the [src].</span>"
+						return
 				else if(istype(W, /obj/item/weapon/crowbar))
 					user << "You pry out the circuit!"
 					playsound(src.loc, 'sound/items/Crowbar.ogg', 50, 1)

@@ -78,8 +78,8 @@
 				if(3.0)
 					dat += text("<B>Records Maintenance</B><HR>\n<A href='?src=\ref[];back=1'>Backup To Disk</A><BR>\n<A href='?src=\ref[];u_load=1'>Upload From disk</A><BR>\n<A href='?src=\ref[];del_all=1'>Delete All Records</A><BR>\n<BR>\n<A href='?src=\ref[];screen=1'>Back</A>", src, src, src, src)
 				if(4.0)
-					var/icon/front = new(active1.fields["photo"], dir = SOUTH)
-					var/icon/side = new(active1.fields["photo"], dir = WEST)
+					var/icon/front = active1.fields["photo_front"]
+					var/icon/side = active1.fields["photo_side"]
 					user << browse_rsc(front, "front.png")
 					user << browse_rsc(side, "side.png")
 					dat += "<CENTER><B>Medical Record</B></CENTER><BR>"
@@ -464,7 +464,7 @@
 					src.active2.fields[text("com_[]", href_list["del_c"])] = "<B>Deleted</B>"
 
 			if (href_list["search"])
-				var/t1 = trim(sanitize(input("Search String: (Name, DNA, or ID)", "Med. records", null, null)  as text))
+				var/t1 = input("Search String: (Name, DNA, or ID)", "Med. records", null, null)  as text
 				if ((!( t1 ) || usr.stat || !( src.authenticated ) || usr.restrained() || ((!in_range(src, usr)) && (!istype(usr, /mob/living/silicon)))))
 					return
 				src.active1 = null

@@ -22,11 +22,9 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 
 /datum/supply_packs/New()
 	manifest += "<ul>"
-	for(var/path in contains)
+	for(var/atom/movable/path in contains)
 		if(!path)	continue
-		var/atom/movable/AM = new path()
-		manifest += "<li>[AM.name]</li>"
-		AM.loc = null	//just to make sure they're deleted by the garbage collector
+		manifest += "<li>[initial(path.name)]</li>"
 	manifest += "</ul>"
 
 /datum/supply_packs/stemcell
@@ -378,7 +376,8 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 					/obj/item/seeds/eggplantseed,
 					/obj/item/seeds/limeseed,
 					/obj/item/seeds/grapeseed,
-					/obj/item/seeds/eggyseed)
+					/obj/item/seeds/eggyseed,
+					/obj/item/seeds/kudzuseed)
 	cost = 15
 	containertype = /obj/structure/closet/crate/hydroponics
 	containername = "Exotic Seeds crate"
@@ -400,6 +399,26 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	cost = 10
 	containertype = /obj/structure/closet/crate/medical
 	containername = "Medical crate"
+	group = "Medical"
+
+/datum/supply_packs/bodybag
+	name = "Body bag crate"
+	contains = list(/obj/item/weapon/storage/box/bodybags,
+                    /obj/item/weapon/storage/box/bodybags,
+                    /obj/item/weapon/storage/box/bodybags)
+	cost = 10
+	containertype = /obj/structure/closet/crate/medical
+	containername = "Body bag crate"
+	group = "Medical"
+
+/datum/supply_packs/cryobag
+	name = "Statis bag crate"
+	contains = list(/obj/item/bodybag/cryobag,
+				    /obj/item/bodybag/cryobag,
+	    			/obj/item/bodybag/cryobag)
+	cost = 50
+	containertype = /obj/structure/closet/crate/medical
+	containername = "Stasis bag crate"
 	group = "Medical"
 
 /datum/supply_packs/virus
@@ -451,6 +470,14 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	cost = 10
 	containertype = /obj/structure/closet/crate
 	containername = "Wooden planks crate"
+	group = "Engineering"
+
+/datum/supply_packs/smescoil
+	name = "Superconducting Magnetic Coil"
+	contains = list(/obj/item/weapon/smes_coil)
+	cost = 150
+	containertype = /obj/structure/closet/crate
+	containername = "Superconducting Magnetic Coil crate"
 	group = "Engineering"
 
 /datum/supply_packs/electrical
@@ -610,6 +637,13 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	access = access_robotics
 	group = "Science"
 
+/datum/supply_packs/hoverpod
+	name = "Hoverpod Shipment"
+	contains = list()
+	cost = 75
+	containertype = /obj/structure/largecrate/hoverpod
+	containername = "Hoverpod Crate"
+	group = "Operations"
 
 /datum/supply_packs/robotics
 	name = "Robotics assembly crate"
@@ -759,6 +793,17 @@ var/list/all_supply_groups = list("Operations","Security","Hospitality","Enginee
 	containername = "Shotgun shells"
 	access = access_armory
 	group = "Security"
+
+/*
+/datum/supply_packs/loyalty
+	name = "Loyalty implant crate"
+	contains = list (/obj/item/weapon/storage/lockbox/loyalty)
+	cost = 60
+	containertype = /obj/structure/closet/crate/secure
+	containername = "Loyalty implant crate"
+	access = access_armory
+	group = "Security"
+*/
 
 /datum/supply_packs/expenergy
 	name = "Experimental energy gear crate"

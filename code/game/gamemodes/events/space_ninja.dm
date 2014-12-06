@@ -415,7 +415,7 @@ As such, it's hard-coded for now. No reason for it not to be, really.
 		if(13)
 			directive += "Some disgruntled NanoTrasen employees have been supportive of our operations. Be wary of any mistreatment by command staff."
 		if(14)
-			var/xenorace = pick("Soghun","Tajaran", "Skrell")
+			var/xenorace = pick("Soghun","Tajara", "Skrell")
 			directive += "A group of [xenorace] radicals have been loyal supporters of the Spider Clan. Favor [xenorace] crew whenever possible."
 		if(15)
 			directive += "The Spider Clan has recently been accused of religious insensitivity. Attempt to speak with the Chaplain and prove these accusations false."
@@ -647,7 +647,7 @@ var/list/ninja_verbs_default = list(
 	/obj/item/clothing/suit/space/space_ninja/proc/ninjablade,
 	/obj/item/clothing/suit/space/space_ninja/proc/ninjastar,
 	/obj/item/clothing/suit/space/space_ninja/proc/ninjanet,
-//	/obj/item/clothing/suit/space/space_ninja/proc/ninjajaunt
+	/obj/item/clothing/suit/space/space_ninja/proc/ninjajaunt
 )
 
 var/list/ninja_verbs_kamikaze = list(

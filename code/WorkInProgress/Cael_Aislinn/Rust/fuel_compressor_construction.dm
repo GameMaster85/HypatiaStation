@@ -23,7 +23,7 @@
 		return
 	var/turf/loc = get_turf(usr)
 	var/area/A = loc.loc
-	if (!loc.isFloor())
+	if (!istype(loc, /turf/simulated/floor))
 		usr << "\red Compressor cannot be placed on this spot."
 		return
 	if (A.requires_power == 0 || A.name == "Space")

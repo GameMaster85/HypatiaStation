@@ -1141,7 +1141,7 @@
 	else if(prob(70))
 		ReplaceWithPlating()
 	else
-		src.ReplaceWithLattice()
+		ReplaceWithLattice()
 	return 0
 
 

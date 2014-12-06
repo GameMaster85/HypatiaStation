@@ -155,7 +155,6 @@
 	S["flavor_texts_feet"]		>> flavor_texts["feet"]
 
 	//Miscellaneous
-	S["flavor_text"]		>> flavor_text //old flavor text
 	S["med_record"]			>> med_record
 	S["sec_record"]			>> sec_record
 	S["gen_record"]			>> gen_record

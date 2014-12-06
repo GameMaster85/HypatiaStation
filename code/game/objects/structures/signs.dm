@@ -176,7 +176,7 @@
 	icon_state = "hydro1"
 
 /obj/structure/sign/carp
-	name = "Spess carp trophy"
+	name = "Space carp trophy"
 	desc = "A large space carp that has been stuffed and mounted. The plaque indicates it was killed by John McNamara."
 	icon_state = "carptrophy"
 
