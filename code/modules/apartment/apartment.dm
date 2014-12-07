@@ -136,6 +136,10 @@
 	name = "House E-04"
 	icon_state = "fpmaint"
 
+/area/apartments/house_5e
+	name = "House E-05"
+	icon_state = "fpmaint"
+
 /area/apartments/sauna_lobby
 	name = "Sauna lobby"
 	icon_state = "fpmaint"
