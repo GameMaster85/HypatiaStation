@@ -184,6 +184,33 @@
 	name = "Second Deck Central Hallway"
 	icon_state = "fpmaint"
 
+/area/apartments/chapel/main
+	name = "\improper Chapel"
+	icon_state = "chapel"
+	ambience = list('sound/ambience/ambicha1.ogg','sound/ambience/ambicha2.ogg','sound/ambience/ambicha3.ogg','sound/ambience/ambicha4.ogg','sound/music/traitor.ogg')
+
+/area/apartments/library
+ 	name = "\improper Library"
+ 	icon_state = "library"
+
+/area/apartments/bridge
+	name = "\improper Bridge"
+	icon_state = "bridge"
+	music = "signal"
+
+/area/apartments/medical/medbay
+	name = "\improper Medbay"
+	icon_state = "medbay"
+	music = 'sound/ambience/signal.ogg'
+
+/area/apartments/medical/chemistry
+	name = "\improper Chemistry"
+	icon_state = "chem"
+
+/area/apartments/medical/surgery
+	name = "\improper Operating Theatre 1"
+	icon_state = "surgery"
+
 
 //Shuttle areas
 
