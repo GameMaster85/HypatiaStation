@@ -272,6 +272,7 @@ var/list/admin_verbs_mentor = list(
 //	/client/proc/dsay,
 	/client/proc/cmd_admin_subtle_message
 )
+
 var/list/admin_verbs_donor = list(
 	/datum/admins/proc/view_txt_log,	/*shows the server log (diary) for today*/
 	/datum/admins/proc/view_atk_log,	/*shows the server combat-log, doesn't do anything presently*/
