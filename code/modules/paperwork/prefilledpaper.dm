@@ -8,7 +8,7 @@ var/list/prefilledpapers = createprefilledpapers()
 	var/list/allpapers = list()
 
 	var/datum/prefilledpaper/prefilledtemp = new /datum/prefilledpaper()
-	prefilledtemp.name = "Personell: Instructions"
+	prefilledtemp.name = "Personnel: Instructions"
 	allpapers.Add(prefilledtemp)
 	prefilledtemp.text = {"\[Large\]\[u\]Instructions:\[/u\]\[/Large\]\[br\]
 \[br\]
