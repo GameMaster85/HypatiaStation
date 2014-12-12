@@ -1467,5 +1467,101 @@
 //////////////////////////// Grolarg ///////////////////////////////////////////////////
 
 /obj/item/clothing/head/collectable/HoS/fluff/grolarg
-	name = "Hala\'s black Cap"
+	name = "Hala\'s black cap"
 	desc = "A fancy-looking black hat. The initials \'H.A.\' are printed on the inside."
+
+//////////////////////////// BitFlimsy ///////////////////////////////////////////////////
+
+/obj/item/device/measuring_tape/fluff/harold_tompkins
+	desc = "A simple tape measure, looking slightly worn"
+
+/obj/item/weapon/gun/projectile/detective/fluff/shaun_pavlov
+	name = "engraved Colt M1911"
+	desc = "From afar it is clear that this handgun is well looked after. Upon closer inspection you see an intricately carved handgun. The slide has the names 'Calum, Katie, Brenna, Georgi, James, Lynn' all linked together in a stylish flowing scripture, the latter name seeming to be a fresher engraving. The hand grip covers are made of polished walnut and the words 'Habitare in memoria' are carved cleanly in the same style as that of the slide.."
+
+//////////////////////////// FatalEYES ///////////////////////////////////////////////////
+
+/obj/item/weapon/coin/diamond/fluff/lechoslaw_basinger
+	name = "scratched diamond coin"
+	desc = "A regular looking diamond coin that seems to have some scratches on each of the side of it."
+
+
+/obj/item/weapon/coin/diamond/fluff/lechoslaw_basinger/attack_self(mob/user as mob)
+	user.visible_message("<span class='notice'>[user] has thrown \the [src]. It lands on tails! </span>")
+
+//////////////////////////// Cutovercascade ///////////////////////////////////////////////////
+
+obj/item/clothing/head/ushanka/fluff/rufaro_nia
+	name = "Nia's ushanka"
+	desc = "This pink Russian ushanka has been modified to have sewn-in holes in the back for her spines to poke out of the hat without causing a rip. It covers everything to an inch above her eye. The spines point straight out her head, but point at an acute angle backwards to the top of her head, to the base of her neck in one neat row. The Ushanka itself has a Tendaji flag and symbol on the front, where the normal soviet star would go. The earflaps are unbuttoned and left down."
+
+//////////////////////////// DerpMaestro ///////////////////////////////////////////////////
+
+/obj/item/device/kit/suit/fluff/dave_mararan
+	name = "Sam's hazard hardsuit modification kit"
+	desc = "A kit for modifying hard-suits. The label on the box says, 'To Dad, for when the going gets tough.'."
+
+	new_name = "Sam's hazard"
+	new_suit_desc = "An older model of armored NT Hardsuit emblazoned in security colors."
+	new_helmet_desc = "An older NT Hardsuit Helmet with built-in atmospheric filters."
+	helmet_icon = "rig0-hazardhardsuit"
+	suit_icon = "rig-hazardhardsuit"
+	helmet_color = "hazardhardsuit"
+
+//////////////////////////// Serendipitous O. Currance ///////////////////////////////////////////////////
+
+/obj/item/clothing/suit/storage/labcoat/fluff/chris_broadwalk
+	name = "Chris' worn lab-coat"
+	desc = "The lab-coat is burned and stained from years of use and abuse.."
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "labcoat_burnt"
+	item_state = "labcoat_burnt"
+
+//////////////////////////// Vexif ///////////////////////////////////////////////////
+
+/obj/item/weapon/storage/fancy/cigar/fluff/natachalavoie
+	name = "engraved cigar case"
+	desc = "It is a engraved cigar case with hand wrapped cigars"
+
+//////////////////////////// Crystal9156 ///////////////////////////////////////////////////
+
+/obj/item/weapon/pen/fluff/crystal_nole
+	name = "Gilded Pen"
+	desc = "A fancy golden pen with the initials C.E.N engraved into the side with Obsidian colored lettering."
+
+/obj/item/clothing/suit/storage/labcoat/fluff/ezra_mennai
+	name = "medical trenchcoat"
+	desc = "A specialized trench-coat with a big white square with a red cross over it on the breast, while the rest of the trench-coat is black with red trim."
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "ezramennai"
+	item_state = "ezramennai"
+
+//////////////////////////// Goragh ///////////////////////////////////////////////////
+
+/obj/item/weapon/pen/blue/fluff/marc_mosser
+	name = "fancy pen"
+	desc = "A fancy metal pen. It uses blue ink. An inscription on one side reads, 'CCIA Staff.'"
+
+//////////////////////////// Nitebomber ///////////////////////////////////////////////////
+
+/obj/item/clothing/glasses/sunglasses/fluff/saeed_alfilistine
+	name = "Saeed's sunglasses"
+	desc = "A pair of futuristic sunglasses that appear to attach directly to someone's forehead, just above their eyebrows. This pair appears to be designed for a tajaran"
+	icon_state = "jensenshades"
+
+//////////////////////////// Dr. Bean-Dip ///////////////////////////////////////////////////
+
+/obj/item/clothing/suit/armor/vest/warden/fluff/niruka
+	name = "Niruka's warden jacket"
+	desc = "This is a slightly faded warden jacket with a hide mantle thrown over it. Looking closely, you can see the name, 'Isingoma Niruka' written on the collar. That is, if it isn't being worn."
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "nirukajacket"
+	item_state = "nirukajacket"
+
+
+/obj/item/clothing/head/helmet/warden/fluff/niruka
+	name = "Niruka's warden cap"
+	desc = "A blue colored, old looking warden's hat with 'Isingoma Niruka: 337' written on the metal on top of the badge"
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "nirukacap"
+	item_state = "nirukacap"
