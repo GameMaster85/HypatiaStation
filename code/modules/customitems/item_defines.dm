@@ -1484,6 +1484,9 @@
 /obj/item/weapon/coin/diamond/fluff/lechoslaw_basinger
 	name = "scratched diamond coin"
 	desc = "A regular looking diamond coin that seems to have some scratches on each of the side of it."
+	icon = 'icons/obj/custom_items.dmi'
+	icon_state = "coin_diamondscratch"
+	item_state = "coin_diamondscratch"
 
 
 /obj/item/weapon/coin/diamond/fluff/lechoslaw_basinger/attack_self(mob/user as mob)
